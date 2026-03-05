@@ -1,0 +1,817 @@
+---
+title: 'Building for Production'
+description: 'Build and optimize VozCraft for production deployment with Vite'
+icon: 'hammer'
+---
+
+# Building for Production
+
+This guide covers building VozCraft for production deployment. Vite provides highly optimized builds with automatic code splitting, minification, and asset optimization.
+
+## Quick Start
+
+Build VozCraft for production with a single command:
+
+```bash
+npm run build
+```
+
+This creates an optimized production build in the `dist/` directory, ready for deployment.
+
+<Info>
+**Build time:** Typically 5-15 seconds on modern hardware.
+
+**Output size:** ~150-200 KB (gzipped) for the complete application.
+</Info>
+
+## Build Process
+
+### The build Script
+
+The `build` command is defined in `package.json`:
+
+```json package.json
+{
+  "scripts": {
+    "build": "vite build"
+  }
+}
+```
+
+This executes Vite's production build process.
+
+### Build Configuration
+
+Vite uses `vite.config.js` for build settings:
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+```
+
+<Note>
+This is the minimal configuration. VozCraft uses Vite's intelligent defaults for optimal production builds.
+</Note>
+
+### What Happens During Build
+
+<Steps>
+  <Step title="Dependency resolution">
+  Vite analyzes all imports and dependencies:
+  
+  ```javascript
+  // src/main.jsx
+  import { StrictMode } from 'react'
+  import { createRoot } from 'react-dom/client'
+  import App from './App.jsx'
+  ```
+  
+  All dependencies are traced and bundled.
+  </Step>
+  
+  <Step title="JSX transformation">
+  React JSX is compiled to JavaScript:
+  
+  ```jsx
+  // Before (JSX)
+  <button onClick={handleClick}>
+    {isPlaying ? 'Pause' : 'Play'}
+  </button>
+  
+  // After (JavaScript)
+  React.createElement('button', {
+    onClick: handleClick
+  }, isPlaying ? 'Pause' : 'Play')
+  ```
+  </Step>
+  
+  <Step title="Code minification">
+  JavaScript is minified using esbuild:
+  
+  ```javascript
+  // Before
+  const speak = useCallback((txt, vozLabel, generoLabel) => {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(txt);
+    // ...
+  }, []);
+  
+  // After (minified)
+  const s=useCallback((t,v,g)=>{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);...},[]);
+  ```
+  
+  <Info>
+  **Minification savings:** Typically 40-60% size reduction.
+  </Info>
+  </Step>
+  
+  <Step title="Asset optimization">
+  Images and other assets are optimized:
+  
+  - **Images**: Compressed and copied to `dist/assets/`
+  - **Fonts**: Inlined or copied based on size
+  - **SVG**: Minified and optimized
+  
+  ```plaintext
+  public/logo.png (5 KB) → dist/logo.png
+  public/logotipo.png (205 KB) → dist/logotipo.png
+  public/manifest.json → dist/manifest.json
+  ```
+  </Step>
+  
+  <Step title="CSS processing">
+  Inline styles are extracted and optimized:
+  
+  ```javascript
+  // Inline styles in App.jsx are preserved
+  <div style={{ 
+    background: dark ? '#0a1628' : '#eef2fb',
+    minHeight: '100vh' 
+  }}>
+  ```
+  
+  <Note>
+  VozCraft uses inline styles exclusively, so no separate CSS file is generated.
+  </Note>
+  </Step>
+  
+  <Step title="Code splitting">
+  Vite automatically splits code for optimal loading:
+  
+  - **Vendor chunks**: React and React-DOM in separate chunks
+  - **Dynamic imports**: Lazy-loaded components (if any)
+  - **Entry point**: Main application code
+  
+  Example output:
+  ```plaintext
+  dist/assets/index-abc123.js      (main app code)
+  dist/assets/vendor-def456.js     (React libraries)
+  ```
+  </Step>
+  
+  <Step title="Hash generation">
+  Asset filenames include content hashes for cache busting:
+  
+  ```plaintext
+  index-abc123def456.js
+  vendor-789xyz.js
+  ```
+  
+  <Tip>
+  **Cache busting:** Hash changes when content changes, forcing browser cache refresh.
+  </Tip>
+  </Step>
+</Steps>
+
+## Build Output
+
+### Directory Structure
+
+After building, the `dist/` directory contains:
+
+```plaintext
+dist/
+├── index.html                    # Entry HTML file
+├── logo.png                      # App logo (5 KB)
+├── logotipo.png                  # PWA icon (205 KB)
+├── manifest.json                 # PWA manifest
+├── icons.svg                     # Icon sprite
+└── assets/
+    ├── index-[hash].js           # Main application code
+    └── index-[hash].css          # Extracted CSS (if any)
+```
+
+### File Sizes
+
+Typical production build sizes:
+
+| File | Size (uncompressed) | Size (gzipped) |
+|------|---------------------|----------------|
+| index.html | ~1 KB | ~500 B |
+| index-[hash].js | ~450 KB | ~150 KB |
+| React vendor | ~140 KB | ~45 KB |
+| Total JavaScript | ~590 KB | ~195 KB |
+| Images | ~210 KB | ~210 KB |
+| **Total** | **~800 KB** | **~405 KB** |
+
+<Info>
+**Gzip compression** is typically applied by web servers (Nginx, Apache, CDNs) automatically. The gzipped size is what users actually download.
+</Info>
+
+### Optimized index.html
+
+The built `index.html` includes minified content and hashed asset references:
+
+```html dist/index.html
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VozCraft - TTS</title>
+    <meta name="description" content="Texto a voz con IA - Genera audio realista en múltiples idiomas y voces" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <script type="module" crossorigin src="/assets/index-abc123.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+<Accordion title="Key changes from development">
+1. **Module script**: Points to hashed bundle
+2. **Crossorigin**: Enables CORS for module loading
+3. **Inline styles removed**: Extracted to JS bundle
+4. **Whitespace minified**: Reduced HTML size
+</Accordion>
+
+## Advanced Build Configuration
+
+### Custom Vite Configuration
+
+You can extend `vite.config.js` for custom build behavior:
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  
+  // Custom build options
+  build: {
+    // Output directory (default: dist)
+    outDir: 'build',
+    
+    // Asset directory (default: assets)
+    assetsDir: 'static',
+    
+    // Source maps for debugging
+    sourcemap: true,
+    
+    // Minification (esbuild is default and fastest)
+    minify: 'esbuild',
+    
+    // Target browsers
+    target: 'es2015',
+    
+    // Chunk size warnings
+    chunkSizeWarningLimit: 500,
+    
+    // Rollup options
+    rollupOptions: {
+      output: {
+        // Manual chunk splitting
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+        },
+      },
+    },
+  },
+  
+  // Base URL (for subdirectory hosting)
+  base: '/',
+})
+```
+
+<Tabs>
+  <Tab title="Source Maps">
+  Enable source maps for production debugging:
+  
+  ```javascript
+  build: {
+    sourcemap: true,  // or 'inline' or 'hidden'
+  }
+  ```
+  
+  **Options:**
+  - `true`: Separate .map files
+  - `'inline'`: Inline source maps (larger bundle)
+  - `'hidden'`: Source maps without reference (for error tracking)
+  - `false`: No source maps (smallest bundle)
+  
+  <Warning>
+  Source maps expose your source code. Only enable in production if you need debugging or error tracking.
+  </Warning>
+  </Tab>
+  
+  <Tab title="Output Directory">
+  Change the build output directory:
+  
+  ```javascript
+  build: {
+    outDir: 'build',  // default: 'dist'
+  }
+  ```
+  
+  Useful for CI/CD pipelines that expect specific directory names.
+  </Tab>
+  
+  <Tab title="Base URL">
+  Set base URL for subdirectory hosting:
+  
+  ```javascript
+  base: '/vozcraft/',  // default: '/'
+  ```
+  
+  For hosting at `https://example.com/vozcraft/`
+  
+  <Note>
+  All asset URLs will be prefixed with `/vozcraft/`
+  </Note>
+  </Tab>
+  
+  <Tab title="Browser Targets">
+  Define minimum browser support:
+  
+  ```javascript
+  build: {
+    target: 'es2015',  // ES6 (2015)
+    // or: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14']
+  }
+  ```
+  
+  Older targets = larger bundles (more polyfills)
+  </Tab>
+</Tabs>
+
+### Environment-Specific Builds
+
+Create different builds for different environments:
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig(({ mode }) => {
+  return {
+    plugins: [react()],
+    
+    build: {
+      sourcemap: mode === 'development',
+      minify: mode === 'production' ? 'esbuild' : false,
+    },
+    
+    define: {
+      __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+      __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    },
+  }
+})
+```
+
+Build with specific mode:
+
+```bash
+vite build --mode production
+vite build --mode staging
+vite build --mode development
+```
+
+## Build Optimization Strategies
+
+### 1. Code Splitting
+
+Split large components into separate chunks:
+
+```javascript src/App.jsx
+import { lazy, Suspense } from 'react'
+
+// Lazy load heavy components
+const AudioPlayer = lazy(() => import('./components/AudioPlayer'))
+const HistoryPanel = lazy(() => import('./components/HistoryPanel'))
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AudioPlayer />
+      <HistoryPanel />
+    </Suspense>
+  )
+}
+```
+
+<Tip>
+**When to use code splitting:**
+- Large third-party libraries
+- Route-based components (if using React Router)
+- Features used by < 50% of users
+- Heavy visualization components
+</Tip>
+
+### 2. Tree Shaking
+
+Vite automatically removes unused code:
+
+```javascript
+// Only the used functions are included in the build
+import { useState, useEffect, useCallback } from 'react'
+// useRef, useMemo, etc. are NOT included if unused
+```
+
+<Info>
+**Tree shaking requirements:**
+- Use ES modules (`import`/`export`)
+- Avoid CommonJS (`require`)
+- Use named imports when possible
+</Info>
+
+### 3. Asset Optimization
+
+#### Image Optimization
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import imagemin from 'vite-plugin-imagemin'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    imagemin({
+      gifsicle: { optimizationLevel: 7 },
+      optipng: { optimizationLevel: 7 },
+      mozjpeg: { quality: 80 },
+      svgo: {
+        plugins: [
+          { name: 'removeViewBox', active: false },
+          { name: 'removeEmptyAttrs', active: false },
+        ],
+      },
+    }),
+  ],
+})
+```
+
+<Note>
+Requires installing: `npm install -D vite-plugin-imagemin`
+</Note>
+
+#### Font Loading
+
+VozCraft loads Google Fonts. Consider self-hosting for better performance:
+
+```html
+<!-- Current (external) -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet" />
+
+<!-- Better (self-hosted) -->
+<link rel="preload" href="/fonts/DMSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+```
+
+### 4. Bundle Analysis
+
+Analyze bundle size to identify optimization opportunities:
+
+```bash
+npm install -D rollup-plugin-visualizer
+```
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ],
+})
+```
+
+After building, opens a treemap visualization showing bundle composition.
+
+## Build Scripts
+
+### Custom Build Scripts
+
+Add specialized build scripts to `package.json`:
+
+```json package.json
+{
+  "scripts": {
+    "build": "vite build",
+    "build:analyze": "vite build && vite-bundle-visualizer",
+    "build:staging": "vite build --mode staging",
+    "build:production": "vite build --mode production",
+    "build:clean": "rm -rf dist && vite build",
+    "build:gzip": "vite build && gzip -k dist/**/*.{js,css,html}"
+  }
+}
+```
+
+<Tabs>
+  <Tab title="Clean Build">
+  Remove old build before creating new one:
+  
+  ```bash
+  npm run build:clean
+  ```
+  
+  Ensures no stale files remain in `dist/`.
+  </Tab>
+  
+  <Tab title="Analyze Build">
+  Build and analyze bundle size:
+  
+  ```bash
+  npm run build:analyze
+  ```
+  
+  Opens bundle analyzer in browser.
+  </Tab>
+  
+  <Tab title="Staging Build">
+  Build for staging environment:
+  
+  ```bash
+  npm run build:staging
+  ```
+  
+  Uses `.env.staging` configuration.
+  </Tab>
+</Tabs>
+
+## Performance Budgets
+
+Set performance budgets to catch bundle bloat:
+
+```javascript vite.config.js
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Warn if vendor chunk exceeds 500 KB
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 500, // KB
+  },
+})
+```
+
+<Warning>
+If a chunk exceeds the limit, Vite shows a warning:
+
+```plaintext
+(!) Some chunks are larger than 500 KiB after minification.
+```
+
+Consider code splitting to reduce chunk sizes.
+</Warning>
+
+## Testing the Build
+
+### Local Preview
+
+Test the production build locally:
+
+```bash
+npm run build
+npm run preview
+```
+
+This serves the `dist/` directory at http://localhost:4173.
+
+<Info>
+**Preview server features:**
+- Simulates production environment
+- Serves compressed files
+- Uses production URLs
+- Tests PWA functionality
+</Info>
+
+### Serve with Different Servers
+
+<Tabs>
+  <Tab title="Python HTTP Server">
+  ```bash
+  cd dist
+  python3 -m http.server 8000
+  ```
+  
+  Visit http://localhost:8000
+  </Tab>
+  
+  <Tab title="Node http-server">
+  ```bash
+  npx http-server dist -p 8000
+  ```
+  
+  Visit http://localhost:8000
+  </Tab>
+  
+  <Tab title="Nginx">
+  ```nginx
+  server {
+    listen 80;
+    server_name localhost;
+    root /path/to/vozcraft/dist;
+    index index.html;
+    
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+  }
+  ```
+  </Tab>
+</Tabs>
+
+## Build Checklist
+
+<Steps>
+  <Step title="Clean build">
+  ```bash
+  rm -rf dist
+  npm run build
+  ```
+  
+  Start with a clean slate.
+  </Step>
+  
+  <Step title="Check build output">
+  Verify:
+  - No build errors or warnings
+  - Bundle sizes are reasonable
+  - All assets copied to `dist/`
+  </Step>
+  
+  <Step title="Test locally">
+  ```bash
+  npm run preview
+  ```
+  
+  Test all functionality:
+  - Speech synthesis works
+  - Audio download works
+  - History persists
+  - PWA manifest loads
+  - Dark/light theme works
+  </Step>
+  
+  <Step title="Check console">
+  Open DevTools and verify:
+  - No JavaScript errors
+  - No 404s for missing assets
+  - No CSP violations
+  </Step>
+  
+  <Step title="Test on mobile">
+  - Open preview URL on phone
+  - Test PWA installation
+  - Verify responsive design
+  - Test touch interactions
+  </Step>
+  
+  <Step title="Lighthouse audit">
+  Run Lighthouse in Chrome DevTools:
+  - Performance: 90+
+  - Accessibility: 90+
+  - Best Practices: 90+
+  - SEO: 90+
+  - PWA: Installable
+  </Step>
+</Steps>
+
+## Common Build Issues
+
+<Accordion title="Build fails with syntax errors">
+**Cause:** Using features not supported by target browsers.
+
+**Solution:**
+```javascript vite.config.js
+build: {
+  target: 'es2020',  // or newer
+}
+```
+
+Or add polyfills for older browsers.
+</Accordion>
+
+<Accordion title="Assets not found after build">
+**Cause:** Incorrect asset paths or base URL.
+
+**Solution:**
+```javascript vite.config.js
+base: '/',  // or '/subpath/' if hosting in subdirectory
+```
+
+Use root-relative paths:
+```javascript
+// Good
+<img src="/logo.png" />
+
+// Bad (won't work in subdirectory)
+<img src="logo.png" />
+```
+</Accordion>
+
+<Accordion title="Bundle size too large">
+**Causes:**
+- Large dependencies
+- Unused code not tree-shaken
+- Unoptimized images
+
+**Solutions:**
+1. Analyze bundle:
+```bash
+npm run build:analyze
+```
+
+2. Lazy load heavy components:
+```javascript
+const HeavyComponent = lazy(() => import('./HeavyComponent'))
+```
+
+3. Replace large dependencies with smaller alternatives
+
+4. Enable compression on server (gzip/brotli)
+</Accordion>
+
+<Accordion title="Out of memory during build">
+**Solution:**
+```bash
+export NODE_OPTIONS="--max-old-space-size=4096"
+npm run build
+```
+
+Or in `package.json`:
+```json
+"scripts": {
+  "build": "node --max-old-space-size=4096 ./node_modules/.bin/vite build"
+}
+```
+</Accordion>
+
+## Continuous Integration
+
+### GitHub Actions
+
+```yaml .github/workflows/build.yml
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Deployment" icon="rocket" href="/technical/deployment">
+    Deploy your build to production
+  </Card>
+  <Card title="PWA Setup" icon="mobile" href="/technical/pwa-setup">
+    Optimize PWA configuration
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+- [Vite Build Documentation](https://vitejs.dev/guide/build.html)
+- [Rollup Configuration](https://rollupjs.org/configuration-options/)
+- [esbuild Minification](https://esbuild.github.io/api/#minify)

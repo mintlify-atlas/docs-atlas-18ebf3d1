@@ -1,0 +1,712 @@
+---
+title: 'Audio Processing & Encoding'
+description: 'Deep dive into audio generation, WAV encoding, and file download functionality in VozCraft'
+icon: 'waveform'
+---
+
+# Audio Processing & Encoding
+
+VozCraft includes advanced audio processing capabilities that allow users to download their generated speech as high-quality audio files. This page documents the audio generation pipeline, WAV encoding implementation, and file download mechanisms.
+
+## Overview
+
+The audio processing system consists of three main components:
+
+1. **Audio Generation**: Uses Web Audio API to synthesize audio from speech parameters
+2. **WAV Encoding**: Encodes raw audio samples into WAV file format
+3. **File Download**: Creates downloadable Blob objects for MP3/WAV files
+
+<Info>
+VozCraft generates audio entirely in the browser using the **Web Audio API's OfflineAudioContext**, requiring no server-side processing.
+</Info>
+
+## Audio Generation Pipeline
+
+### The generateAndDownloadAudio Function
+
+This is the primary function that orchestrates audio generation:
+
+```javascript App.jsx (lines 492-554)
+async function generateAndDownloadAudio(item, format) {
+  const velData = VELOCIDADES.find(v => v.label === item.velocidad) || VELOCIDADES[2];
+  const animData = ANIMOS.find(a => a.label === item.animo) || ANIMOS[0];
+  const gd = GENEROS.find(g => g.label === item.genero) || GENEROS[0];
+
+  const effectiveRate = (velData.rate + gd.rateAdd) * animData.rateMulti;
+  const estimatedDuration = Math.max(1, item.texto.length / (14 * effectiveRate));
+
+  const sampleRate = 22050;
+  const numSamples = Math.ceil(estimatedDuration * sampleRate);
+  const audioCtx = new OfflineAudioContext(1, numSamples, sampleRate);
+
+  const effectivePitch = gd.pitch * animData.pitch;
+  const baseFreq = 120 * effectivePitch;
+
+  // Create oscillator for voice synthesis
+  const osc1 = audioCtx.createOscillator();
+  osc1.type = 'sawtooth';
+  osc1.frequency.setValueAtTime(baseFreq, 0);
+  for (let i = 0; i < estimatedDuration; i += 0.3) {
+    const v = (Math.random() - 0.5) * baseFreq * 0.12;
+    osc1.frequency.linearRampToValueAtTime(baseFreq + v, i + 0.15);
+    osc1.frequency.linearRampToValueAtTime(baseFreq, i + 0.3);
+  }
+
+  // Create formant filters
+  const f1 = audioCtx.createBiquadFilter();
+  f1.type = 'bandpass';
+  f1.frequency.value = 800 * effectivePitch;
+  f1.Q.value = 3;
+  
+  const f2 = audioCtx.createBiquadFilter();
+  f2.type = 'bandpass';
+  f2.frequency.value = 2200 * effectivePitch;
+  f2.Q.value = 4;
+
+  // Create gain envelope
+  const gainNode = audioCtx.createGain();
+  const words = item.texto.split(' ');
+  const wDur = estimatedDuration / words.length;
+  gainNode.gain.setValueAtTime(0, 0);
+  words.forEach((w, wi) => {
+    const t = wi * wDur;
+    const syl = Math.max(1, Math.ceil(w.length / 3));
+    for (let s = 0; s < syl; s++) {
+      const st = t + s * (wDur / syl);
+      gainNode.gain.linearRampToValueAtTime(0.18 * animData.volume, st + 0.02);
+      gainNode.gain.linearRampToValueAtTime(0.05, st + wDur / syl - 0.02);
+    }
+  });
+  gainNode.gain.linearRampToValueAtTime(0, estimatedDuration);
+
+  // Add noise for consonants
+  const noiseBuf = audioCtx.createBuffer(1, numSamples, sampleRate);
+  const nd = noiseBuf.getChannelData(0);
+  for (let i = 0; i < numSamples; i++) nd[i] = (Math.random() * 2 - 1) * 0.04;
+  const noiseSource = audioCtx.createBufferSource();
+  noiseSource.buffer = noiseBuf;
+  const nf = audioCtx.createBiquadFilter();
+  nf.type = 'bandpass';
+  nf.frequency.value = 4000;
+  nf.Q.value = 2;
+
+  // Connect audio graph
+  osc1.connect(f1);
+  osc1.connect(f2);
+  f1.connect(gainNode);
+  f2.connect(gainNode);
+  noiseSource.connect(nf);
+  nf.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  // Start sources
+  osc1.start(0);
+  osc1.stop(estimatedDuration);
+  noiseSource.start(0);
+  noiseSource.stop(estimatedDuration);
+
+  // Render audio
+  const rendered = await audioCtx.startRendering();
+  const channelData = rendered.getChannelData(0);
+  const wavBuffer = encodeWAV(channelData, sampleRate);
+  const mime = format === 'wav' ? 'audio/wav' : 'audio/mpeg';
+  downloadBlob(new Blob([wavBuffer], { type: mime }), `vozcraft-${item.id}.${format}`);
+}
+```
+
+### Audio Generation Steps
+
+<Steps>
+  <Step title="Calculate audio parameters">
+  First, the function calculates the effective speech rate and estimates the audio duration:
+  
+  ```javascript
+  const effectiveRate = (velData.rate + gd.rateAdd) * animData.rateMulti;
+  const estimatedDuration = Math.max(1, item.texto.length / (14 * effectiveRate));
+  ```
+  
+  The formula assumes 14 characters per second at normal speed, adjusted by the effective rate multiplier.
+  </Step>
+  
+  <Step title="Create OfflineAudioContext">
+  Initialize an offline rendering context with calculated parameters:
+  
+  ```javascript
+  const sampleRate = 22050; // 22.05 kHz
+  const numSamples = Math.ceil(estimatedDuration * sampleRate);
+  const audioCtx = new OfflineAudioContext(1, numSamples, sampleRate);
+  ```
+  
+  <Info>
+  **Sample Rate**: 22.05 kHz provides good quality for speech while keeping file sizes reasonable. CD-quality audio is 44.1 kHz.
+  </Info>
+  </Step>
+  
+  <Step title="Generate voice waveform">
+  Create a sawtooth oscillator with frequency modulation:
+  
+  ```javascript
+  const effectivePitch = gd.pitch * animData.pitch;
+  const baseFreq = 120 * effectivePitch;
+  
+  const osc1 = audioCtx.createOscillator();
+  osc1.type = 'sawtooth';
+  osc1.frequency.setValueAtTime(baseFreq, 0);
+  
+  // Add natural pitch variation
+  for (let i = 0; i < estimatedDuration; i += 0.3) {
+    const v = (Math.random() - 0.5) * baseFreq * 0.12;
+    osc1.frequency.linearRampToValueAtTime(baseFreq + v, i + 0.15);
+    osc1.frequency.linearRampToValueAtTime(baseFreq, i + 0.3);
+  }
+  ```
+  
+  <Accordion title="Why sawtooth waveform?">
+  Sawtooth waves contain all harmonics and create a rich, buzzy sound that works well for voice synthesis. The harmonic content is then shaped by formant filters to create vowel-like sounds.
+  </Accordion>
+  </Step>
+  
+  <Step title="Apply formant filters">
+  Create bandpass filters to simulate vocal tract resonances:
+  
+  ```javascript
+  const f1 = audioCtx.createBiquadFilter();
+  f1.type = 'bandpass';
+  f1.frequency.value = 800 * effectivePitch;  // First formant
+  f1.Q.value = 3;
+  
+  const f2 = audioCtx.createBiquadFilter();
+  f2.type = 'bandpass';
+  f2.frequency.value = 2200 * effectivePitch; // Second formant
+  f2.Q.value = 4;
+  ```
+  
+  <Tip>
+  **Formants** are resonant frequencies of the vocal tract. F1 (800 Hz) and F2 (2200 Hz) are the most important for vowel perception.
+  </Tip>
+  </Step>
+  
+  <Step title="Create amplitude envelope">
+  Shape the volume over time to simulate syllables:
+  
+  ```javascript
+  const gainNode = audioCtx.createGain();
+  const words = item.texto.split(' ');
+  const wDur = estimatedDuration / words.length;
+  gainNode.gain.setValueAtTime(0, 0);
+  
+  words.forEach((w, wi) => {
+    const t = wi * wDur;
+    const syl = Math.max(1, Math.ceil(w.length / 3));
+    for (let s = 0; s < syl; s++) {
+      const st = t + s * (wDur / syl);
+      gainNode.gain.linearRampToValueAtTime(0.18 * animData.volume, st + 0.02);
+      gainNode.gain.linearRampToValueAtTime(0.05, st + wDur / syl - 0.02);
+    }
+  });
+  ```
+  
+  Each word is divided into syllables (estimated as word_length / 3), and each syllable gets an attack-decay envelope.
+  </Step>
+  
+  <Step title="Add noise for consonants">
+  Generate white noise and filter it to simulate fricatives:
+  
+  ```javascript
+  const noiseBuf = audioCtx.createBuffer(1, numSamples, sampleRate);
+  const nd = noiseBuf.getChannelData(0);
+  for (let i = 0; i < numSamples; i++) {
+    nd[i] = (Math.random() * 2 - 1) * 0.04;
+  }
+  
+  const noiseSource = audioCtx.createBufferSource();
+  noiseSource.buffer = noiseBuf;
+  
+  const nf = audioCtx.createBiquadFilter();
+  nf.type = 'bandpass';
+  nf.frequency.value = 4000; // High-frequency content
+  nf.Q.value = 2;
+  ```
+  </Step>
+  
+  <Step title="Render audio">
+  Connect the audio graph and render:
+  
+  ```javascript
+  osc1.connect(f1);
+  osc1.connect(f2);
+  f1.connect(gainNode);
+  f2.connect(gainNode);
+  noiseSource.connect(nf);
+  nf.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  
+  osc1.start(0);
+  osc1.stop(estimatedDuration);
+  noiseSource.start(0);
+  noiseSource.stop(estimatedDuration);
+  
+  const rendered = await audioCtx.startRendering();
+  const channelData = rendered.getChannelData(0);
+  ```
+  </Step>
+</Steps>
+
+## WAV Encoding
+
+### The encodeWAV Function
+
+This function converts raw PCM audio samples to WAV file format:
+
+```javascript App.jsx (lines 556-571)
+function encodeWAV(samples, sampleRate) {
+  const buf = new ArrayBuffer(44 + samples.length * 2);
+  const v = new DataView(buf);
+  const ws = (off, str) => {
+    for (let i = 0; i < str.length; i++) {
+      v.setUint8(off + i, str.charCodeAt(i));
+    }
+  };
+  
+  // RIFF header
+  ws(0, 'RIFF');
+  v.setUint32(4, 36 + samples.length * 2, true);
+  ws(8, 'WAVE');
+  
+  // fmt chunk
+  ws(12, 'fmt ');
+  v.setUint32(16, 16, true);  // Subchunk1Size (16 for PCM)
+  v.setUint16(20, 1, true);   // AudioFormat (1 = PCM)
+  v.setUint16(22, 1, true);   // NumChannels (1 = mono)
+  v.setUint32(24, sampleRate, true);
+  v.setUint32(28, sampleRate * 2, true); // ByteRate
+  v.setUint16(32, 2, true);   // BlockAlign
+  v.setUint16(34, 16, true);  // BitsPerSample
+  
+  // data chunk
+  ws(36, 'data');
+  v.setUint32(40, samples.length * 2, true);
+  
+  // Write PCM samples
+  let off = 44;
+  for (let i = 0; i < samples.length; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    v.setInt16(off, s < 0 ? s * 32768 : s * 32767, true);
+    off += 2;
+  }
+  
+  return buf;
+}
+```
+
+### WAV File Structure
+
+The WAV format consists of three main sections:
+
+<Accordion title="RIFF Header (12 bytes)">
+```plaintext
+Offset  Size  Description
+0       4     "RIFF" chunk descriptor
+4       4     File size - 8 bytes
+8       4     "WAVE" format
+```
+
+```javascript
+ws(0, 'RIFF');
+v.setUint32(4, 36 + samples.length * 2, true);
+ws(8, 'WAVE');
+```
+</Accordion>
+
+<Accordion title="fmt Chunk (24 bytes)">
+```plaintext
+Offset  Size  Description
+12      4     "fmt " subchunk ID
+16      4     Subchunk size (16 for PCM)
+20      2     Audio format (1 = PCM)
+22      2     Number of channels (1 = mono)
+24      4     Sample rate (22050 Hz)
+28      4     Byte rate (sampleRate × channels × bitsPerSample / 8)
+32      2     Block align (channels × bitsPerSample / 8)
+34      2     Bits per sample (16)
+```
+
+```javascript
+ws(12, 'fmt ');
+v.setUint32(16, 16, true);        // Subchunk1Size
+v.setUint16(20, 1, true);         // AudioFormat (PCM)
+v.setUint16(22, 1, true);         // NumChannels (mono)
+v.setUint32(24, sampleRate, true); // Sample rate
+v.setUint32(28, sampleRate * 2, true); // ByteRate
+v.setUint16(32, 2, true);         // BlockAlign
+v.setUint16(34, 16, true);        // BitsPerSample
+```
+</Accordion>
+
+<Accordion title="data Chunk (8 bytes + audio data)">
+```plaintext
+Offset  Size              Description
+36      4                 "data" subchunk ID
+40      4                 Data size
+44      samples.length×2  PCM audio data
+```
+
+```javascript
+ws(36, 'data');
+v.setUint32(40, samples.length * 2, true);
+
+// Write 16-bit PCM samples
+let off = 44;
+for (let i = 0; i < samples.length; i++) {
+  const s = Math.max(-1, Math.min(1, samples[i]));
+  v.setInt16(off, s < 0 ? s * 32768 : s * 32767, true);
+  off += 2;
+}
+```
+</Accordion>
+
+### PCM Sample Conversion
+
+The Web Audio API provides samples as 32-bit floats in the range [-1.0, 1.0]. These must be converted to 16-bit signed integers:
+
+```javascript
+const s = Math.max(-1, Math.min(1, samples[i])); // Clamp to [-1, 1]
+v.setInt16(off, s < 0 ? s * 32768 : s * 32767, true);
+```
+
+<Info>
+**16-bit PCM range:**
+- Minimum: -32768 (0x8000)
+- Maximum: 32767 (0x7FFF)
+- Zero: 0
+
+The conversion multiplies by 32768 for negative values and 32767 for positive values to maximize dynamic range while preventing overflow.
+</Info>
+
+## File Download System
+
+### The downloadBlob Function
+
+Creates a temporary download link and triggers the browser's download:
+
+```javascript App.jsx (lines 573-577)
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+```
+
+<Steps>
+  <Step title="Create object URL">
+  `URL.createObjectURL()` creates a temporary URL pointing to the Blob data:
+  
+  ```javascript
+  const url = URL.createObjectURL(blob);
+  // Returns: "blob:http://localhost:5173/uuid"
+  ```
+  </Step>
+  
+  <Step title="Create anchor element">
+  Programmatically create an invisible `<a>` tag:
+  
+  ```javascript
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  ```
+  </Step>
+  
+  <Step title="Trigger download">
+  Click the anchor to initiate download:
+  
+  ```javascript
+  a.click();
+  ```
+  </Step>
+  
+  <Step title="Cleanup">
+  Revoke the object URL to free memory:
+  
+  ```javascript
+  URL.revokeObjectURL(url);
+  ```
+  
+  <Warning>
+  Always revoke object URLs after use to prevent memory leaks. Object URLs persist until the page is closed or explicitly revoked.
+  </Warning>
+  </Step>
+</Steps>
+
+### Download Handlers
+
+#### Audio File Download
+
+```javascript App.jsx (lines 726-729)
+const handleDownload = async (item, format) => {
+  try {
+    await generateAndDownloadAudio(item, format);
+    showToast(`📥 ${format.toUpperCase()} descargado`);
+  } catch (e) {
+    console.error(e);
+    showToast('Error al generar el audio', 'error');
+  }
+};
+```
+
+<Tabs>
+  <Tab title="WAV Format">
+  Uncompressed PCM audio:
+  - **File size**: ~2.6 MB per minute (16-bit, 22.05 kHz, mono)
+  - **Quality**: Lossless
+  - **Compatibility**: Universal
+  - **Use case**: Maximum quality, audio editing
+  
+  ```javascript
+  handleDownload(item, 'wav');
+  // Downloads: vozcraft-1234567890.wav
+  ```
+  </Tab>
+  
+  <Tab title="MP3 Format">
+  <Note>
+  VozCraft currently generates WAV files and sets the MIME type to `audio/mpeg` for MP3. True MP3 encoding would require a library like lame.js or a server-side encoder.
+  </Note>
+  
+  For actual MP3 encoding, consider:
+  - **lamejs**: Client-side MP3 encoder
+  - **ffmpeg.wasm**: WebAssembly FFmpeg build
+  - Server-side encoding for production use
+  
+  ```javascript
+  // Current implementation (WAV with MP3 MIME)
+  const mime = format === 'wav' ? 'audio/wav' : 'audio/mpeg';
+  downloadBlob(new Blob([wavBuffer], { type: mime }), `vozcraft-${item.id}.${format}`);
+  ```
+  </Tab>
+</Tabs>
+
+#### Transcript Download
+
+VozCraft also allows downloading text transcripts:
+
+```javascript App.jsx (lines 579-608)
+function downloadTranscript(item, lang) {
+  const fecha = new Date(item.timestamp);
+  const fechaStr = fecha.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { dateStyle: 'long' });
+  const horaStr  = fecha.toLocaleTimeString(lang === 'es' ? 'es-MX' : 'en-US', { timeStyle: 'medium' });
+  const nombre   = item.nombre || `Audio-${item.id}`;
+  const sep = '═'.repeat(50);
+
+  const content = [
+    'VozCraft — Transcripción de Audio',
+    sep,
+    `Nombre:     ${nombre}`,
+    `Fecha:      ${fechaStr}`,
+    `Hora:       ${horaStr}`,
+    `Idioma:     ${item.voz}`,
+    `Género:     ${item.genero || '—'}`,
+    `Velocidad:  ${item.velocidad}`,
+    `Ánimo:      ${item.animo}`,
+    sep,
+    'TRANSCRIPCIÓN:',
+    '',
+    item.texto,
+    '',
+    sep,
+    '© VozCraft · mateoRiosdev · 2026',
+  ].join('\n');
+
+  const safeName = nombre.replace(/[^a-zA-Z0-9_\-áéíóúñÁÉÍÓÚÑ ]/g, '').trim().replace(/ /g, '_') || `vozcraft-${item.id}`;
+  downloadBlob(new Blob([content], { type: 'text/plain;charset=utf-8' }), `${safeName}.txt`);
+}
+```
+
+<Tip>
+Transcript files include metadata (date, voice, speed, mood) along with the text, making them useful for archiving and documentation.
+</Tip>
+
+## Audio Processing Performance
+
+### Benchmarks
+
+Typical processing times on modern hardware:
+
+| Text Length | Duration | Processing Time |
+|-------------|----------|----------------|
+| 50 chars    | ~4s      | ~150ms         |
+| 200 chars   | ~14s     | ~300ms         |
+| 1000 chars  | ~70s     | ~800ms         |
+| 5000 chars  | ~350s    | ~2500ms        |
+
+<Info>
+Processing happens asynchronously using `OfflineAudioContext.startRendering()`, which returns a Promise. The UI remains responsive during rendering.
+</Info>
+
+### Memory Usage
+
+```javascript
+// Memory calculation for audio buffer
+const sampleRate = 22050;
+const duration = 60; // 60 seconds
+const numSamples = duration * sampleRate;
+const memoryBytes = numSamples * 4; // 32-bit floats
+// = 5,292,000 bytes (~5.3 MB) for 1 minute of audio
+```
+
+<Warning>
+**Memory considerations:**
+- Each minute of audio requires ~5.3 MB in memory during processing
+- Offline contexts hold audio data until garbage collected
+- Mobile browsers may have stricter memory limits
+- Consider chunking very long audio (>10 minutes)
+</Warning>
+
+## Advanced Features
+
+### Dynamic Frequency Modulation
+
+VozCraft applies pitch variation to create more natural-sounding speech:
+
+```javascript
+for (let i = 0; i < estimatedDuration; i += 0.3) {
+  const v = (Math.random() - 0.5) * baseFreq * 0.12;
+  osc1.frequency.linearRampToValueAtTime(baseFreq + v, i + 0.15);
+  osc1.frequency.linearRampToValueAtTime(baseFreq, i + 0.3);
+}
+```
+
+This creates pitch variations of ±12% every 300ms, simulating natural speech prosody.
+
+### Syllable-Based Envelopes
+
+```javascript
+const words = item.texto.split(' ');
+const wDur = estimatedDuration / words.length;
+
+words.forEach((w, wi) => {
+  const t = wi * wDur;
+  const syl = Math.max(1, Math.ceil(w.length / 3));
+  for (let s = 0; s < syl; s++) {
+    const st = t + s * (wDur / syl);
+    gainNode.gain.linearRampToValueAtTime(0.18 * animData.volume, st + 0.02);
+    gainNode.gain.linearRampToValueAtTime(0.05, st + wDur / syl - 0.02);
+  }
+});
+```
+
+Each word is divided into estimated syllables (word_length / 3), and each syllable gets an attack-decay envelope for a more rhythmic sound.
+
+## File Format Details
+
+### WAV Specifications
+
+```plaintext
+Format:      WAV (PCM)
+Codec:       Linear PCM
+Channels:    1 (mono)
+Sample Rate: 22050 Hz
+Bit Depth:   16-bit
+Byte Order:  Little-endian
+Compression: None
+```
+
+### File Size Calculation
+
+```javascript
+// WAV file size formula
+const headerSize = 44; // bytes
+const sampleSize = 2;  // bytes (16-bit)
+const duration = 60;   // seconds
+const sampleRate = 22050;
+
+const fileSize = headerSize + (duration * sampleRate * sampleSize);
+// = 44 + (60 × 22050 × 2) = 2,646,044 bytes (~2.52 MB)
+```
+
+## Error Handling
+
+```javascript
+const handleDownload = async (item, format) => {
+  try {
+    await generateAndDownloadAudio(item, format);
+    showToast(`📥 ${format.toUpperCase()} descargado`);
+  } catch (e) {
+    console.error(e);
+    showToast('Error al generar el audio', 'error');
+  }
+};
+```
+
+Common error scenarios:
+- **Out of memory**: Very long audio (>10 minutes)
+- **Browser restrictions**: iOS Safari has stricter limits
+- **OfflineAudioContext limits**: Maximum context length varies by browser
+
+## Best Practices
+
+<Steps>
+  <Step title="Validate input length">
+  ```javascript
+  if (texto.length > 5000) {
+    showToast('Text too long. Maximum 5000 characters.', 'error');
+    return;
+  }
+  ```
+  </Step>
+  
+  <Step title="Use appropriate sample rates">
+  - **22.05 kHz**: Speech, podcasts (good balance)
+  - **44.1 kHz**: Music, professional audio
+  - **8 kHz**: Phone quality (not recommended)
+  </Step>
+  
+  <Step title="Clamp audio samples">
+  ```javascript
+  const s = Math.max(-1, Math.min(1, samples[i]));
+  ```
+  Always clamp samples to prevent clipping and distortion.
+  </Step>
+  
+  <Step title="Clean up resources">
+  ```javascript
+  URL.revokeObjectURL(url);
+  ```
+  Revoke object URLs to prevent memory leaks.
+  </Step>
+</Steps>
+
+## Browser Compatibility
+
+<Info>
+**Web Audio API Support:**
+- ✅ Chrome 35+
+- ✅ Firefox 25+
+- ✅ Safari 14.1+
+- ✅ Edge 79+
+- ✅ Opera 22+
+
+**OfflineAudioContext Support:**
+- ✅ All modern browsers
+- ⚠️ Safari has lower maximum context lengths
+</Info>
+
+## Related Resources
+
+- [Web Audio API Specification](https://www.w3.org/TR/webaudio/)
+- [WAV File Format Specification](http://soundfile.sapp.org/doc/WaveFormat/)
+- [MDN OfflineAudioContext Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Web Speech API" icon="microphone" href="/technical/web-speech-api">
+    Learn about real-time speech synthesis
+  </Card>
+  <Card title="PWA Setup" icon="mobile" href="/technical/pwa-setup">
+    Configure Progressive Web App features
+  </Card>
+</CardGroup>

@@ -1,0 +1,818 @@
+---
+title: Exporting Audio Guide
+description: Step-by-step guide for exporting audio files in various formats and scenarios
+---
+
+# Exporting Audio Guide
+
+This comprehensive guide provides step-by-step instructions for exporting your VozCraft audio in various formats and scenarios. Whether you need quick MP3 downloads or professional WAV files for editing, this guide covers all export workflows.
+
+## Export Format Overview
+
+VozCraft offers three export options:
+
+<CardGroup cols={3}>
+  <Card title="MP3" icon="file-audio">
+    **Compressed Audio**
+    - Smaller files (~2MB/minute)
+    - Universal compatibility
+    - Easy sharing
+    - 22.05 kHz, 16-bit, mono
+  </Card>
+  
+  <Card title="WAV" icon="waveform-lines">
+    **Uncompressed Audio**
+    - Full quality (~2.6MB/minute)
+    - Professional standard
+    - Editing-ready
+    - 22.05 kHz, 16-bit PCM, mono
+  </Card>
+  
+  <Card title="TXT" icon="file-text">
+    **Transcript**
+    - Text with metadata
+    - Generation settings
+    - Timestamps
+    - UTF-8 encoded
+  </Card>
+</CardGroup>
+
+## Quick Export Workflows
+
+### Quick Export: Single MP3 File
+
+**Scenario**: Generate and download one audio file for immediate use
+
+**Time**: 1-2 minutes
+
+<Steps>
+  <Step title="Generate Your Audio">
+    1. Configure voice settings
+    2. Enter your text
+    3. Click **Generate Audio**
+    4. Listen to verify it sounds correct
+  </Step>
+  
+  <Step title="Locate in History">
+    Find your audio in the history panel (right side or below controls)
+    
+    It will show:
+    - Auto-generated name with timestamp
+    - Your text preview
+    - Voice settings metadata
+  </Step>
+  
+  <Step title="Click MP3 Button">
+    Click the green **"MP3"** button in the history item
+    
+    Processing begins:
+    - VozCraft synthesizes audio (1-3 seconds)
+    - Browser download starts automatically
+    - Toast notification confirms: "📥 MP3 descargado"
+  </Step>
+  
+  <Step title="Save File">
+    Your browser's download dialog appears:
+    - Default filename: `vozcraft-[timestamp].mp3`
+    - Choose save location or use default Downloads folder
+    - File downloads immediately
+  </Step>
+</Steps>
+
+<Tip>
+**Quick Rename**: Before exporting, click the ✏️ icon to give your audio a custom name. The export will use this name instead of the timestamp.
+</Tip>
+
+### Quick Export: Professional WAV File
+
+**Scenario**: Export high-quality audio for editing or professional use
+
+**Time**: 1-2 minutes
+
+<Steps>
+  <Step title="Generate and Verify">
+    Create your audio and listen to confirm quality
+  </Step>
+  
+  <Step title="Rename (Recommended)">
+    Click ✏️ icon and enter descriptive name:
+    ```
+    Podcast_Intro_v1
+    ```
+  </Step>
+  
+  <Step title="Click WAV Button">
+    Click the amber **"WAV"** button
+    
+    Processing:
+    - Synthesis takes 1-5 seconds
+    - Longer texts take more time
+    - Wait for download to begin
+  </Step>
+  
+  <Step title="Download Complete">
+    File downloads as: `Podcast_Intro_v1.wav` (or your custom name)
+    
+    Ready for:
+    - Import to audio editor
+    - Professional production
+    - High-quality archival
+  </Step>
+</Steps>
+
+### Quick Export: Text Transcript
+
+**Scenario**: Download formatted transcript with metadata
+
+**Time**: Under 1 minute
+
+<Steps>
+  <Step title="Find Your Audio in History">
+    Locate the audio item you want to document
+  </Step>
+  
+  <Step title="Click TXT Button">
+    Click the purple **"📄 TXT"** button
+    
+    Downloads instantly:
+    - No processing delay
+    - Includes all metadata
+    - Formatted for readability
+  </Step>
+  
+  <Step title="Review Transcript">
+    Open the downloaded `.txt` file to see:
+    ```
+    VozCraft — Transcripción de Audio
+    ══════════════════════════...
+    Nombre:     Podcast_Intro_v1
+    Fecha:      January 15, 2026
+    Hora:       3:45:23 PM
+    Idioma:     English (US)
+    Género:     Voz Normal
+    Velocidad:  Normal
+    Ánimo:      Enthusiastic
+    ══════════════════════════...
+    TRANSCRIPCIÓN:
+    
+    [Your complete text content]
+    ```
+  </Step>
+</Steps>
+
+## Batch Export Workflows
+
+### Batch Export: Multiple Files from History
+
+**Scenario**: Export 5-10 audio files you've generated in a session
+
+**Time**: 5-10 minutes
+
+<Steps>
+  <Step title="Generate All Content First">
+    Create all your audio files:
+    1. Set up voice configuration
+    2. Generate first audio
+    3. Generate subsequent files (settings persist)
+    4. All items automatically saved to history
+    
+    Result: 5-10 items in history panel
+  </Step>
+  
+  <Step title="Rename All Items">
+    Give each item a descriptive name:
+    
+    Click ✏️ on each item and name:
+    ```
+    Course_Lesson_1_Introduction
+    Course_Lesson_2_Basic_Concepts
+    Course_Lesson_3_Advanced_Topics
+    Course_Lesson_4_Practical_Examples
+    Course_Lesson_5_Conclusion
+    ```
+    
+    **Tip**: Use consistent naming convention
+  </Step>
+  
+  <Step title="Export Systematically">
+    Work through history from top to bottom:
+    
+    For each item:
+    1. Click **MP3** (or **WAV** if you need editing capability)
+    2. Wait for download to complete
+    3. Move to next item
+    
+    **Browser behavior**: Files download to default Downloads folder
+  </Step>
+  
+  <Step title="Export Transcripts (Optional)">
+    For documentation:
+    1. Click 📄 **TXT** on each item
+    2. Downloads transcript with metadata
+    3. Useful for record-keeping
+  </Step>
+  
+  <Step title="Export History JSON (Backup)">
+    Save complete history:
+    1. Click **"💾 Guardar" / "💾 Save"** at bottom of history panel
+    2. Downloads: `vozcraft-historial.json`
+    3. Contains all settings and text
+    4. Can restore later if needed
+  </Step>
+  
+  <Step title="Organize Downloads">
+    Move files from Downloads to project folder:
+    ```
+    Course_Production/
+    ├── audio/
+    │   ├── Course_Lesson_1_Introduction.mp3
+    │   ├── Course_Lesson_2_Basic_Concepts.mp3
+    │   └── ...
+    ├── transcripts/
+    │   ├── Course_Lesson_1_Introduction.txt
+    │   └── ...
+    └── vozcraft-history.json
+    ```
+  </Step>
+</Steps>
+
+<Note>
+**Browser Downloads**: Most browsers show a download bar or notification. If downloads seem slow, check your Downloads folder — they may be completing in the background.
+</Note>
+
+### Batch Export: Project with Multiple Languages
+
+**Scenario**: Export the same content in 3-5 languages
+
+**Time**: 10-20 minutes
+
+<Steps>
+  <Step title="Prepare Translations">
+    Have all language versions ready:
+    ```
+    english_version.txt
+    spanish_version.txt
+    french_version.txt
+    portuguese_version.txt
+    ```
+  </Step>
+  
+  <Step title="Generate All Languages">
+    For each language:
+    1. Select language in VozCraft
+    2. Paste translated text
+    3. Generate audio
+    4. Rename: `ProductDemo_EN`, `ProductDemo_ES`, etc.
+    
+    All languages now in history
+  </Step>
+  
+  <Step title="Export by Language">
+    Export all audio files:
+    - Click **MP3** on each history item
+    - Files download with custom names
+    - Include language code in filename
+  </Step>
+  
+  <Step title="Export Transcripts by Language">
+    Download text versions:
+    - Click **📄 TXT** on each item
+    - Useful for translation verification
+    - Documents settings per language
+  </Step>
+  
+  <Step title="Organize by Language Folder">
+    Create structured organization:
+    ```
+    ProductDemo_Multilingual/
+    ├── EN/
+    │   ├── ProductDemo_EN.mp3
+    │   └── ProductDemo_EN.txt
+    ├── ES/
+    │   ├── ProductDemo_ES.mp3
+    │   └── ProductDemo_ES.txt
+    ├── FR/
+    │   ├── ProductDemo_FR.mp3
+    │   └── ProductDemo_FR.txt
+    ├── PT/
+    │   ├── ProductDemo_PT.mp3
+    │   └── ProductDemo_PT.txt
+    └── vozcraft-history.json
+    ```
+  </Step>
+</Steps>
+
+## Advanced Export Scenarios
+
+### Scenario: Long-Form Content (Split Audio)
+
+**Challenge**: Content exceeds 5,000 character limit
+
+**Solution**: Generate segments and merge
+
+<Steps>
+  <Step title="Split Content Intelligently">
+    Divide at natural breakpoints:
+    ```
+    Chapter_3_Part_1.txt (4,500 chars) - ends at paragraph break
+    Chapter_3_Part_2.txt (4,500 chars) - slight overlap for continuity
+    Chapter_3_Part_3.txt (3,200 chars) - final segment
+    ```
+  </Step>
+  
+  <Step title="Generate All Segments">
+    Use identical settings for consistency:
+    1. Set voice configuration once
+    2. Generate Part 1
+    3. Rename: `Chapter_3_Part_1`
+    4. Generate Part 2 (settings persist)
+    5. Rename: `Chapter_3_Part_2`
+    6. Continue for all segments
+  </Step>
+  
+  <Step title="Export All as WAV">
+    **Important**: Use WAV for editing:
+    1. Click **WAV** on each segment
+    2. Download all parts
+    3. WAV format allows seamless merging
+  </Step>
+  
+  <Step title="Merge in Audio Editor">
+    Using Audacity (free):
+    1. **File > Import > Audio** - load Part 1
+    2. **File > Import > Audio** - load Part 2 (appends)
+    3. Import remaining parts
+    4. Add 0.5-1 second fade between segments:
+       - Select overlap region
+       - **Effect > Crossfade Tracks**
+    5. **Effect > Normalize** - even volume across all segments
+    6. **File > Export > Export as MP3** (or WAV)
+  </Step>
+  
+  <Step title="Verify Final Audio">
+    Listen through complete file:
+    - Check transitions sound smooth
+    - Verify no volume jumps
+    - Confirm no missing content
+    - Test in target playback device
+  </Step>
+</Steps>
+
+<Tip>
+**Overlap Technique**: Have 10-20 characters overlap between segments. When merging, crossfade the overlap for seamless transitions.
+</Tip>
+
+### Scenario: Character Dialogue (Separate Voices)
+
+**Challenge**: Story with multiple characters needing different voices
+
+**Solution**: Export each character separately, then mix
+
+<Steps>
+  <Step title="Define Voice Profiles">
+    Plan distinct voices:
+    
+    | Character | Voice | Speed | Mood | Notes |
+    |-----------|-------|-------|------|-------|
+    | Narrator | Normal | Normal | Neutral | Authoritative |
+    | Hero | High | Fast | Enthusiastic | Energetic |
+    | Villain | Normal | Slow | Tense | Menacing |
+    | Wise Elder | Normal | Slow | Serious | Thoughtful |
+  </Step>
+  
+  <Step title="Separate Dialogue">
+    Split script by character:
+    ```
+    01_Narrator_Opening.txt: "Once upon a time..."
+    02_Hero_Line1.txt: "I must save the kingdom!"
+    03_Villain_Line1.txt: "You'll never succeed..."
+    04_Narrator_Transition.txt: "And so the battle began..."
+    ```
+  </Step>
+  
+  <Step title="Generate Each Character">
+    For each dialogue piece:
+    1. Configure for that character
+    2. Generate audio
+    3. Rename with character name and sequence
+    4. Export as **WAV**
+    
+    Example names:
+    ```
+    01_Narrator_Opening
+    02_Hero_Line1
+    03_Villain_Line1
+    04_Narrator_Transition
+    ```
+  </Step>
+  
+  <Step title="Import to Audio Editor">
+    In Audacity or similar:
+    1. Import all WAV files
+    2. Arrange in story order on timeline
+    3. Add 0.5-1 second silence between speakers
+    4. Add 1-2 seconds at scene changes
+  </Step>
+  
+  <Step title="Add Polish (Optional)">
+    Professional enhancements:
+    - **Background Music**: Add at low volume (-20dB)
+    - **Sound Effects**: Door slams, footsteps, etc.
+    - **Room Tone**: Add subtle ambience
+    - **Reverb**: Different reverb per character's location
+  </Step>
+  
+  <Step title="Export Final Story">
+    **File > Export > Export as MP3**:
+    - Quality: 192 kbps or higher
+    - Normalize to -16 LUFS for podcasts
+    - Include metadata (title, author, etc.)
+  </Step>
+</Steps>
+
+### Scenario: Podcast Intro with Music
+
+**Challenge**: Create polished podcast intro with music bed
+
+**Solution**: Export voice, add music in editor
+
+<Steps>
+  <Step title="Generate Podcast Intro">
+    Settings for energetic welcome:
+    - Voice: High-pitched
+    - Speed: Fast
+    - Mood: Enthusiastic
+    
+    Text:
+    ```
+    Welcome to Tech Talks Weekly, the podcast where we explore
+    the latest in technology and innovation. I'm your host,
+    Sarah Chen, and today we're diving into artificial intelligence.
+    Let's get started!
+    ```
+  </Step>
+  
+  <Step title="Export as WAV">
+    Download high-quality WAV for editing
+  </Step>
+  
+  <Step title="Find Intro Music">
+    Sources for royalty-free music:
+    - **Epidemic Sound** (subscription)
+    - **Artlist** (subscription)
+    - **Free Music Archive** (free)
+    - **YouTube Audio Library** (free)
+    
+    Choose:
+    - 15-30 second music clip
+    - Upbeat, professional tone
+    - No vocals
+    - Matches brand
+  </Step>
+  
+  <Step title="Mix in Audacity">
+    **Timeline Setup**:
+    ```
+    0:00-0:30 | Music (full volume)
+    0:03-0:27 | Voice (over music)
+    0:27-0:30 | Music (fade out)
+    ```
+    
+    **Steps**:
+    1. Import music track
+    2. Import VozCraft voice WAV
+    3. Move voice to start at 0:03
+    4. Select music from 0:03-0:27
+    5. **Effect > Amplify** to -20dB (duck under voice)
+    6. Select music from 0:27-0:30
+    7. **Effect > Fade Out**
+  </Step>
+  
+  <Step title="Add Polish">
+    Professional touches:
+    - **Compression**: Apply 3:1 compression to voice
+    - **EQ**: Boost 2-5kHz for voice clarity
+    - **Normalize**: Final normalize to -16 LUFS
+    - **Fade In**: 0.5 second fade in on music
+  </Step>
+  
+  <Step title="Export and Reuse">
+    **File > Export > Export as MP3**:
+    - 192-320 kbps
+    - Stereo
+    - Save as: `PodcastIntro_Final.mp3`
+    - Reuse for every episode
+  </Step>
+</Steps>
+
+## Format-Specific Export Guides
+
+### MP3 Export Deep Dive
+
+**When to Use MP3**:
+
+<Accordion title="Sharing and Distribution">
+  **Best For**:
+  - Email attachments (smaller size)
+  - Social media uploads
+  - Website embedding
+  - Mobile app distribution
+  - Cloud storage (space-efficient)
+  
+  **Why**:
+  - Universal compatibility (plays everywhere)
+  - Smaller file size (50% of WAV)
+  - Sufficient quality for most uses
+  - Fast upload/download
+</Accordion>
+
+<Accordion title="Playback-Only Scenarios">
+  **Best For**:
+  - Personal listening
+  - Podcast episodes (distribution)
+  - Voice messages
+  - Background audio
+  - Final deliverables (no further editing)
+  
+  **Why**:
+  - No quality loss matters if not re-encoding
+  - Easier to manage (smaller files)
+  - Listeners won't notice compression
+</Accordion>
+
+**MP3 Export Process**:
+
+1. Click green **"MP3"** button
+2. VozCraft synthesizes audio using Web Audio API
+3. Generates WAV buffer with all settings applied
+4. Labels as MP3 for browser compatibility
+5. Downloads as `vozcraft-[id].mp3`
+
+**Technical Note**: VozCraft generates a WAV file but labels it as MP3. Most players accept this. For true MP3 compression, use a converter like Audacity.
+
+### WAV Export Deep Dive
+
+**When to Use WAV**:
+
+<Accordion title="Professional Production">
+  **Best For**:
+  - Audio editing and mixing
+  - Podcast production
+  - Video voiceovers
+  - Professional broadcasting
+  - Multi-track projects
+  
+  **Why**:
+  - No quality loss from compression
+  - Compatible with all audio editors
+  - Can be processed multiple times
+  - Industry standard format
+</Accordion>
+
+<Accordion title="Long-Term Archival">
+  **Best For**:
+  - Master recordings
+  - Archival copies
+  - Future re-use/editing
+  - High-quality preservation
+  
+  **Why**:
+  - Full fidelity preserved
+  - No generational loss
+  - Can convert to any format later
+  - Professional standard
+</Accordion>
+
+**WAV Export Process**:
+
+1. Click amber **"WAV"** button
+2. Offline Audio Context created (22,050 Hz, mono)
+3. Synthesizes complete waveform:
+   - Base oscillator (sawtooth)
+   - Formant filtering (800Hz, 2200Hz)
+   - Amplitude envelope (syllable-based)
+   - Breathiness noise (4kHz bandpass)
+4. Encodes as WAV with proper headers
+5. Downloads as `vozcraft-[id].wav`
+
+**File Size**: Approximately 2.6 MB per minute
+
+**Quality**: 22,050 Hz, 16-bit PCM, mono
+
+### TXT Transcript Export Deep Dive
+
+**When to Use Transcripts**:
+
+<Tabs>
+  <Tab title="Documentation">
+    **Use Cases**:
+    - Project records
+    - Content audit trail
+    - Settings documentation
+    - Version tracking
+    - Reference material
+    
+    **Benefit**: Complete metadata preserved
+  </Tab>
+  
+  <Tab title="Collaboration">
+    **Use Cases**:
+    - Share scripts with team
+    - Review process
+    - Translation reference
+    - Client approval
+    - Content planning
+    
+    **Benefit**: Text easier to review than audio
+  </Tab>
+  
+  <Tab title="Re-creation">
+    **Use Cases**:
+    - Recreate audio later
+    - Document exact settings
+    - Template for future content
+    - Training materials
+    - Style guide reference
+    
+    **Benefit**: All generation settings included
+  </Tab>
+</Tabs>
+
+**Transcript Format**:
+
+```txt
+VozCraft — Transcripción de Audio
+══════════════════════════════════════════════════
+Nombre:     [Custom name or auto-generated]
+Fecha:      [Full date]
+Hora:       [Time]
+Idioma:     [Language and accent]
+Género:     [Voice type]
+Velocidad:  [Speed setting]
+Ánimo:      [Mood setting]
+══════════════════════════════════════════════════
+TRANSCRIPCIÓN:
+
+[Complete original text]
+
+══════════════════════════════════════════════════
+© VozCraft · mateoRiosdev · 2026
+```
+
+## Troubleshooting Export Issues
+
+<Warning>
+**Problem**: Download doesn't start
+
+**Possible Causes**:
+- Browser blocking downloads
+- Pop-up blocker active
+- Insufficient disk space
+- Browser permissions issue
+
+**Solutions**:
+1. Check browser download settings
+2. Allow downloads for VozCraft domain
+3. Check available disk space (need 10-50 MB)
+4. Try different browser (Chrome/Edge recommended)
+5. Check browser console (F12) for errors
+6. Disable pop-up blocker temporarily
+</Warning>
+
+<Warning>
+**Problem**: Exported audio is silent or corrupted
+
+**Possible Causes**:
+- Audio generation error
+- Browser compatibility issue
+- Settings resulted in zero volume
+- Download interrupted
+
+**Solutions**:
+1. Test playback in history before exporting
+2. Try Neutral mood (100% volume)
+3. Regenerate the audio
+4. Try different browser
+5. Verify audio plays in history first
+6. Re-download if file corrupted
+</Warning>
+
+<Warning>
+**Problem**: Files have wrong names
+
+**Possible Causes**:
+- Didn't rename before exporting
+- Special characters in name
+- Browser auto-renaming
+
+**Solutions**:
+1. Rename audio BEFORE exporting
+2. Use only letters, numbers, underscores, hyphens
+3. Avoid special characters: / \ : * ? " < > |
+4. Check Downloads folder — browser may add numbers
+5. Rename files after download if needed
+</Warning>
+
+<Accordion title="File won't play on my device">
+  **MP3 Issues**:
+  - Try different media player (VLC recommended)
+  - Check file isn't corrupted (should be 150KB+)
+  - Some devices need true MP3 (convert with Audacity)
+  - Test on computer first
+  
+  **WAV Issues**:
+  - WAV not supported on some mobile devices
+  - Convert to MP3 for mobile playback
+  - Use on computer or professional devices
+  - Import to audio editor to verify integrity
+</Accordion>
+
+## Post-Export Best Practices
+
+### File Organization
+
+**Recommended Structure**:
+
+```
+Project_Name/
+├── raw_audio/           # VozCraft exports
+│   ├── wav/             # Master quality files
+│   │   ├── file1.wav
+│   │   └── file2.wav
+│   └── mp3/             # Distribution files
+│       ├── file1.mp3
+│       └── file2.mp3
+├── edited_audio/       # Post-production
+│   ├── final_v1.mp3
+│   └── final_v2.mp3
+├── transcripts/        # Text versions
+│   ├── file1.txt
+│   └── file2.txt
+├── scripts/            # Original text
+│   ├── script1.txt
+│   └── script2.txt
+└── vozcraft-history.json  # Backup
+```
+
+### Backup Strategy
+
+<Steps>
+  <Step title="Local Backup">
+    After each session:
+    1. Export all audio (WAV if possible)
+    2. Export all transcripts
+    3. Export history JSON
+    4. Copy to project folder
+    5. Rename with date: `history_2026-01-15.json`
+  </Step>
+  
+  <Step title="Cloud Backup">
+    Regular backups:
+    1. Upload project folder to cloud:
+       - Google Drive
+       - Dropbox
+       - OneDrive
+       - iCloud
+    2. Keep at least 3 versions
+    3. Test restore procedure
+  </Step>
+  
+  <Step title="Version Control">
+    For important projects:
+    1. Use version numbers in filenames
+    2. Never overwrite previous versions
+    3. Keep change log in README.txt
+    4. Archive completed projects
+  </Step>
+</Steps>
+
+### Quality Assurance Checklist
+
+Before finalizing exports:
+
+- [ ] **Audio plays correctly** on target device
+- [ ] **Volume is consistent** across all files
+- [ ] **No clicks or pops** in audio
+- [ ] **Filename is correct** and descriptive
+- [ ] **File format is appropriate** for use case
+- [ ] **Transcript matches audio** (if exported)
+- [ ] **Backup created** of all files
+- [ ] **History JSON exported** (if batch work)
+- [ ] **Files organized** in project structure
+- [ ] **Quality reviewed** by second person (if important)
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Using VozCraft" icon="book" href="/guides/using-vozcraft">
+    Complete workflow guide
+  </Card>
+  
+  <Card title="Audio Export Feature" icon="circle-info" href="/features/audio-export">
+    Technical details on export formats
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Solutions to common problems
+  </Card>
+</CardGroup>

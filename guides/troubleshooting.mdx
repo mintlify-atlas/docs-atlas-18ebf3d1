@@ -1,0 +1,1097 @@
+---
+title: Troubleshooting Guide
+description: Solutions to common VozCraft issues, problems, and frequently asked questions
+---
+
+# Troubleshooting Guide
+
+This comprehensive troubleshooting guide helps you resolve common issues with VozCraft. If you encounter problems with audio generation, playback, export, or any other feature, this guide provides solutions.
+
+## Audio Generation Issues
+
+### No Audio Plays
+
+**Symptom**: Click "Generate Audio" but hear nothing
+
+<Tabs>
+  <Tab title="Quick Fixes">
+    Try these immediate solutions:
+    
+    <Steps>
+      <Step title="Check System Volume">
+        - Verify system volume is not muted
+        - Increase volume to at least 50%
+        - Check if other websites/apps play audio
+        - Test with a YouTube video
+      </Step>
+      
+      <Step title="Check Browser Permissions">
+        - Browser may be blocking audio
+        - Look for speaker icon in address bar
+        - Click icon and allow audio
+        - Refresh page and try again
+      </Step>
+      
+      <Step title="Verify Text Entered">
+        - Ensure text area is not empty
+        - Must have at least 1 character
+        - Try simple test: "Hello world"
+        - Check character counter shows > 0
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="Browser Issues">
+    **Chrome/Edge**:
+    1. Check site permissions: `chrome://settings/content/sound`
+    2. Ensure VozCraft is not blocked
+    3. Clear cache: Ctrl+Shift+Del, select "Cached images and files"
+    4. Restart browser
+    
+    **Safari**:
+    1. Safari > Preferences > Websites > Auto-Play
+    2. Set VozCraft to "Allow All Auto-Play"
+    3. Check Safari > Preferences > Websites > Microphone (may affect audio)
+    4. Clear cache: Safari > Clear History
+    
+    **Firefox**:
+    1. Click shield icon in address bar
+    2. Disable Enhanced Tracking Protection for VozCraft
+    3. Check about:preferences#privacy > Permissions > Autoplay
+    4. Restart browser
+  </Tab>
+  
+  <Tab title="System Issues">
+    **Windows**:
+    1. Open Sound Settings
+    2. Check default playback device
+    3. Test speakers/headphones
+    4. Update audio drivers
+    5. Restart computer if needed
+    
+    **macOS**:
+    1. System Preferences > Sound > Output
+    2. Select correct output device
+    3. Check output volume
+    4. Test with other apps
+    5. Restart if needed
+    
+    **Linux**:
+    1. Check PulseAudio or ALSA settings
+    2. Test: `speaker-test -t wav -c 2`
+    3. Verify browser has audio access
+    4. Use Chrome/Chromium for best support
+  </Tab>
+  
+  <Tab title="Advanced Solutions">
+    If basic fixes don't work:
+    
+    1. **Try Incognito/Private Mode**:
+       - Disables extensions
+       - Rules out extension conflicts
+       - Fresh browser session
+       - If works, disable extensions one by one
+    
+    2. **Try Different Browser**:
+       - Chrome (recommended)
+       - Edge (recommended)
+       - Safari (macOS/iOS)
+       - Opera
+       - Avoid Firefox (limited TTS support)
+    
+    3. **Check Browser Console**:
+       - Press F12
+       - Go to "Console" tab
+       - Look for red error messages
+       - Screenshot errors for support
+    
+    4. **Reset Browser Settings**:
+       - Last resort
+       - Backup bookmarks first
+       - Reset to defaults
+       - Reconfigure as needed
+  </Tab>
+</Tabs>
+
+<Warning>
+**Important**: If no audio plays anywhere on your system (not just VozCraft), the issue is with your system audio configuration, not VozCraft.
+</Warning>
+
+### Audio Sounds Robotic or Unnatural
+
+**Symptom**: Audio plays but sounds artificial, choppy, or robotic
+
+<Accordion title="Settings Adjustment">
+  **Try These Settings**:
+  
+  1. **Use Neutral Mood**:
+     - Extreme moods can sound unnatural
+     - Neutral provides most natural results
+     - Avoid Enthusiastic or Melancholic unless needed
+  
+  2. **Use Normal Speed**:
+     - Very Fast (1.60x) often sounds unnatural
+     - Normal (1.00x) is most natural
+     - Slow (0.75x) also natural but slower
+  
+  3. **Use Normal Voice Type**:
+     - High-pitched can sound artificial
+     - Normal voice often more natural
+     - Especially for serious content
+  
+  4. **Try Different Language Variant**:
+     - English (US) often best quality
+     - Try UK or AU if US sounds off
+     - Some accents better supported than others
+  
+  **Optimal Natural Settings**:
+  - Voice: Normal
+  - Speed: Normal
+  - Mood: Neutral
+  - Language: English (US) or Español (México)
+</Accordion>
+
+<Accordion title="Text Formatting">
+  **Improve with Better Text**:
+  
+  **Add Proper Punctuation**:
+  ```
+  Good: "Hello! Welcome to our service. How can I help you?"
+  Bad:  "hello welcome to our service how can i help you"
+  ```
+  
+  **Break Long Sentences**:
+  ```
+  Good: "We offer many services. These include consulting, 
+         training, and support."
+  Bad:  "We offer many services including consulting training 
+         and support all of which are customized to your needs."
+  ```
+  
+  **Spell Out Abbreviations**:
+  ```
+  Good: "The United States Department of Defense"
+  Bad:  "The US DoD"
+  ```
+  
+  **Write Numbers as Words** (for better pronunciation):
+  ```
+  Good: "The price is twenty dollars."
+  Bad:  "The price is $20."
+  ```
+</Accordion>
+
+<Accordion title="System Voice Quality">
+  **Improve System Voices**:
+  
+  **Windows**:
+  1. Settings > Time & Language > Speech
+  2. Download additional voices
+  3. Select "Microsoft [Name] Online" voices (higher quality)
+  4. Windows 11 has better neural voices than Windows 10
+  
+  **macOS**:
+  1. System Preferences > Accessibility > Spoken Content
+  2. Click "System Voice" dropdown
+  3. Download "Enhanced" or "Premium" voices (larger size, better quality)
+  4. macOS 13+ has significantly improved voices
+  
+  **Android**:
+  1. Settings > System > Languages & input > Text-to-speech
+  2. Tap settings icon next to Google TTS
+  3. Install voice data for your languages
+  4. Use "High quality" option if available
+  
+  **Best Practice**: Keep OS updated for latest TTS improvements
+</Accordion>
+
+### Wrong Language or Accent
+
+**Symptom**: Selected Spanish but getting English voice, or wrong accent
+
+<Accordion title="Voice Not Available">
+  **Cause**: Your system doesn't have a voice for that language
+  
+  **Solutions**:
+  
+  1. **Install Language Pack**:
+     - **Windows**: Settings > Time & Language > Language > Add a language
+     - **macOS**: System Preferences > Accessibility > Spoken Content > System Voice > Manage Voices
+     - **Linux**: Install appropriate TTS packages for your distro
+  
+  2. **Try Related Variant**:
+     - If Español (México) doesn't work, try Español (España)
+     - If English (UK) fails, try English (US)
+     - If Português (Brasil) unavailable, try Português (Portugal)
+  
+  3. **Use Better-Supported Language**:
+     - English (US) has best support across platforms
+     - Spanish (Mexico/Spain) well-supported
+     - French, German, Italian generally available
+  
+  4. **Try Different Browser**:
+     - Chrome/Edge often have best voice support
+     - Safari excellent on macOS/iOS
+     - Firefox has limited support
+</Accordion>
+
+<Accordion title="Wrong Accent Persists">
+  **Symptom**: Keep getting wrong accent despite selection
+  
+  **Possible Causes**:
+  1. System only has one voice for that language
+  2. Browser defaulting to system default
+  3. Voice not properly installed
+  
+  **Diagnosis**:
+  1. Open browser console (F12)
+  2. Type: `speechSynthesis.getVoices()`
+  3. Press Enter
+  4. Look for your language in the list
+  5. Check which voices are actually available
+  
+  **If Voice Missing**:
+  - Install language pack on your OS
+  - Restart browser after installation
+  - Verify voice appears in console
+  - Try generating audio again
+</Accordion>
+
+## Playback Issues
+
+### Audio Starts Then Stops
+
+**Symptom**: Audio begins playing but cuts off abruptly
+
+<Tabs>
+  <Tab title="Browser Issues">
+    **Common Causes**:
+    
+    1. **Tab Backgrounded**:
+       - Some browsers pause audio in background tabs
+       - Keep VozCraft tab active during playback
+       - Especially affects mobile browsers
+    
+    2. **Power Saving Mode**:
+       - Mobile devices may throttle background tabs
+       - Disable battery saver during use
+       - Keep device charging if possible
+    
+    3. **Memory Issues**:
+       - Long audio with limited RAM
+       - Close other tabs
+       - Restart browser
+       - Try shorter text segments
+    
+    **Solutions**:
+    - Keep VozCraft tab in foreground
+    - Close unnecessary browser tabs
+    - Disable browser extensions temporarily
+    - Try different browser
+  </Tab>
+  
+  <Tab title="Text Issues">
+    **Problematic Characters**:
+    
+    Certain characters can cause speech synthesis to stop:
+    
+    **Remove**:
+    - Emoji (except in rare cases)
+    - Special symbols: ♪ ♥ ★ ♠
+    - Unusual Unicode characters
+    - HTML tags: `<b>`, `<i>`, etc.
+    - Excessive punctuation: `!!!!!!`
+    
+    **Test**:
+    1. Copy your text to plain text editor
+    2. Remove special characters
+    3. Re-paste into VozCraft
+    4. Try generating again
+  </Tab>
+  
+  <Tab title="System Resources">
+    **Low Resources**:
+    
+    Speech synthesis is CPU-intensive:
+    
+    1. **Close Other Apps**:
+       - Close video players
+       - Close other browser tabs
+       - Quit unnecessary applications
+       - Check Activity Monitor/Task Manager
+    
+    2. **Restart Browser**:
+       - Memory leaks accumulate over time
+       - Full browser restart clears memory
+       - May improve performance
+    
+    3. **System Restart** (if needed):
+       - Last resort for persistent issues
+       - Clears all cached data
+       - Resolves system-level conflicts
+  </Tab>
+</Tabs>
+
+### Playback Speed Issues
+
+**Symptom**: Audio plays too fast, too slow, or speed varies
+
+<Accordion title="Speed Too Fast">
+  **Causes**:
+  - Speed setting is Fast or Very Fast
+  - Mood adds rate multiplier (Energetic 1.30x, Enthusiastic 1.25x)
+  - Combined effects multiply
+  
+  **Example of Extreme Speed**:
+  ```
+  Speed: Very Fast (1.60)
+  Voice: High-pitched (+0.05)
+  Mood: Energetic (1.30x)
+  
+  Final Rate = (1.60 + 0.05) * 1.30 = 2.145x
+  ```
+  
+  **Solutions**:
+  1. Change Speed to Normal or Slow
+  2. Use Neutral mood (1.00x rate multiplier)
+  3. Use Normal voice type (avoids +0.05)
+  4. Test with conservative settings first
+</Accordion>
+
+<Accordion title="Speed Too Slow">
+  **Causes**:
+  - Speed set to Slow or Very Slow
+  - Mood reduces speed (Melancholic 0.78x, Relaxed 0.82x, Serious 0.88x)
+  - Normal voice type subtracts 0.05
+  
+  **Example of Very Slow**:
+  ```
+  Speed: Very Slow (0.50)
+  Voice: Normal (-0.05)
+  Mood: Melancholic (0.78x)
+  
+  Final Rate = (0.50 - 0.05) * 0.78 = 0.351x
+  ```
+  
+  **Solutions**:
+  1. Increase Speed to Normal or Fast
+  2. Use Neutral mood
+  3. Try High-pitched voice (+0.05 instead of -0.05)
+</Accordion>
+
+<Accordion title="Speed Inconsistent">
+  **Symptom**: Speed varies during playback
+  
+  **Causes**:
+  1. Browser performance throttling
+  2. System resource constraints
+  3. Tab backgrounded on mobile
+  
+  **Solutions**:
+  1. Keep tab in foreground
+  2. Close other applications
+  3. Use desktop instead of mobile
+  4. Export as MP3/WAV (consistent speed)
+  5. Try different browser
+</Accordion>
+
+## Export Issues
+
+### Download Doesn't Start
+
+**Symptom**: Click MP3/WAV/TXT button but nothing downloads
+
+<Steps>
+  <Step title="Check Browser Downloads">
+    **Allow Downloads**:
+    - Chrome: `chrome://settings/content/pdfDocuments`
+    - Check "Download PDF files" is ON
+    - Also check `chrome://settings/downloads`
+    - Verify download location exists
+    
+    **Check Download Bar**:
+    - May be downloading silently
+    - Look at bottom of browser window
+    - Click "Show all downloads" (Ctrl+J)
+    - Check Downloads folder directly
+  </Step>
+  
+  <Step title="Disable Pop-up Blocker">
+    - Click icon in address bar
+    - Allow pop-ups for VozCraft
+    - Some blockers prevent downloads
+    - Try disabling temporarily
+  </Step>
+  
+  <Step title="Check Disk Space">
+    - Need 10-50 MB free space
+    - Check drive where Downloads folder is located
+    - Clear space if needed
+    - Try different download location
+  </Step>
+  
+  <Step title="Try Different Browser">
+    - Chrome or Edge recommended
+    - Some browsers have stricter download policies
+    - Verify works in different browser
+  </Step>
+</Steps>
+
+### Exported Audio is Silent
+
+**Symptom**: Downloaded MP3/WAV plays but no sound
+
+<Accordion title="Volume Settings">
+  **Check Mood Volume**:
+  
+  Different moods have different volumes:
+  - Melancholic: 88% (quietest)
+  - Relaxed: 90%
+  - Serious: 95%
+  - Tense: 95%
+  - All others: 100%
+  
+  **Solution**:
+  1. Use Neutral mood (100% volume)
+  2. Test playback in history BEFORE exporting
+  3. If history plays fine, export should too
+  4. Increase system volume when playing export
+</Accordion>
+
+<Accordion title="Generation Error">
+  **File May Be Corrupted**:
+  
+  **Check File Size**:
+  - Valid MP3/WAV: At least 100KB
+  - Empty file: 0KB or very small
+  - If too small, regeneration failed
+  
+  **Solutions**:
+  1. Play audio in history first (verify it works)
+  2. Delete failed download
+  3. Click export button again
+  4. Try different format (WAV instead of MP3)
+  5. Try different browser
+  6. Shorten text and try again
+</Accordion>
+
+<Accordion title="Player Compatibility">
+  **Some Players May Not Support Format**:
+  
+  **Try Different Player**:
+  - **VLC Media Player** (plays everything)
+  - Windows Media Player
+  - QuickTime (macOS)
+  - Default system player
+  
+  **Test on Computer First**:
+  - Before trying on phone/tablet
+  - Verify file plays correctly
+  - Then transfer to mobile if needed
+  
+  **Convert if Needed**:
+  - Use Audacity to convert
+  - Try MP3 if WAV doesn't work
+  - Try WAV if MP3 doesn't work
+</Accordion>
+
+### File Won't Open or Import
+
+**Symptom**: Audio editor or player says file is invalid
+
+<Accordion title="For Audio Editors">
+  **Audacity Import Issues**:
+  
+  1. **Update Audacity**:
+     - Download latest version
+     - Older versions may not recognize format
+  
+  2. **Use File > Import > Audio**:
+     - Don't drag and drop
+     - Use menu import
+     - Try both MP3 and WAV
+  
+  3. **Install FFmpeg** (for Audacity MP3):
+     - Audacity may need FFmpeg library
+     - Download from audacityteam.org
+     - Install and restart Audacity
+  
+  **Other Editor Issues**:
+  - Export as WAV (more compatible)
+  - Check editor supports 22,050 Hz sample rate
+  - Try converting with VLC first
+  - Verify file isn't corrupted (check size)
+</Accordion>
+
+<Accordion title="For Media Players">
+  **"Cannot Play File" Error**:
+  
+  1. **Try VLC Media Player**:
+     - Free, plays almost everything
+     - Download from videolan.org
+     - Most reliable option
+  
+  2. **Check File Extension**:
+     - Should be `.mp3` or `.wav`
+     - Browser may have added extra extension
+     - Rename if needed: `file.mp3.txt` → `file.mp3`
+  
+  3. **Check File Size**:
+     - Should be at least 100KB
+     - If smaller, file is corrupted
+     - Re-export from VozCraft
+  
+  4. **Mobile Device Issues**:
+     - Some phones don't support WAV
+     - Use MP3 for mobile devices
+     - Transfer to computer to convert if needed
+</Accordion>
+
+## History and Storage Issues
+
+### History Disappeared
+
+**Symptom**: History panel empty after page refresh
+
+<Accordion title="Browser Storage Cleared">
+  **Most Common Cause**:
+  
+  History stored in browser `localStorage`:
+  - Clearing browser data deletes history
+  - Incognito mode doesn't persist
+  - Different browser = different storage
+  
+  **Prevention**:
+  1. **Export History JSON Regularly**:
+     - Click "💾 Save" button
+     - Save `vozcraft-historial.json`
+     - Do this after each session
+  
+  2. **Don't Clear Browser Data**:
+     - Or exclude "Cookies and site data"
+     - Or export before clearing
+  
+  3. **Avoid Incognito Mode**:
+     - Data deleted when window closes
+     - Use normal browsing for persistence
+</Accordion>
+
+<Accordion title="Different Browser or Profile">
+  **Storage is Per-Browser**:
+  
+  - Chrome history ≠ Firefox history
+  - Browser profiles have separate storage
+  - Incognito ≠ normal browsing
+  
+  **Solutions**:
+  1. **Use Same Browser**:
+     - Return to original browser
+     - Check if history is there
+  
+  2. **Import Backup**:
+     - If you exported history JSON
+     - Click "📂 Load" button
+     - Select your backup file
+     - History restored
+  
+  3. **Export for Cross-Browser**:
+     - Export from Browser A
+     - Import to Browser B
+     - Manual transfer method
+</Accordion>
+
+<Accordion title="Storage Quota Exceeded (Rare)">
+  **Symptom**: History stops saving
+  
+  **Cause**: localStorage has 5-10MB limit
+  
+  **Solutions**:
+  1. **Clear Old History**:
+     - Click "Clear all" button
+     - Removes all history
+     - Frees storage space
+  
+  2. **Export Before Clearing**:
+     - Save JSON backup first
+     - Then clear history
+     - Can import later if needed
+  
+  3. **Reduce History Size**:
+     - Delete old unused items
+     - Use shorter text (less storage)
+     - Export and clear regularly
+</Accordion>
+
+### Cannot Import History
+
+**Symptom**: Click "Load" and select file but nothing happens
+
+<Accordion title="Invalid JSON File">
+  **Error: "Error al leer el archivo"**
+  
+  **Causes**:
+  1. File is not valid JSON
+  2. File is corrupted
+  3. Wrong file selected
+  4. File wasn't exported from VozCraft
+  
+  **Solutions**:
+  1. **Verify File**:
+     - Open in text editor
+     - Should start with `[` and end with `]`
+     - Should look like:
+     ```json
+     [
+       {
+         "id": "1705349100000",
+         "timestamp": 1705349100000,
+         ...
+       }
+     ]
+     ```
+  
+  2. **Validate JSON**:
+     - Use jsonlint.com
+     - Paste file contents
+     - Check for errors
+     - Fix if possible
+  
+  3. **Re-export from Source**:
+     - If file is corrupted
+     - Export fresh copy from original browser
+     - Try importing again
+</Accordion>
+
+<Accordion title="File Type Issues">
+  **Make Sure**:
+  
+  1. **File is .json Extension**:
+     - Not `.txt` or `.json.txt`
+     - Some systems hide extensions
+     - Check file properties
+  
+  2. **Select Correct File**:
+     - Named `vozcraft-historial.json`
+     - Or custom name you gave it
+     - From VozCraft export
+  
+  3. **File Readable**:
+     - Not corrupted
+     - Not empty (0 bytes)
+     - Can open in text editor
+</Accordion>
+
+## Performance Issues
+
+### Slow Generation
+
+**Symptom**: Takes long time to start playing audio
+
+<Tabs>
+  <Tab title="Normal Wait Times">
+    **Expected Delays**:
+    
+    - **Short text (100 chars)**: Instant (< 1 second)
+    - **Medium text (500 chars)**: 1-2 seconds
+    - **Long text (2000 chars)**: 2-3 seconds
+    - **Maximum text (5000 chars)**: 3-5 seconds
+    
+    If delays are longer, continue troubleshooting.
+  </Tab>
+  
+  <Tab title="System Performance">
+    **Improve Performance**:
+    
+    1. **Close Other Tabs**:
+       - Each tab uses memory
+       - Close unnecessary tabs
+       - Especially video/music tabs
+    
+    2. **Close Other Apps**:
+       - Video players
+       - Games
+       - Other browsers
+       - Large applications
+    
+    3. **Check CPU Usage**:
+       - Task Manager (Windows): Ctrl+Shift+Esc
+       - Activity Monitor (macOS): Cmd+Space, type "Activity Monitor"
+       - If CPU at 100%, close apps
+    
+    4. **Restart Browser**:
+       - Memory leaks over time
+       - Fresh start improves performance
+       - Restart computer if very slow
+  </Tab>
+  
+  <Tab title="Browser Optimization">
+    **Browser Settings**:
+    
+    1. **Disable Extensions**:
+       - Some extensions slow down pages
+       - Test in Incognito mode (extensions disabled)
+       - If faster, disable extensions one by one
+    
+    2. **Clear Cache**:
+       - Ctrl+Shift+Del (Windows/Linux)
+       - Cmd+Shift+Del (macOS)
+       - Select "Cached images and files"
+       - Clear and restart
+    
+    3. **Update Browser**:
+       - Newer versions are faster
+       - Help > About (shows version)
+       - Download latest if outdated
+    
+    4. **Try Different Browser**:
+       - Chrome and Edge generally fastest
+       - Test performance comparison
+  </Tab>
+  
+  <Tab title="Network Issues">
+    **Although VozCraft runs locally**:
+    
+    1. **Initial Page Load**:
+       - Needs internet for first visit
+       - After loaded, works offline
+       - Slow internet affects initial load only
+    
+    2. **Voice Downloads**:
+       - Some browsers fetch voices from cloud
+       - May cause delay first time
+       - Subsequent uses are faster
+    
+    3. **Offline Use**:
+       - VozCraft works without internet
+       - After initial page load
+       - Uses browser's built-in TTS
+  </Tab>
+</Tabs>
+
+### Interface Lag or Freezing
+
+**Symptom**: VozCraft interface is slow or unresponsive
+
+<Accordion title="Too Much History">
+  **30 Items Maximum**:
+  
+  History panel can slow down with many items:
+  
+  1. **Export History**:
+     - Click "💾 Save" to backup
+     - Saves all items to JSON
+  
+  2. **Clear History**:
+     - Click "Clear all"
+     - Removes all items
+     - Speeds up interface
+  
+  3. **Import Selected Items**:
+     - Edit JSON file (keep only needed items)
+     - Import edited file
+     - Only load what you need
+</Accordion>
+
+<Accordion title="Browser Issues">
+  **Standard Performance Fixes**:
+  
+  1. **Restart Browser**: Memory leak cleanup
+  2. **Close Other Tabs**: Reduce memory usage  
+  3. **Disable Extensions**: Test in Incognito
+  4. **Clear Cache**: Remove old data
+  5. **Update Browser**: Get performance improvements
+  6. **Try Different Browser**: Compare performance
+</Accordion>
+
+## Browser Compatibility
+
+### Recommended Browsers
+
+<CardGroup cols={2}>
+  <Card title="✅ Fully Supported" icon="check">
+    **Best Experience**:
+    - Google Chrome (80+)
+    - Microsoft Edge (80+)
+    - Safari (14+)
+    - Opera (67+)
+    
+    **Why**:
+    - Full Web Speech API support
+    - Good voice selection
+    - Reliable performance
+    - Regular updates
+  </Card>
+  
+  <Card title="⚠️ Partial Support" icon="triangle-exclamation">
+    **Limited Experience**:
+    - Firefox (any version)
+    - Older Safari (< 14)
+    - Mobile browsers (varies)
+    
+    **Limitations**:
+    - Limited voice options
+    - Variable quality
+    - May miss some features
+    - Use supported browser if possible
+  </Card>
+</CardGroup>
+
+### Platform-Specific Issues
+
+<Tabs>
+  <Tab title="Windows">
+    **Common Issues**:
+    
+    1. **Voices Sound Robotic**:
+       - Windows 10 voices lower quality
+       - Upgrade to Windows 11 for neural voices
+       - Or download better voices from Microsoft Store
+    
+    2. **Limited Language Support**:
+       - Install language packs
+       - Settings > Time & Language > Language
+       - Add languages you need
+    
+    3. **Performance Issues**:
+       - Update audio drivers
+       - Close background apps
+       - 8GB+ RAM recommended
+  </Tab>
+  
+  <Tab title="macOS">
+    **Common Issues**:
+    
+    1. **Safari Specific**:
+       - Best TTS quality on macOS
+       - But may have permission issues
+       - Check Safari preferences
+    
+    2. **Voice Download**:
+       - Enhanced voices are large (200-800MB)
+       - Download from System Preferences
+       - Significantly better quality
+    
+    3. **M1/M2 Macs**:
+       - Excellent performance
+       - Best TTS experience
+       - Use Safari for optimal results
+  </Tab>
+  
+  <Tab title="iOS/iPadOS">
+    **Common Issues**:
+    
+    1. **Background Tab Issues**:
+       - iOS may pause audio in background
+       - Keep VozCraft tab active
+       - Avoid switching apps during playback
+    
+    2. **Limited Export**:
+       - Downloading files more complex on iOS
+       - Files go to Files app
+       - May need "Save to Files" confirmation
+    
+    3. **Best Browser**:
+       - Safari has best TTS on iOS
+       - All browsers use Safari engine on iOS
+       - Performance generally good
+  </Tab>
+  
+  <Tab title="Android">
+    **Common Issues**:
+    
+    1. **Google TTS Required**:
+       - Install from Play Store if missing
+       - Settings > Languages & input > Text-to-speech
+       - Download voice data
+    
+    2. **Browser Choice Matters**:
+       - Chrome recommended
+       - Firefox has limited TTS
+       - Samsung Browser may work
+    
+    3. **Performance Varies**:
+       - Depends on device specs
+       - 4GB+ RAM recommended
+       - Close other apps for better performance
+  </Tab>
+  
+  <Tab title="Linux">
+    **Common Issues**:
+    
+    1. **Voice Support Varies**:
+       - Depends on installed TTS engines
+       - Install espeak-ng or festival
+       - Or use Chrome (uses Google TTS)
+    
+    2. **Browser Compatibility**:
+       - Chrome/Chromium best
+       - Firefox limited
+       - Check distro documentation
+    
+    3. **Audio System**:
+       - Ensure PulseAudio or PipeWire working
+       - Test with: `speaker-test -t wav -c 2`
+       - Check browser has audio permissions
+  </Tab>
+</Tabs>
+
+## Getting Additional Help
+
+### Before Requesting Support
+
+<Steps>
+  <Step title="Gather Information">
+    Collect these details:
+    - **Browser**: Name and version (Help > About)
+    - **OS**: Windows/macOS/Linux/iOS/Android and version
+    - **Issue**: Exact description of problem
+    - **Steps**: What you did before issue occurred
+    - **Error Messages**: Any red text or error dialogs
+    - **Console Errors**: Press F12, check Console tab
+  </Step>
+  
+  <Step title="Test in Different Browser">
+    - Does issue occur in Chrome?
+    - Does it occur in Safari?
+    - This helps identify if browser-specific
+  </Step>
+  
+  <Step title="Test with Simple Input">
+    - Try: "Hello world test"
+    - Use: Normal + Normal + Neutral
+    - Language: English (US)
+    - If simple works, issue is with your specific settings/text
+  </Step>
+  
+  <Step title="Check This Guide">
+    - Review relevant troubleshooting sections
+    - Try all suggested solutions
+    - Note what you've already tried
+  </Step>
+</Steps>
+
+### Common Questions
+
+<Accordion title="Is VozCraft free?">
+  **Yes, completely free**:
+  - No registration required
+  - No usage limits
+  - No hidden fees
+  - All features available
+  - No premium tier
+  
+  VozCraft is free to use forever.
+</Accordion>
+
+<Accordion title="Do I need an account?">
+  **No account needed**:
+  - No registration
+  - No login
+  - No email required
+  - No tracking
+  - Completely anonymous
+  
+  Just open the website and start using it.
+</Accordion>
+
+<Accordion title="Where is my data stored?">
+  **Local storage only**:
+  - History: Browser localStorage
+  - Nothing sent to servers
+  - Text never leaves your device
+  - Audio generated locally
+  - Completely private
+  
+  Your data never leaves your computer.
+</Accordion>
+
+<Accordion title="Can I use offline?">
+  **Yes, after initial load**:
+  - First visit requires internet (to load page)
+  - After loaded, works offline
+  - Uses browser's built-in TTS
+  - No server connection needed
+  
+  Note: Some browsers may fetch voices from cloud.
+</Accordion>
+
+<Accordion title="Why do voices sound different on different devices?">
+  **System-dependent**:
+  - VozCraft uses your device's TTS voices
+  - Windows has different voices than macOS
+  - Mobile devices have different voices
+  - Voice quality varies by OS
+  
+  Best quality:
+  - macOS/iOS (Apple voices)
+  - Windows 11 (neural voices)
+  - Android with Google TTS
+</Accordion>
+
+<Accordion title="Can I use VozCraft commercially?">
+  **Yes, for most uses**:
+  - Content creation: Yes
+  - Business presentations: Yes
+  - Marketing materials: Yes
+  - Products: Check voice licensing
+  
+  **Important**: System TTS voices have their own licenses. Check your OS voice licensing for commercial use restrictions.
+</Accordion>
+
+<Accordion title="Maximum text length?">
+  **5,000 characters per generation**:
+  - Character counter shows remaining
+  - Turns red above 4,500
+  - For longer content:
+    - Split into segments
+    - Generate separately
+    - Merge in audio editor
+  
+  See [Using VozCraft Guide](/guides/using-vozcraft) for long-form workflows.
+</Accordion>
+
+<Accordion title="Can I change the voice pitch manually?">
+  **Pitch controlled by settings**:
+  - Voice Type: 0.75 (Normal) or 1.30 (High-pitched)
+  - Mood: Additional pitch adjustment (0.70 to 1.35)
+  - Combined: Voice Type * Mood
+  
+  No manual pitch slider, but extensive control through combinations.
+</Accordion>
+
+## Still Having Issues?
+
+If you've tried everything in this guide and still experiencing problems:
+
+<CardGroup cols={2}>
+  <Card title="Report Bug" icon="bug">
+    If you believe you've found a bug:
+    
+    Visit the GitHub repository to report issues:
+    [github.com/MateoRiosdev](https://github.com/MateoRiosdev)
+    
+    Include:
+    - Detailed description
+    - Steps to reproduce
+    - Browser and OS info
+    - Console errors (F12)
+  </Card>
+  
+  <Card title="Try Alternative" icon="repeat">
+    If VozCraft doesn't meet your needs:
+    
+    Consider:
+    - **Google Cloud TTS**: Commercial API
+    - **Amazon Polly**: AWS service
+    - **Microsoft Azure TTS**: Enterprise solution
+    - **ElevenLabs**: AI voices (paid)
+    
+    VozCraft is free but uses browser TTS, which has limitations.
+  </Card>
+</CardGroup>
+
+---
+
+<Info>
+**Remember**: Most issues are resolved by using default settings (Normal voice, Normal speed, Neutral mood) with Chrome or Edge browsers on updated systems.
+</Info>

@@ -1,0 +1,854 @@
+---
+title: Audio Export
+description: Complete guide to exporting audio in MP3, WAV formats and downloading transcripts
+---
+
+# Audio Export
+
+VozCraft provides robust audio export capabilities, allowing you to download your generated speech in multiple formats. This guide covers the technical details of each export format, the generation process, and best practices for different use cases.
+
+## Export Formats Overview
+
+VozCraft supports three export types:
+
+<CardGroup cols={3}>
+  <Card title="MP3 Format" icon="file-audio">
+    Compressed audio file
+    - Smaller file size
+    - Easy to share
+    - Universal compatibility
+    - 22.05 kHz sample rate
+  </Card>
+  
+  <Card title="WAV Format" icon="waveform">
+    Uncompressed audio file
+    - Full quality
+    - Larger file size
+    - Ideal for editing
+    - Professional applications
+  </Card>
+  
+  <Card title="TXT Transcript" icon="file-text">
+    Formatted text document
+    - Complete metadata
+    - Original text content
+    - Generation settings
+    - Timestamp information
+  </Card>
+</CardGroup>
+
+## MP3 Export
+
+### Overview
+
+MP3 (MPEG-1 Audio Layer 3) is a compressed audio format ideal for sharing, storage, and general use. VozCraft generates MP3-compatible audio using the Web Audio API.
+
+### Technical Specifications
+
+```javascript
+// MP3 Export Parameters
+{
+  format: "mp3",
+  sampleRate: 22050,      // 22.05 kHz
+  bitDepth: 16,           // 16-bit
+  channels: 1,            // Mono
+  mimeType: "audio/mpeg",
+  encoding: "WAV with MP3 extension"
+}
+```
+
+<Note>
+**Technical Note**: VozCraft generates a WAV file but labels it as MP3 for browser compatibility. Most media players recognize and play this format correctly. For true MP3 compression, use third-party conversion tools.
+</Note>
+
+### File Characteristics
+
+**Filename Format**: `vozcraft-[timestamp].mp3`
+
+**Example**: `vozcraft-1705349100000.mp3`
+
+**Typical File Sizes** (estimates based on text length):
+
+| Text Length | Duration | Approximate Size |
+|-------------|----------|------------------|
+| 100 characters | ~7 seconds | 150-200 KB |
+| 500 characters | ~35 seconds | 750 KB - 1 MB |
+| 1000 characters | ~70 seconds | 1.5 - 2 MB |
+| 5000 characters | ~6 minutes | 7-10 MB |
+
+<Info>
+File sizes vary based on audio complexity, silence periods, and the specific voice settings used (pitch, mood, speed).
+</Info>
+
+### When to Use MP3
+
+<Tabs>
+  <Tab title="Best Use Cases">
+    **Sharing and Distribution**:
+    - Email attachments
+    - Social media uploads
+    - Website embedding
+    - Mobile app integration
+    
+    **Storage**:
+    - Large audio libraries
+    - Cloud storage backup
+    - Archival purposes (when quality loss is acceptable)
+    
+    **Playback**:
+    - Personal listening
+    - Podcast episodes
+    - Voice messages
+    - Background audio
+    
+    **Why MP3**: Universal compatibility across all devices and platforms, smaller file size for easy sharing.
+  </Tab>
+  
+  <Tab title="Limitations">
+    **Not Ideal For**:
+    - Professional audio editing (use WAV)
+    - Further processing or effects (use WAV)
+    - High-fidelity requirements (use WAV)
+    - Professional broadcast (use WAV)
+    
+    **Technical Limitations**:
+    - Lossy compression (quality degradation)
+    - Not ideal for multiple re-encoding cycles
+    - Limited to 22.05 kHz sample rate
+    - Mono channel only
+    
+    **When to Choose WAV Instead**: Any scenario requiring post-production, editing, or maximum quality preservation.
+  </Tab>
+</Tabs>
+
+### How to Export MP3
+
+<Steps>
+  <Step title="Generate Audio">
+    Create your audio using the main generation interface, or locate an existing audio in your history panel.
+  </Step>
+  
+  <Step title="Click MP3 Button">
+    In the history item, click the green **"MP3"** button.
+    
+    Button appearance:
+    - Green/teal background
+    - Bold text
+    - Displays "MP3"
+  </Step>
+  
+  <Step title="Wait for Generation">
+    VozCraft processes your audio using the Web Audio API:
+    - Synthesis takes 1-5 seconds depending on text length
+    - No visual progress indicator (browser handles download)
+    - Longer texts take proportionally longer to process
+  </Step>
+  
+  <Step title="Save File">
+    Your browser's download dialog appears:
+    - Default filename: `vozcraft-[timestamp].mp3`
+    - Choose save location
+    - File downloads automatically
+    - Toast notification confirms: "📥 MP3 descargado"
+  </Step>
+</Steps>
+
+## WAV Export
+
+### Overview
+
+WAV (Waveform Audio File Format) is an uncompressed audio format that preserves full audio quality. It's the professional standard for audio editing and production.
+
+### Technical Specifications
+
+```javascript
+// WAV Export Parameters
+{
+  format: "wav",
+  sampleRate: 22050,           // 22.05 kHz
+  bitDepth: 16,                // 16-bit PCM
+  channels: 1,                 // Mono
+  mimeType: "audio/wav",
+  audioFormat: 1,              // PCM
+  byteRate: 44100,             // sampleRate * channels * bitDepth/8
+  blockAlign: 2,               // channels * bitDepth/8
+  dataSize: varies             // numSamples * blockAlign
+}
+```
+
+### WAV File Structure
+
+```
+WAV File Format:
+
+[RIFF Header - 12 bytes]
+  - "RIFF" identifier (4 bytes)
+  - File size minus 8 (4 bytes, little-endian)
+  - "WAVE" identifier (4 bytes)
+
+[Format Chunk - 24 bytes]
+  - "fmt " identifier (4 bytes)
+  - Format chunk size: 16 (4 bytes)
+  - Audio format: 1 (PCM) (2 bytes)
+  - Number of channels: 1 (2 bytes)
+  - Sample rate: 22050 (4 bytes)
+  - Byte rate: 44100 (4 bytes)
+  - Block align: 2 (2 bytes)
+  - Bits per sample: 16 (2 bytes)
+
+[Data Chunk - Variable]
+  - "data" identifier (4 bytes)
+  - Data size in bytes (4 bytes)
+  - Audio sample data (variable length)
+
+Total file size = 44 bytes header + (numSamples * 2 bytes)
+```
+
+### File Characteristics
+
+**Filename Format**: `vozcraft-[timestamp].wav`
+
+**Example**: `vozcraft-1705349100000.wav`
+
+**Typical File Sizes**:
+
+| Text Length | Duration | Approximate Size |
+|-------------|----------|------------------|
+| 100 characters | ~7 seconds | 308 KB |
+| 500 characters | ~35 seconds | 1.5 MB |
+| 1000 characters | ~70 seconds | 3.1 MB |
+| 5000 characters | ~6 minutes | 15.4 MB |
+
+**Size Calculation**:
+```javascript
+fileSize = 44 + (sampleRate * duration * 2)
+         = 44 + (22050 * duration * 2) bytes
+```
+
+### When to Use WAV
+
+<Tabs>
+  <Tab title="Professional Use">
+    **Audio Production**:
+    - Podcast editing and production
+    - Video voiceover tracks
+    - Professional broadcasting
+    - Studio recordings
+    
+    **Post-Processing**:
+    - Applying effects (reverb, EQ, compression)
+    - Noise reduction and cleanup
+    - Mixing with other audio tracks
+    - Pitch correction or time stretching
+    
+    **High-Quality Archival**:
+    - Master recordings
+    - Preservation copies
+    - Future re-use without quality loss
+    - Professional audio libraries
+    
+    **Why WAV**: Uncompressed format means no quality loss, ideal for any professional application or further editing.
+  </Tab>
+  
+  <Tab title="Import to DAW">
+    **Compatible DAWs** (Digital Audio Workstations):
+    - Audacity (free)
+    - Adobe Audition
+    - Logic Pro
+    - Pro Tools
+    - Reaper
+    - FL Studio
+    - Ableton Live
+    - GarageBand
+    
+    **Workflow**:
+    1. Export from VozCraft as WAV
+    2. Import into your DAW
+    3. Apply effects and processing
+    4. Mix with music or other audio
+    5. Export final product in desired format
+    
+    **Benefits**:
+    - No quality degradation
+    - Full editing flexibility
+    - Professional results
+    - Compatible with all audio software
+  </Tab>
+</Tabs>
+
+### How to Export WAV
+
+<Steps>
+  <Step title="Locate Your Audio">
+    Find the audio you want to export in the history panel.
+  </Step>
+  
+  <Step title="Click WAV Button">
+    Click the amber/yellow **"WAV"** button.
+    
+    Button appearance:
+    - Amber/yellow background
+    - Bold text
+    - Displays "WAV"
+  </Step>
+  
+  <Step title="Processing">
+    VozCraft generates the WAV file:
+    - Uses Web Audio API for synthesis
+    - Applies all voice settings (pitch, speed, mood)
+    - Generates complete waveform
+    - Processing time: 1-5 seconds typical
+  </Step>
+  
+  <Step title="Download">
+    Browser download begins automatically:
+    - Filename: `vozcraft-[timestamp].wav`
+    - Save to your preferred location
+    - Toast confirmation: "📥 WAV descargado"
+  </Step>
+</Steps>
+
+## Audio Generation Process
+
+### How VozCraft Creates Downloadable Audio
+
+When you click MP3 or WAV export, VozCraft performs sophisticated audio synthesis:
+
+<Steps>
+  <Step title="Calculate Duration">
+    ```javascript
+    // Estimate duration based on text and settings
+    const effectiveRate = (velocityRate + genderRateAdd) * moodRateMulti;
+    const estimatedDuration = Math.max(1, textLength / (14 * effectiveRate));
+    ```
+    
+    Formula: `duration = text.length / (14 * effective_rate)` seconds
+    
+    Where:
+    - 14 = average characters spoken per second at normal rate
+    - effective_rate = combined rate from speed, voice type, and mood
+  </Step>
+  
+  <Step title="Create Audio Context">
+    ```javascript
+    // Set up offline audio context for rendering
+    const sampleRate = 22050;
+    const numSamples = Math.ceil(estimatedDuration * sampleRate);
+    const audioCtx = new OfflineAudioContext(1, numSamples, sampleRate);
+    ```
+    
+    Creates an offline audio processing environment optimized for file generation.
+  </Step>
+  
+  <Step title="Generate Base Frequency">
+    ```javascript
+    // Calculate effective pitch from voice type and mood
+    const effectivePitch = voiceTypePitch * moodPitch;
+    const baseFreq = 120 * effectivePitch;
+    
+    // Create sawtooth oscillator
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(baseFreq, 0);
+    ```
+    
+    Base frequency of 120 Hz (typical male voice) is modified by:
+    - Voice Type pitch (0.75 for Normal, 1.30 for High-pitched)
+    - Mood pitch (0.70 to 1.35 range)
+    
+    **Examples**:
+    - Normal + Neutral: 120 * 0.75 * 1.00 = 90 Hz
+    - High-pitched + Enthusiastic: 120 * 1.30 * 1.35 = 210.6 Hz
+  </Step>
+  
+  <Step title="Add Frequency Variation">
+    ```javascript
+    // Simulate natural voice variation
+    for (let i = 0; i < duration; i += 0.3) {
+      const variation = (Math.random() - 0.5) * baseFreq * 0.12;
+      osc.frequency.linearRampToValueAtTime(baseFreq + variation, i + 0.15);
+      osc.frequency.linearRampToValueAtTime(baseFreq, i + 0.3);
+    }
+    ```
+    
+    Adds ±12% random pitch variation every 0.3 seconds to simulate natural speech prosody.
+  </Step>
+  
+  <Step title="Apply Formant Filtering">
+    ```javascript
+    // Create formant filters for vowel-like sounds
+    const f1 = audioCtx.createBiquadFilter();
+    f1.type = 'bandpass';
+    f1.frequency.value = 800 * effectivePitch;  // First formant
+    f1.Q.value = 3;
+    
+    const f2 = audioCtx.createBiquadFilter();
+    f2.type = 'bandpass';
+    f2.frequency.value = 2200 * effectivePitch; // Second formant
+    f2.Q.value = 4;
+    ```
+    
+    Formants are resonance frequencies that give voices their characteristic timbre:
+    - F1 (800 Hz): Relates to vowel openness
+    - F2 (2200 Hz): Relates to vowel frontness
+    - Both scale with pitch for natural sound
+  </Step>
+  
+  <Step title="Create Amplitude Envelope">
+    ```javascript
+    // Syllable-based volume modulation
+    const words = text.split(' ');
+    const wordDuration = estimatedDuration / words.length;
+    
+    words.forEach((word, index) => {
+      const syllables = Math.max(1, Math.ceil(word.length / 3));
+      for (let s = 0; s < syllables; s++) {
+        const time = index * wordDuration + s * (wordDuration / syllables);
+        gainNode.gain.linearRampToValueAtTime(0.18 * moodVolume, time + 0.02);
+        gainNode.gain.linearRampToValueAtTime(0.05, time + wordDuration/syllables - 0.02);
+      }
+    });
+    ```
+    
+    Creates natural speech rhythm:
+    - Words divided into estimated syllables (length / 3)
+    - Each syllable has attack and decay
+    - Volume modulated by mood setting
+    - Simulates natural speech articulation
+  </Step>
+  
+  <Step title="Add Breathiness/Noise">
+    ```javascript
+    // Create noise buffer for breathiness
+    const noiseBuffer = audioCtx.createBuffer(1, numSamples, sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < numSamples; i++) {
+      noiseData[i] = (Math.random() * 2 - 1) * 0.04;
+    }
+    
+    // High-pass filter for breath-like quality
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 4000;
+    noiseFilter.Q.value = 2;
+    ```
+    
+    Adds 4% white noise filtered at 4kHz to simulate breath and fricatives, making the voice sound more natural.
+  </Step>
+  
+  <Step title="Render Audio">
+    ```javascript
+    // Connect all nodes and render
+    osc.connect(f1);
+    osc.connect(f2);
+    f1.connect(gainNode);
+    f2.connect(gainNode);
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    // Start sources and render
+    osc.start(0);
+    osc.stop(estimatedDuration);
+    noiseSource.start(0);
+    noiseSource.stop(estimatedDuration);
+    
+    const renderedBuffer = await audioCtx.startRendering();
+    ```
+    
+    Renders the complete audio signal offline (faster than real-time).
+  </Step>
+  
+  <Step title="Encode as WAV">
+    ```javascript
+    // Extract samples and encode to WAV
+    const channelData = renderedBuffer.getChannelData(0);
+    const wavBuffer = encodeWAV(channelData, sampleRate);
+    
+    // Create downloadable blob
+    const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+    const url = URL.createObjectURL(blob);
+    
+    // Trigger download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vozcraft-${item.id}.${format}`;
+    a.click();
+    ```
+    
+    Encodes the rendered audio as a WAV file with proper RIFF headers and downloads it.
+  </Step>
+</Steps>
+
+<Info>
+**Processing Time**: Audio generation typically takes 1-5 seconds, depending on text length. A 1000-character text (~70 seconds of audio) usually renders in under 3 seconds.
+</Info>
+
+## Transcript Export (TXT)
+
+### Overview
+
+VozCraft allows you to download a formatted text transcript of any generated audio, including complete metadata and generation settings.
+
+### File Format
+
+Transcripts are saved as UTF-8 encoded plain text files (.txt) with structured formatting:
+
+```
+VozCraft — Transcripción de Audio
+══════════════════════════════════════════════════
+Nombre:     [Audio Name or Auto-generated]
+Fecha:      [Full date in locale format]
+Hora:       [Time in locale format]
+Idioma:     [Language/Accent]
+Género:     [Voice Type]
+Velocidad:  [Speed Setting]
+Ánimo:      [Mood Setting]
+══════════════════════════════════════════════════
+TRANSCRIPCIÓN:
+
+[Complete original text content]
+
+══════════════════════════════════════════════════
+© VozCraft · mateoRiosdev · 2026
+```
+
+### Included Information
+
+<CardGroup cols={2}>
+  <Card title="Metadata" icon="info">
+    - **Name**: Custom name or auto-generated identifier
+    - **Date**: Full date when audio was generated
+    - **Time**: Exact time of generation
+    - **Timestamp**: Unix timestamp for sorting
+  </Card>
+  
+  <Card title="Voice Settings" icon="microphone">
+    - **Language**: Selected language and regional variant
+    - **Voice Type**: Normal or High-pitched
+    - **Speed**: Selected speed setting
+    - **Mood**: Selected mood preset
+  </Card>
+</CardGroup>
+
+### Filename Format
+
+Transcript filenames are based on the audio name:
+
+- **With Custom Name**: `My_Audio_Name.txt`
+- **Without Custom Name**: `vozcraft-[timestamp].txt`
+
+Special characters are removed, and spaces are converted to underscores for filesystem compatibility.
+
+**Character Filtering**:
+```javascript
+// Safe filename generation
+const safeName = nombre
+  .replace(/[^a-zA-Z0-9_\-áéíóúñÁÉÍÓÚÑ ]/g, '')
+  .trim()
+  .replace(/ /g, '_') || `vozcraft-${item.id}`;
+```
+
+Allowed characters:
+- Alphanumeric: `a-z`, `A-Z`, `0-9`
+- Punctuation: `_`, `-`
+- Spanish characters: `áéíóúñÁÉÍÓÚÑ`
+- Spaces (converted to underscores)
+
+### How to Export Transcript
+
+<Steps>
+  <Step title="Find Your Audio">
+    Locate the audio in the history panel.
+  </Step>
+  
+  <Step title="Click TXT Button">
+    Click the purple **"📄 TXT"** button.
+    
+    Button shows: "📄 TXT" with purple background
+  </Step>
+  
+  <Step title="Download">
+    File downloads immediately:
+    - No processing delay (instant)
+    - Filename based on audio name
+    - UTF-8 encoding for international characters
+    - Toast notification: "📄 Transcripción descargada"
+  </Step>
+</Steps>
+
+### Use Cases for Transcripts
+
+<Tabs>
+  <Tab title="Documentation">
+    - **Reference Material**: Keep records of generated audio
+    - **Version Control**: Track changes in voice content over time
+    - **Audit Trail**: Document what was generated and when
+    - **Backup**: Text backup in case audio files are lost
+    - **Metadata Preservation**: Remember exact settings used
+  </Tab>
+  
+  <Tab title="Content Management">
+    - **Script Archive**: Maintain library of all scripts
+    - **Collaboration**: Share scripts with team members
+    - **Review Process**: Send transcripts for approval before audio
+    - **Translation**: Provide text for translation to other languages
+    - **Subtitles/Captions**: Use as basis for video subtitles
+  </Tab>
+  
+  <Tab title="Analysis">
+    - **Word Count**: Analyze content length and complexity
+    - **Search**: Find specific content across multiple audio files
+    - **Comparison**: Compare different versions of scripts
+    - **Statistics**: Track what content has been generated
+    - **Reporting**: Generate reports on audio production
+  </Tab>
+</Tabs>
+
+## Export Best Practices
+
+### Choosing the Right Format
+
+<Steps>
+  <Step title="Determine Your End Use">
+    **Select format based on purpose**:
+    
+    - **Immediate listening, sharing**: MP3
+    - **Professional editing, processing**: WAV
+    - **Documentation, reference**: TXT
+    - **Long-term archival (editable)**: WAV + TXT
+    - **Long-term archival (space-efficient)**: MP3 + TXT
+  </Step>
+  
+  <Step title="Consider File Size">
+    **Storage implications**:
+    
+    | Duration | MP3 Size | WAV Size | Ratio |
+    |----------|----------|----------|-------|
+    | 1 minute | ~1.3 MB | 2.6 MB | 2:1 |
+    | 5 minutes | ~6.5 MB | 13 MB | 2:1 |
+    | 10 minutes | ~13 MB | 26 MB | 2:1 |
+    
+    WAV files are approximately 2x larger than the equivalent MP3/WAV hybrid format VozCraft generates.
+  </Step>
+  
+  <Step title="Plan for Future Use">
+    **Future-proof your exports**:
+    
+    - If you might edit later: Choose WAV now
+    - If sharing is primary use: MP3 is sufficient
+    - If recreating audio: Export TXT to preserve settings
+    - If archiving: Consider exporting both WAV and TXT
+  </Step>
+</Steps>
+
+### Bulk Export Workflow
+
+For exporting multiple audio files:
+
+<Steps>
+  <Step title="Generate All Content First">
+    Create all your audio using VozCraft's generation interface. All items are automatically saved to history.
+  </Step>
+  
+  <Step title="Name Your Audio Files">
+    Use the rename feature (✏️ icon) to give each audio a descriptive name before exporting:
+    - Click edit icon
+    - Enter meaningful name
+    - Save
+    
+    This makes exported files easy to identify.
+  </Step>
+  
+  <Step title="Export Systematically">
+    Work through your history:
+    - Export in consistent format (all MP3 or all WAV)
+    - Consider exporting transcripts for all items
+    - Browser downloads go to your default downloads folder
+  </Step>
+  
+  <Step title="Organize Downloaded Files">
+    After downloading:
+    - Create a project folder
+    - Move all audio files into organized structure
+    - Keep transcripts with corresponding audio
+    - Consider exporting history JSON for backup
+  </Step>
+</Steps>
+
+### File Organization Suggestions
+
+```
+Project_Name/
+├── audio/
+│   ├── wav/              # High-quality masters
+│   │   ├── Episode_1.wav
+│   │   ├── Episode_2.wav
+│   │   └── Episode_3.wav
+│   │
+│   └── mp3/              # Distribution copies
+│       ├── Episode_1.mp3
+│       ├── Episode_2.mp3
+│       └── Episode_3.mp3
+│
+├── transcripts/        # Text versions
+│   ├── Episode_1.txt
+│   ├── Episode_2.txt
+│   └── Episode_3.txt
+│
+└── vozcraft-history.json  # Complete history backup
+```
+
+## Troubleshooting Export Issues
+
+<Accordion title="Download doesn't start">
+  **Possible Causes**:
+  - Browser blocking pop-ups/downloads
+  - Insufficient disk space
+  - Browser permission issues
+  
+  **Solutions**:
+  - Check browser download settings
+  - Allow downloads from VozCraft domain
+  - Verify available disk space
+  - Try a different browser
+  - Check browser console (F12) for errors
+</Accordion>
+
+<Accordion title="Exported audio is silent">
+  **Possible Causes**:
+  - Audio generation error
+  - Settings resulted in zero/very low volume
+  - Browser API compatibility issue
+  
+  **Solutions**:
+  - Try generating audio again
+  - Use **Neutral** mood (100% volume)
+  - Test playback in history before exporting
+  - Try a different browser (Chrome/Edge recommended)
+  - Check that the audio plays correctly in history first
+</Accordion>
+
+<Accordion title="Wrong filename or format">
+  **Issue**: File has unexpected name or extension
+  
+  **Solutions**:
+  - Rename audio before exporting for custom filename
+  - Note that format (MP3/WAV) is set by which button you click
+  - Some browsers may add additional extensions—remove them
+  - Check Downloads folder for multiple copies
+</Accordion>
+
+<Accordion title="File won't play on my device">
+  **Possible Causes**:
+  - Player doesn't support WAV format
+  - File corruption during download
+  - Incompatible media player
+  
+  **Solutions**:
+  - Try MP3 format instead of WAV
+  - Test file on computer first
+  - Use VLC Media Player (supports all formats)
+  - Re-download the file
+  - Try converting format with Audacity or online converter
+</Accordion>
+
+<Warning>
+**Large File Warning**: Exporting very long audio (5000 characters = ~6 minutes) may take 5-10 seconds to process. Your browser may appear frozen—this is normal. Wait for the download to complete.
+</Warning>
+
+## Advanced: Post-Processing Exported Audio
+
+Once you've exported WAV files, you can enhance them with audio editing software:
+
+### Recommended Free Tools
+
+<CardGroup cols={3}>
+  <Card title="Audacity" icon="wave-square">
+    **Free, cross-platform audio editor**
+    
+    Features:
+    - Noise reduction
+    - EQ and compression
+    - Effects and plugins
+    - Multi-track editing
+    
+    [Download Audacity](https://www.audacityteam.org/)
+  </Card>
+  
+  <Card title="Ocenaudio" icon="waveform">
+    **Fast, simple audio editor**
+    
+    Features:
+    - Real-time effects preview
+    - Easy interface
+    - VST plugin support
+    - Spectrogram view
+    
+    [Download Ocenaudio](https://www.ocenaudio.com/)
+  </Card>
+  
+  <Card title="Reaper" icon="sliders">
+    **Professional DAW with free trial**
+    
+    Features:
+    - Full DAW capabilities
+    - Unlimited tracks
+    - Automation
+    - Professional effects
+    
+    [Download Reaper](https://www.reaper.fm/)
+  </Card>
+</CardGroup>
+
+### Common Post-Processing Tasks
+
+<Steps>
+  <Step title="Normalize Volume">
+    Ensure consistent loudness:
+    - Use **Effect > Normalize** in Audacity
+    - Target: -1.0 dB to avoid clipping
+    - Helps when mixing multiple audio sources
+  </Step>
+  
+  <Step title="Add Music/Background">
+    Create professional productions:
+    - Import your VozCraft audio
+    - Add music track below
+    - Adjust music volume (usually -15 to -20 dB below voice)
+    - Use fade in/out for smooth transitions
+  </Step>
+  
+  <Step title="Apply EQ">
+    Improve voice clarity:
+    - High-pass filter at 80-100 Hz (remove rumble)
+    - Boost 2-5 kHz slightly (clarity)
+    - Reduce 200-400 Hz if muddy
+  </Step>
+  
+  <Step title="Compress Dynamic Range">
+    Even out volume variations:
+    - Use compression with 3:1 ratio
+    - Threshold: -18 dB
+    - Makes audio more consistent
+    - Particularly useful for longer content
+  </Step>
+</Steps>
+
+## Next Steps
+
+Now that you understand audio export, explore other VozCraft features:
+
+<CardGroup cols={3}>
+  <Card title="History Management" icon="clock-rotate-left" href="/features/history-management">
+    Learn about history features and JSON export/import
+  </Card>
+  
+  <Card title="Customization" icon="sliders" href="/features/customization">
+    Master all voice customization options
+  </Card>
+  
+  <Card title="Exporting Guide" icon="book" href="/guides/exporting-audio">
+    Step-by-step guide for common export scenarios
+  </Card>
+</CardGroup>

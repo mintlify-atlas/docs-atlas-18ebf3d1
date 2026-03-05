@@ -1,0 +1,809 @@
+---
+title: 'Progressive Web App Configuration'
+description: 'Learn how VozCraft is configured as a PWA with manifest.json, service workers, and installability'
+icon: 'mobile'
+---
+
+# Progressive Web App Configuration
+
+VozCraft is built as a **Progressive Web App (PWA)**, allowing users to install it on their devices and use it like a native application. This page documents the PWA configuration, manifest setup, and installation process.
+
+## What is a PWA?
+
+A Progressive Web App combines the best features of web and native applications:
+
+<CardGroup cols={2}>
+  <Card title="Installable" icon="download">
+    Users can install VozCraft to their home screen without an app store
+  </Card>
+  <Card title="Offline Capable" icon="wifi-slash">
+    Works without an internet connection (with service worker caching)
+  </Card>
+  <Card title="App-like Experience" icon="window">
+    Runs in standalone mode without browser UI
+  </Card>
+  <Card title="Auto-updates" icon="arrows-rotate">
+    Updates automatically when new versions are deployed
+  </Card>
+</CardGroup>
+
+## Web App Manifest
+
+The manifest file (`public/manifest.json`) defines how VozCraft appears when installed:
+
+```json public/manifest.json
+{
+  "name": "VozCraft - TTS",
+  "short_name": "VozCraft",
+  "description": "Texto a voz con IA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/logotipo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logotipo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+```
+
+### Manifest Properties
+
+<Accordion title="name - Full Application Name">
+The full name displayed during installation and in system menus.
+
+```json
+"name": "VozCraft - TTS"
+```
+
+- **Maximum length**: 45 characters (recommended)
+- **Usage**: App launcher, settings, about screen
+- **Fallback**: If not specified, uses `<title>` tag
+
+<Tip>
+Keep the name descriptive but concise. Include key functionality hints like "TTS" (Text-to-Speech).
+</Tip>
+</Accordion>
+
+<Accordion title="short_name - App Launcher Name">
+A shorter name for constrained spaces like home screens.
+
+```json
+"short_name": "VozCraft"
+```
+
+- **Maximum length**: 12 characters (recommended)
+- **Usage**: Home screen icon label, task switcher
+- **Fallback**: Uses `name` if not specified
+
+<Info>
+Mobile home screens typically show 10-12 characters. Android may truncate longer names with "..."
+</Info>
+</Accordion>
+
+<Accordion title="description - App Description">
+Describes the application's purpose.
+
+```json
+"description": "Texto a voz con IA"
+```
+
+- **Maximum length**: 256 characters
+- **Usage**: App stores, installation prompts
+- **SEO impact**: May be used by search engines
+
+<Note>
+The description should match your meta description tag for consistency:
+
+```html index.html
+<meta
+  name="description"
+  content="Texto a voz con IA - Genera audio realista en múltiples idiomas y voces"
+/>
+```
+</Note>
+</Accordion>
+
+<Accordion title="start_url - Launch URL">
+The URL that opens when the app is launched.
+
+```json
+"start_url": "/"
+```
+
+- **Relative or absolute**: Can be relative to manifest location
+- **Query parameters**: Use to track PWA installs: `"/?source=pwa"`
+- **Must be in scope**: URL must be within the app's scope
+
+<Tabs>
+  <Tab title="Root Launch">
+  ```json
+  "start_url": "/"
+  ```
+  Launches at the application root.
+  </Tab>
+  
+  <Tab title="With Tracking">
+  ```json
+  "start_url": "/?utm_source=pwa&utm_medium=standalone"
+  ```
+  Includes analytics tracking parameters.
+  </Tab>
+  
+  <Tab title="Deep Link">
+  ```json
+  "start_url": "/dashboard"
+  ```
+  Launches directly to a specific page.
+  </Tab>
+</Tabs>
+</Accordion>
+
+<Accordion title="display - Display Mode">
+Controls how the app appears when launched.
+
+```json
+"display": "standalone"
+```
+
+**Available modes:**
+
+| Mode | Description | Browser UI |
+|------|-------------|------------|
+| `fullscreen` | Uses entire screen | None |
+| `standalone` | App-like experience | None |
+| `minimal-ui` | Minimal browser controls | Back/reload buttons |
+| `browser` | Standard browser tab | Full browser UI |
+
+<Info>
+**VozCraft uses `standalone`** to provide an app-like experience without browser chrome. The app fills the screen with only system status bar visible.
+</Info>
+
+**Display mode hierarchy:**
+
+```json
+{
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"]
+}
+```
+
+Browsers try modes in order, falling back to the next if unsupported.
+</Accordion>
+
+<Accordion title="background_color - Launch Screen Color">
+The background color shown during app launch.
+
+```json
+"background_color": "#0f172a"
+```
+
+- **Format**: Hex color code
+- **Usage**: Splash screen background
+- **Duration**: Shown until first paint
+- **Should match**: Your app's actual background color
+
+<Tip>
+VozCraft uses `#0f172a` (dark slate) to match the dark theme default, providing a seamless launch experience.
+</Tip>
+</Accordion>
+
+<Accordion title="theme_color - Browser Theme Color">
+The color of the browser's UI elements.
+
+```json
+"theme_color": "#2563eb"
+```
+
+- **Format**: Hex color code
+- **Usage**: Status bar, toolbar color
+- **Platform**: Mainly Android, Safari on iOS
+- **Can be dynamic**: Update with `<meta name="theme-color">`
+
+**Platform differences:**
+
+<Tabs>
+  <Tab title="Android">
+  Colors the status bar and task switcher card:
+  
+  ```json
+  "theme_color": "#2563eb"
+  ```
+  
+  ![Android theme color example](https://web.dev/static/articles/add-manifest/image/a-pwa-using-theme-color-00b5c8b97ff66_1920.png)
+  </Tab>
+  
+  <Tab title="iOS Safari">
+  Colors the status bar:
+  
+  ```html
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  ```
+  </Tab>
+  
+  <Tab title="Desktop">
+  Colors the window title bar (on supporting browsers):
+  
+  ```json
+  "theme_color": "#2563eb",
+  "display_override": ["window-controls-overlay"]
+  ```
+  </Tab>
+</Tabs>
+
+<Note>
+VozCraft uses `#2563eb` (blue-600) which matches the primary brand color used throughout the interface.
+</Note>
+</Accordion>
+
+<Accordion title="icons - App Icons">
+Defines icon assets for various contexts.
+
+```json
+"icons": [
+  {
+    "src": "/logotipo.png",
+    "sizes": "192x192",
+    "type": "image/png",
+    "purpose": "any maskable"
+  },
+  {
+    "src": "/logotipo.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }
+]
+```
+
+**Required icon sizes:**
+
+| Size | Usage |
+|------|-------|
+| 192x192 | Home screen icon (Android) |
+| 512x512 | Splash screen, app launcher |
+| 48x48 | Small app icon (optional) |
+| 96x96 | Medium app icon (optional) |
+| 144x144 | Large app icon (optional) |
+
+**Purpose attribute:**
+
+<Tabs>
+  <Tab title="any">
+  Default purpose - used in any context:
+  
+  ```json
+  "purpose": "any"
+  ```
+  
+  Icon is used as-is without masking.
+  </Tab>
+  
+  <Tab title="maskable">
+  Adaptive icon for Android:
+  
+  ```json
+  "purpose": "maskable"
+  ```
+  
+  Icon should have important content in the center 80% (safe zone). Outer 20% may be cropped.
+  
+  ![Maskable icon safe zone](https://web.dev/static/articles/maskable-icon/image/maskable-icon-safe-zone-cb58d80e7d04e_1920.png)
+  </Tab>
+  
+  <Tab title="any maskable">
+  Works for both purposes:
+  
+  ```json
+  "purpose": "any maskable"
+  ```
+  
+  VozCraft uses this approach with a single icon set.
+  </Tab>
+</Tabs>
+
+<Warning>
+**Icon requirements:**
+- Must be PNG or WebP format
+- Should be square (1:1 aspect ratio)
+- Minimum 192x192 pixels
+- Transparent background not recommended for maskable icons
+</Warning>
+</Accordion>
+
+## HTML Integration
+
+The manifest is linked in `index.html`:
+
+```html index.html (lines 1-21)
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>VozCraft - TTS</title>
+    <meta
+      name="description"
+      content="Texto a voz con IA - Genera audio realista en múltiples idiomas y voces"
+    />
+
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+```
+
+### Essential Meta Tags
+
+<Accordion title="viewport - Mobile Responsiveness">
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+```
+
+Essential for responsive design and PWA functionality.
+- `width=device-width`: Sets viewport width to device width
+- `initial-scale=1.0`: Sets initial zoom level
+</Accordion>
+
+<Accordion title="manifest link - PWA Configuration">
+```html
+<link rel="manifest" href="/manifest.json" />
+```
+
+Links the web app manifest file.
+- Path is relative to domain root
+- Must be accessible via HTTPS (except localhost)
+</Accordion>
+
+<Accordion title="favicon - Browser Tab Icon">
+```html
+<link rel="icon" type="image/png" href="/logo.png" />
+```
+
+Defines the browser tab icon (separate from PWA icons).
+</Accordion>
+
+## iOS-Specific Meta Tags
+
+iOS Safari requires additional meta tags for PWA features:
+
+```html
+<!-- iOS App Capability -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<!-- iOS Status Bar Style -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- iOS App Title -->
+<meta name="apple-mobile-web-app-title" content="VozCraft">
+
+<!-- iOS App Icon (180x180) -->
+<link rel="apple-touch-icon" href="/icon-180.png">
+```
+
+<Note>
+While VozCraft's current `index.html` doesn't include these iOS tags, they're recommended for better iOS PWA support.
+</Note>
+
+## Installation Process
+
+### Desktop Installation (Chrome)
+
+<Steps>
+  <Step title="Visit VozCraft">
+  Navigate to the VozCraft URL in Chrome.
+  </Step>
+  
+  <Step title="Look for install prompt">
+  An install icon appears in the address bar (or Chrome shows a banner).
+  
+  ![Install icon in Chrome](https://web.dev/static/articles/install-criteria/image/omnibox-install-icon-2e93cd87b5f72_1920.png)
+  </Step>
+  
+  <Step title="Click install">
+  Click the install icon and confirm the installation.
+  </Step>
+  
+  <Step title="App opens">
+  VozCraft opens in a standalone window without browser UI.
+  </Step>
+</Steps>
+
+### Mobile Installation (Android)
+
+<Steps>
+  <Step title="Open in Chrome">
+  Visit VozCraft in Chrome on Android.
+  </Step>
+  
+  <Step title="Tap 'Add to Home Screen'">
+  Chrome shows a banner or use menu → "Add to Home Screen".
+  </Step>
+  
+  <Step title="Confirm installation">
+  Review the app name and icon, then tap "Add".
+  </Step>
+  
+  <Step title="Launch from home screen">
+  The VozCraft icon appears on your home screen. Tap to launch.
+  </Step>
+</Steps>
+
+### Mobile Installation (iOS)
+
+<Steps>
+  <Step title="Open in Safari">
+  Visit VozCraft in Safari on iOS (Chrome on iOS doesn't support PWA installation).
+  </Step>
+  
+  <Step title="Tap Share button">
+  Tap the Share icon in the Safari toolbar.
+  </Step>
+  
+  <Step title="Select 'Add to Home Screen'">
+  Scroll and tap "Add to Home Screen".
+  </Step>
+  
+  <Step title="Customize and add">
+  Edit the name if desired, then tap "Add".
+  </Step>
+</Steps>
+
+<Warning>
+**iOS limitations:**
+- Only Safari supports PWA installation on iOS
+- Service workers have limited capabilities
+- Storage may be cleared if not used for weeks
+- No background sync or push notifications
+</Warning>
+
+## Installation Criteria
+
+Browsers will only show the install prompt if the PWA meets certain criteria:
+
+<Tabs>
+  <Tab title="General Requirements">
+  ✅ Must have a web app manifest:
+  - `name` or `short_name`
+  - `icons` (192px and 512px)
+  - `start_url`
+  - `display` (standalone, fullscreen, or minimal-ui)
+  
+  ✅ Served over HTTPS (or localhost)
+  
+  ✅ Has a registered service worker (optional but recommended)
+  </Tab>
+  
+  <Tab title="Chrome Requirements">
+  ✅ All general requirements
+  
+  ✅ User engagement signals:
+  - User has interacted with the page
+  - Not already installed
+  - Visited at least once before
+  </Tab>
+  
+  <Tab title="Firefox Requirements">
+  ✅ All general requirements
+  
+  ✅ Must have a valid service worker
+  </Tab>
+  
+  <Tab title="Safari Requirements">
+  ✅ Web app manifest with icons
+  
+  ✅ Manual installation only (no automatic prompts)
+  
+  ✅ Apple-specific meta tags recommended
+  </Tab>
+</Tabs>
+
+<Info>
+**VozCraft meets these requirements:**
+- ✅ Valid manifest.json
+- ✅ 192x192 and 512x512 icons
+- ✅ Standalone display mode
+- ✅ Can be served over HTTPS
+- ⚠️ No service worker (yet)
+</Info>
+
+## Service Worker (Recommended)
+
+While VozCraft doesn't currently include a service worker, adding one enables offline functionality and improves performance.
+
+### Basic Service Worker Implementation
+
+Create `public/service-worker.js`:
+
+```javascript public/service-worker.js
+const CACHE_NAME = 'vozcraft-v1';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/logo.png',
+  '/logotipo.png',
+];
+
+// Install event - cache assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+  );
+});
+
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      );
+    })
+  );
+});
+
+// Fetch event - serve from cache, fallback to network
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => response || fetch(event.request))
+  );
+});
+```
+
+### Register Service Worker
+
+Add to `src/main.jsx`:
+
+```javascript src/main.jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+
+createFront(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker registered:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
+```
+
+<Tip>
+Service workers enable:
+- 📱 Offline functionality
+- ⚡ Faster load times (cache-first strategy)
+- 🔔 Push notifications (if implemented)
+- 🔄 Background sync
+</Tip>
+
+## Testing PWA Features
+
+### Chrome DevTools
+
+<Steps>
+  <Step title="Open DevTools">
+  Press F12 or Cmd+Option+I (Mac) / Ctrl+Shift+I (Windows)
+  </Step>
+  
+  <Step title="Navigate to Application tab">
+  Click the "Application" tab in DevTools
+  </Step>
+  
+  <Step title="Check Manifest">
+  Under "Application" → "Manifest", verify:
+  - All properties display correctly
+  - Icons load properly
+  - No warnings or errors
+  </Step>
+  
+  <Step title="Test installability">
+  Under "Application" → "Service Workers" (if implemented), check registration status
+  </Step>
+</Steps>
+
+### Lighthouse Audit
+
+<Steps>
+  <Step title="Open Lighthouse">
+  DevTools → "Lighthouse" tab
+  </Step>
+  
+  <Step title="Select categories">
+  Check "Progressive Web App" category
+  </Step>
+  
+  <Step title="Run audit">
+  Click "Analyze page load"
+  </Step>
+  
+  <Step title="Review results">
+  Lighthouse shows:
+  - PWA optimization score
+  - Specific failing checks
+  - Recommendations for improvement
+  </Step>
+</Steps>
+
+## PWA Best Practices
+
+<Steps>
+  <Step title="Provide high-quality icons">
+  Create icons in multiple sizes:
+  
+  ```json
+  "icons": [
+    { "src": "/icon-48.png", "sizes": "48x48", "type": "image/png" },
+    { "src": "/icon-72.png", "sizes": "72x72", "type": "image/png" },
+    { "src": "/icon-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "/icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+  ```
+  </Step>
+  
+  <Step title="Use maskable icons">
+  Design icons with safe zone for Android adaptive icons:
+  - Important content in center 80%
+  - Test at [maskable.app](https://maskable.app/)
+  </Step>
+  
+  <Step title="Implement a service worker">
+  Enable offline functionality and improve performance:
+  - Cache static assets
+  - Implement caching strategies
+  - Handle offline fallbacks
+  </Step>
+  
+  <Step title="Add iOS support">
+  Include Apple-specific meta tags:
+  
+  ```html
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  ```
+  </Step>
+  
+  <Step title="Test on real devices">
+  - Install on Android device
+  - Install on iOS device (Safari)
+  - Test offline functionality
+  - Verify icon appearance
+  </Step>
+</Steps>
+
+## Common Issues
+
+<Accordion title="Install prompt doesn't appear">
+**Possible causes:**
+- Not served over HTTPS
+- Missing required manifest properties
+- User already installed the app
+- User dismissed prompt too many times
+- Insufficient user engagement
+
+**Solutions:**
+```bash
+# Verify HTTPS
+curl -I https://your-domain.com
+
+# Check manifest in DevTools
+# Application → Manifest
+
+# Clear site data and try again
+# DevTools → Application → Storage → Clear site data
+```
+</Accordion>
+
+<Accordion title="Icons not displaying correctly">
+**Possible causes:**
+- Wrong icon path
+- Incorrect image format
+- Icons not square
+- Missing required sizes
+
+**Solutions:**
+```json
+// Use absolute paths
+"icons": [
+  {
+    "src": "/icons/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }
+]
+```
+
+Verify icons load:
+```bash
+curl -I https://your-domain.com/icons/icon-192.png
+```
+</Accordion>
+
+<Accordion title="App doesn't open in standalone mode">
+**Possible causes:**
+- `display` property not set correctly
+- Manifest not linked in HTML
+- Caching issues
+
+**Solutions:**
+```json
+// Set display mode
+"display": "standalone"
+```
+
+```html
+<!-- Link manifest in <head> -->
+<link rel="manifest" href="/manifest.json" />
+```
+
+Clear cache and reinstall the app.
+</Accordion>
+
+## Browser Support
+
+<Info>
+**PWA Support by Browser:**
+
+| Browser | Manifest | Install Prompt | Service Workers | Offline |
+|---------|----------|----------------|-----------------|----------|
+| Chrome 67+ | ✅ | ✅ | ✅ | ✅ |
+| Firefox 100+ | ✅ | ✅ | ✅ | ✅ |
+| Safari 11.1+ | ✅ | ⚠️ Manual | ⚠️ Limited | ⚠️ Limited |
+| Edge 79+ | ✅ | ✅ | ✅ | ✅ |
+| Opera 55+ | ✅ | ✅ | ✅ | ✅ |
+
+⚠️ Safari on iOS has limited PWA support compared to Android browsers.
+</Info>
+
+## Related Resources
+
+- [MDN Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest)
+- [web.dev PWA Guide](https://web.dev/progressive-web-apps/)
+- [Maskable Icon Editor](https://maskable.app/)
+- [PWA Builder](https://www.pwabuilder.com/)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Installation Guide" icon="download" href="/technical/installation">
+    Set up VozCraft for local development
+  </Card>
+  <Card title="Building for Production" icon="hammer" href="/technical/building">
+    Learn how to build and optimize VozCraft
+  </Card>
+</CardGroup>

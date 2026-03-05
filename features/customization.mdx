@@ -1,0 +1,1000 @@
+---
+title: Customization Options
+description: Master VozCraft's pitch, speed, and mood controls with detailed parameter documentation
+---
+
+# Customization Options
+
+VozCraft offers extensive customization controls that let you fine-tune every aspect of your generated audio. This guide provides comprehensive documentation of all customization parameters, their technical details, and best practices for achieving optimal results.
+
+## Customization Overview
+
+VozCraft's audio is shaped by four main customization axes:
+
+<CardGroup cols={2}>
+  <Card title="Voice Type" icon="microphone">
+    **2 Options**: Normal (0.75 pitch) and High-pitched (1.30 pitch)
+    
+    Controls the base pitch and gender characteristics of the voice
+  </Card>
+  
+  <Card title="Speed" icon="gauge">
+    **5 Options**: Very Slow to Very Fast (0.50x - 1.60x)
+    
+    Controls how quickly the text is spoken
+  </Card>
+  
+  <Card title="Mood" icon="face-smile">
+    **8 Options**: Neutral, Happy, Serious, and more
+    
+    Controls emotional tone through pitch, rate, and volume
+  </Card>
+  
+  <Card title="Language" icon="globe">
+    **22+ Options**: Multiple languages and regional accents
+    
+    Controls pronunciation, accent, and language
+  </Card>
+</CardGroup>
+
+<Info>
+**Combined Effect**: These parameters work together multiplicatively, allowing for thousands of unique voice combinations.
+</Info>
+
+## Voice Type (Género de Voz)
+
+Voice Type controls the base pitch and attempts to select appropriate system voices:
+
+### Normal Voice (Voz Normal) 🔉
+
+```javascript
+{
+  label: 'Voz Normal',
+  pitch: 0.75,
+  rateAdd: -0.05,
+  emoji: '🔉',
+  desc: 'Normal Voice'
+}
+```
+
+**Characteristics**:
+- **Pitch Multiplier**: 0.75 (25% lower than baseline)
+- **Rate Adjustment**: -0.05 (slightly slower)
+- **Gender Preference**: Male voices
+- **Tone**: Deeper, more authoritative
+- **Voice Search Keywords**: "male", "man", "guy", "masculin", and specific male voice names
+
+**Technical Details**:
+- Base frequency: `120 Hz * 0.75 = 90 Hz`
+- Typical range: 80-100 Hz (low male voice)
+- Combined with mood pitch: `finalPitch = 0.75 * moodPitch`
+
+**Best For**:
+- Professional content
+- Business presentations
+- Educational material
+- Audiobooks
+- Serious topics
+- Long-form content
+
+### High-pitched Voice (Voz Aguda) 🔊
+
+```javascript
+{
+  label: 'Voz Aguda',
+  pitch: 1.30,
+  rateAdd: 0.05,
+  emoji: '🔊',
+  desc: 'High-pitched Voice'
+}
+```
+
+**Characteristics**:
+- **Pitch Multiplier**: 1.30 (30% higher than baseline)
+- **Rate Adjustment**: +0.05 (slightly faster)
+- **Gender Preference**: Female voices
+- **Tone**: Lighter, more energetic
+- **Voice Search Keywords**: "female", "woman", "girl", "femenin", and specific female voice names
+
+**Technical Details**:
+- Base frequency: `120 Hz * 1.30 = 156 Hz`
+- Typical range: 150-180 Hz (female voice)
+- Combined with mood pitch: `finalPitch = 1.30 * moodPitch`
+
+**Best For**:
+- Children's content
+- Marketing and advertising
+- Upbeat announcements
+- Character voices
+- Entertainment content
+- Energetic presentations
+
+### Voice Type Selection Algorithm
+
+VozCraft intelligently selects system voices:
+
+```javascript
+const wantFemale = genero === 'Voz Aguda';
+const availableVoices = window.speechSynthesis.getVoices();
+const languageVoices = availableVoices.filter(v => 
+  v.lang === selectedLang || v.lang.startsWith(selectedLang.split('-')[0])
+);
+
+// Search for gender-appropriate voice
+const femaleKeywords = [
+  'female', 'woman', 'girl', 'femenin',
+  'paulina', 'mónica', 'lucia', 'valentina', 'rosa',
+  'samantha', 'karen', 'alice', 'milena'
+];
+
+const maleKeywords = [
+  'male', 'man', 'guy', 'masculin',
+  'jorge', 'carlos', 'diego', 'miguel', 'alex',
+  'daniel', 'thomas', 'james', 'mark'
+];
+
+const keywords = wantFemale ? femaleKeywords : maleKeywords;
+const matchedVoice = languageVoices.find(v =>
+  keywords.some(keyword => v.name.toLowerCase().includes(keyword))
+);
+
+// Use matched voice or fallback to first available
+selectedVoice = matchedVoice || languageVoices[0];
+```
+
+<Note>
+**System Dependent**: Voice availability depends on your operating system. VozCraft will use the best available voice, but gender matching is not guaranteed on all systems.
+</Note>
+
+## Speed (Velocidad) ⚡
+
+Speed controls how fast the text is spoken, measured as a rate multiplier:
+
+### Speed Options
+
+<Tabs>
+  <Tab title="Very Slow (Muy Lento)">
+    ```javascript
+    { label: 'Muy Lento', rate: 0.50 }
+    ```
+    
+    **Speed**: 0.50x (Half speed)
+    
+    **Characteristics**:
+    - Extremely slow, deliberate pace
+    - Maximum clarity and articulation
+    - Easy to follow for non-native speakers
+    - Ideal for learning and note-taking
+    
+    **Duration Impact**: 2x longer than normal
+    - 100 characters: ~14 seconds (vs 7 at normal)
+    - 1000 characters: ~140 seconds (vs 70 at normal)
+    
+    **Use Cases**:
+    - Language learning (pronunciation practice)
+    - Dictation and transcription
+    - Accessibility (processing difficulties)
+    - Complex technical content
+    - Meditation and relaxation
+  </Tab>
+  
+  <Tab title="Slow (Lento)">
+    ```javascript
+    { label: 'Lento', rate: 0.75 }
+    ```
+    
+    **Speed**: 0.75x (Three-quarters speed)
+    
+    **Characteristics**:
+    - Moderately slow, comfortable pace
+    - Clear pronunciation
+    - Easy comprehension
+    - Natural rhythm maintained
+    
+    **Duration Impact**: 1.33x longer than normal
+    - 100 characters: ~9.3 seconds (vs 7 at normal)
+    - 1000 characters: ~93 seconds (vs 70 at normal)
+    
+    **Use Cases**:
+    - Educational content
+    - Instructional material
+    - Elderly audience
+    - Non-native speakers
+    - Important information
+  </Tab>
+  
+  <Tab title="Normal">
+    ```javascript
+    { label: 'Normal', rate: 1.00 }
+    ```
+    
+    **Speed**: 1.00x (Default speed)
+    
+    **Characteristics**:
+    - Natural conversational pace
+    - Balanced speed and clarity
+    - Most comfortable for extended listening
+    - Standard for most content
+    
+    **Duration Impact**: Baseline
+    - 100 characters: ~7 seconds
+    - 1000 characters: ~70 seconds
+    - Formula: `duration ≈ characters / 14` seconds
+    
+    **Use Cases**:
+    - General content
+    - Audiobooks
+    - News and articles
+    - Podcasts
+    - Professional content
+    - Default choice for most scenarios
+  </Tab>
+  
+  <Tab title="Fast (Rápido)">
+    ```javascript
+    { label: 'Rápido', rate: 1.25 }
+    ```
+    
+    **Speed**: 1.25x (125% speed)
+    
+    **Characteristics**:
+    - Brisk, efficient pace
+    - Slight clarity trade-off
+    - Energetic delivery
+    - Time-efficient
+    
+    **Duration Impact**: 0.8x normal duration (20% shorter)
+    - 100 characters: ~5.6 seconds (vs 7 at normal)
+    - 1000 characters: ~56 seconds (vs 70 at normal)
+    
+    **Use Cases**:
+    - Quick reviews
+    - Experienced listeners
+    - Time-sensitive content
+    - Updates and summaries
+    - Energetic presentations
+  </Tab>
+  
+  <Tab title="Very Fast (Muy Rápido)">
+    ```javascript
+    { label: 'Muy Rápido', rate: 1.60 }
+    ```
+    
+    **Speed**: 1.60x (160% speed)
+    
+    **Characteristics**:
+    - Very rapid, compressed delivery
+    - Clarity significantly reduced
+    - Requires focused attention
+    - Maximum time efficiency
+    
+    **Duration Impact**: 0.625x normal duration (37.5% shorter)
+    - 100 characters: ~4.4 seconds (vs 7 at normal)
+    - 1000 characters: ~44 seconds (vs 70 at normal)
+    
+    **Use Cases**:
+    - Rapid information consumption
+    - Review of familiar material
+    - Time-critical scenarios
+    - Experienced TTS users
+    - Skimming content
+    
+    **Warning**: May be difficult to understand for some listeners or languages.
+  </Tab>
+</Tabs>
+
+### Speed Calculation
+
+Speed combines with voice type and mood:
+
+```javascript
+// Final rate calculation
+const baseRate = VELOCIDADES.find(v => v.label === velocidad).rate; // 0.50 to 1.60
+const voiceRateAdd = GENEROS.find(g => g.label === genero).rateAdd;  // -0.05 or +0.05
+const moodRateMulti = ANIMOS.find(a => a.label === animo).rateMulti; // 0.78 to 1.30
+
+const effectiveRate = (baseRate + voiceRateAdd) * moodRateMulti;
+
+// Applied to speech synthesis
+utterance.rate = Math.max(0.1, Math.min(10, effectiveRate));
+```
+
+**Example Calculations**:
+
+<Accordion title="Example: Normal + Neutral">
+  ```
+  Base rate: 1.00 (Normal)
+  Voice add: -0.05 (Normal voice)
+  Mood multi: 1.00 (Neutral)
+  
+  Effective rate = (1.00 + (-0.05)) * 1.00 = 0.95
+  ```
+  Result: Slightly slower than baseline
+</Accordion>
+
+<Accordion title="Example: Very Fast + High-pitched + Energetic">
+  ```
+  Base rate: 1.60 (Very Fast)
+  Voice add: +0.05 (High-pitched)
+  Mood multi: 1.30 (Energetic)
+  
+  Effective rate = (1.60 + 0.05) * 1.30 = 2.145
+  ```
+  Result: Extremely fast (2.14x normal speed!)
+</Accordion>
+
+<Accordion title="Example: Very Slow + Normal + Melancholic">
+  ```
+  Base rate: 0.50 (Very Slow)
+  Voice add: -0.05 (Normal voice)
+  Mood multi: 0.78 (Melancholic)
+  
+  Effective rate = (0.50 + (-0.05)) * 0.78 = 0.351
+  ```
+  Result: Extremely slow (0.35x speed)
+</Accordion>
+
+## Mood (Estado de Ánimo) 💫
+
+Mood presets modify pitch, rate, and volume to create emotional character:
+
+### Mood Options
+
+<Tabs>
+  <Tab title="Neutral 😐">
+    ```javascript
+    {
+      label: 'Neutral',
+      pitch: 1.00,
+      rateMulti: 1.00,
+      volume: 1.00,
+      desc: 'Balanced expression',
+      emoji: '😐'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 1.00 (baseline)
+    - Rate: 1.00x (no change)
+    - Volume: 100%
+    
+    **Characteristics**:
+    - Completely neutral emotional tone
+    - Balanced, professional sound
+    - No pitch or rate modifications
+    - Standard reference point
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 1.00 = 0.75
+    - High-pitched: 1.30 * 1.00 = 1.30
+    
+    **Use Cases**:
+    - Professional presentations
+    - News and journalism
+    - Technical documentation
+    - Business communications
+    - When other moods are too expressive
+  </Tab>
+  
+  <Tab title="Happy 😄 (Alegre)">
+    ```javascript
+    {
+      label: 'Alegre',
+      pitch: 1.25,
+      rateMulti: 1.15,
+      volume: 1.00,
+      desc: 'High and lively tone',
+      emoji: '😄'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 1.25 (25% higher)
+    - Rate: 1.15x (15% faster)
+    - Volume: 100%
+    
+    **Characteristics**:
+    - Uplifted, cheerful tone
+    - Brighter, more animated delivery
+    - Slightly faster for energy
+    - Positive, optimistic feel
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 1.25 = 0.9375 (still relatively low)
+    - High-pitched: 1.30 * 1.25 = 1.625 (very high!)
+    
+    **Use Cases**:
+    - Marketing and advertising
+    - Celebrations and announcements
+    - Children's content
+    - Motivational material
+    - Positive news
+    - Welcome messages
+  </Tab>
+  
+  <Tab title="Serious 😠 (Serio)">
+    ```javascript
+    {
+      label: 'Serio',
+      pitch: 0.80,
+      rateMulti: 0.88,
+      volume: 0.95,
+      desc: 'Deep, steady and firm',
+      emoji: '😠'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 0.80 (20% lower)
+    - Rate: 0.88x (12% slower)
+    - Volume: 95%
+    
+    **Characteristics**:
+    - Lower, more authoritative pitch
+    - Slower, deliberate pace
+    - Slightly reduced volume
+    - Grave, important tone
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 0.80 = 0.60 (very deep)
+    - High-pitched: 1.30 * 0.80 = 1.04 (moderate)
+    
+    **Use Cases**:
+    - Formal announcements
+    - Serious topics (health, safety)
+    - Legal content
+    - Official statements
+    - Solemn occasions
+    - Authority and credibility
+  </Tab>
+  
+  <Tab title="Enthusiastic 🤩 (Entusiasta)">
+    ```javascript
+    {
+      label: 'Entusiasta',
+      pitch: 1.35,
+      rateMulti: 1.25,
+      volume: 1.00,
+      desc: 'Very energetic and expressive',
+      emoji: '🤩'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 1.35 (35% higher)
+    - Rate: 1.25x (25% faster)
+    - Volume: 100%
+    
+    **Characteristics**:
+    - Highest pitch modifier
+    - Fast, dynamic delivery
+    - Maximum energy and excitement
+    - Very expressive
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 1.35 = 1.0125 (moderate-high)
+    - High-pitched: 1.30 * 1.35 = 1.755 (extremely high!)
+    
+    **Use Cases**:
+    - Sports commentary
+    - Motivational speeches
+    - Exciting announcements
+    - Product launches
+    - High-energy content
+    - Celebrations
+  </Tab>
+  
+  <Tab title="Melancholic 😔 (Melancólico)">
+    ```javascript
+    {
+      label: 'Melancólico',
+      pitch: 0.70,
+      rateMulti: 0.78,
+      volume: 0.88,
+      desc: 'Soft, slow and nostalgic',
+      emoji: '😔'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 0.70 (30% lower) - Lowest!
+    - Rate: 0.78x (22% slower) - Slowest!
+    - Volume: 88% - Quietest!
+    
+    **Characteristics**:
+    - Lowest pitch of all moods
+    - Slowest pace
+    - Quietest volume
+    - Soft, contemplative tone
+    - Nostalgic, reflective feel
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 0.70 = 0.525 (very deep)
+    - High-pitched: 1.30 * 0.70 = 0.91 (moderate-low)
+    
+    **Use Cases**:
+    - Poetry and literature
+    - Memorial content
+    - Reflective pieces
+    - Sad or somber topics
+    - Nostalgic narration
+    - Bedtime stories (calming)
+  </Tab>
+  
+  <Tab title="Energetic ⚡ (Enérgico)">
+    ```javascript
+    {
+      label: 'Enérgico',
+      pitch: 1.15,
+      rateMulti: 1.30,
+      volume: 1.00,
+      desc: 'Fast, dynamic and powerful',
+      emoji: '⚡'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 1.15 (15% higher)
+    - Rate: 1.30x (30% faster) - Fastest!
+    - Volume: 100%
+    
+    **Characteristics**:
+    - Fastest mood (highest rate multiplier)
+    - Moderate pitch elevation
+    - Full volume
+    - Dynamic, powerful delivery
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 1.15 = 0.8625 (moderate)
+    - High-pitched: 1.30 * 1.15 = 1.495 (very high)
+    
+    **Use Cases**:
+    - Workout instructions
+    - Action content
+    - Urgent messages
+    - Fast-paced narration
+    - High-intensity content
+    - Quick announcements
+  </Tab>
+  
+  <Tab title="Relaxed 😌 (Relajado)">
+    ```javascript
+    {
+      label: 'Relajado',
+      pitch: 0.88,
+      rateMulti: 0.82,
+      volume: 0.90,
+      desc: 'Calm and slow-paced',
+      emoji: '😌'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 0.88 (12% lower)
+    - Rate: 0.82x (18% slower)
+    - Volume: 90%
+    
+    **Characteristics**:
+    - Slightly lowered pitch
+    - Slow, calming pace
+    - Reduced volume
+    - Peaceful, soothing tone
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 0.88 = 0.66 (low)
+    - High-pitched: 1.30 * 0.88 = 1.144 (moderate-high)
+    
+    **Use Cases**:
+    - Meditation guides
+    - Sleep stories
+    - ASMR content
+    - Relaxation exercises
+    - Calm instructions
+    - Bedtime content
+  </Tab>
+  
+  <Tab title="Tense 😤 (Tenso)">
+    ```javascript
+    {
+      label: 'Tenso',
+      pitch: 1.10,
+      rateMulti: 1.18,
+      volume: 0.95,
+      desc: 'Urgent and tense',
+      emoji: '😤'
+    }
+    ```
+    
+    **Parameters**:
+    - Pitch: 1.10 (10% higher)
+    - Rate: 1.18x (18% faster)
+    - Volume: 95%
+    
+    **Characteristics**:
+    - Moderately elevated pitch
+    - Faster pace
+    - Slightly reduced volume
+    - Urgent, stressed tone
+    
+    **Effective Pitch Examples**:
+    - Normal voice: 0.75 * 1.10 = 0.825 (moderate)
+    - High-pitched: 1.30 * 1.10 = 1.43 (high)
+    
+    **Use Cases**:
+    - Thriller narration
+    - Dramatic content
+    - Suspenseful moments
+    - Alert messages
+    - Tense situations
+    - Urgent announcements
+  </Tab>
+</Tabs>
+
+### Mood Visualization
+
+VozCraft displays a visual mood indicator showing the relative values:
+
+```
+[🤩] Enthusiastic · Very energetic and expressive
+
+Pitch      █████████░░░  85%
+Rate       ████████░░░░  73%
+Volume     ████████████ 100%
+```
+
+**Calculation**:
+```javascript
+const pitchPercent = Math.round((pitch - 0.70) / 0.65 * 100);
+const ratePercent = Math.round((rateMulti - 0.78) / 0.52 * 100);
+const volumePercent = Math.round((volume - 0.88) / 0.12 * 100);
+```
+
+**Normalization**:
+- Pitch: Scales from 0.70 (Melancholic) to 1.35 (Enthusiastic)
+- Rate: Scales from 0.78 (Melancholic) to 1.30 (Energetic)
+- Volume: Scales from 0.88 (Melancholic) to 1.00 (multiple moods)
+
+## Combining Customizations
+
+### Parameter Interaction
+
+All customization parameters work together:
+
+```javascript
+// Final synthesized audio parameters
+const finalPitch = voiceTypePitch * moodPitch;
+const finalRate = (baseSpeed + voiceTypeRateAdd) * moodRateMulti;
+const finalVolume = moodVolume;
+
+// Applied with safety clamping
+utterance.pitch = Math.max(0.1, Math.min(2, finalPitch));
+utterance.rate = Math.max(0.1, Math.min(10, finalRate));
+utterance.volume = Math.max(0, Math.min(1, finalVolume));
+```
+
+### Extreme Combinations
+
+<CardGroup cols={2}>
+  <Card title="Highest Pitch Possible" icon="arrow-up">
+    **Settings**:
+    - Voice Type: High-pitched (1.30)
+    - Mood: Enthusiastic (1.35)
+    
+    **Result**:
+    ```
+    Pitch = 1.30 * 1.35 = 1.755
+    ```
+    
+    Very high, extremely energetic voice (capped at 2.0 by browser)
+  </Card>
+  
+  <Card title="Lowest Pitch Possible" icon="arrow-down">
+    **Settings**:
+    - Voice Type: Normal (0.75)
+    - Mood: Melancholic (0.70)
+    
+    **Result**:
+    ```
+    Pitch = 0.75 * 0.70 = 0.525
+    ```
+    
+    Very deep, somber voice
+  </Card>
+  
+  <Card title="Fastest Rate Possible" icon="forward-fast">
+    **Settings**:
+    - Speed: Very Fast (1.60)
+    - Voice Type: High-pitched (+0.05)
+    - Mood: Energetic (1.30x)
+    
+    **Result**:
+    ```
+    Rate = (1.60 + 0.05) * 1.30 = 2.145
+    ```
+    
+    Extremely rapid speech
+  </Card>
+  
+  <Card title="Slowest Rate Possible" icon="backward">
+    **Settings**:
+    - Speed: Very Slow (0.50)
+    - Voice Type: Normal (-0.05)
+    - Mood: Melancholic (0.78x)
+    
+    **Result**:
+    ```
+    Rate = (0.50 + (-0.05)) * 0.78 = 0.351
+    ```
+    
+    Extremely slow, contemplative pace
+  </Card>
+</CardGroup>
+
+### Recommended Combinations
+
+<Tabs>
+  <Tab title="Professional Content">
+    **Best for business, presentations, formal content**
+    
+    **Recommended**:
+    - Voice: Normal
+    - Speed: Normal
+    - Mood: Neutral or Serious
+    - Language: Match audience
+    
+    **Result**: Authoritative, clear, professional tone
+    
+    **Parameters**:
+    - Pitch: 0.75 (Neutral) or 0.60 (Serious)
+    - Rate: 0.95 (Neutral) or 0.836 (Serious)
+    - Volume: 100% (Neutral) or 95% (Serious)
+  </Tab>
+  
+  <Tab title="Educational Content">
+    **Best for learning, tutorials, instructions**
+    
+    **Recommended**:
+    - Voice: Normal
+    - Speed: Slow or Normal
+    - Mood: Neutral
+    - Language: Match learners
+    
+    **Result**: Clear, patient, easy to follow
+    
+    **Parameters**:
+    - Pitch: 0.75
+    - Rate: 0.7125 (Slow) or 0.95 (Normal)
+    - Volume: 100%
+  </Tab>
+  
+  <Tab title="Marketing Content">
+    **Best for ads, promotions, announcements**
+    
+    **Recommended**:
+    - Voice: High-pitched
+    - Speed: Fast
+    - Mood: Happy or Enthusiastic
+    - Language: Target market
+    
+    **Result**: Energetic, attention-grabbing, positive
+    
+    **Parameters**:
+    - Pitch: 1.625 (Happy) or 1.755 (Enthusiastic)
+    - Rate: 1.4375 (Happy) or 1.5625 (Enthusiastic)
+    - Volume: 100%
+  </Tab>
+  
+  <Tab title="Audiobook/Long-form">
+    **Best for books, articles, long content**
+    
+    **Recommended**:
+    - Voice: Normal or High-pitched (preference)
+    - Speed: Normal
+    - Mood: Neutral or Relaxed
+    - Language: Content language
+    
+    **Result**: Comfortable for extended listening
+    
+    **Parameters**:
+    - Pitch: 0.75-1.30
+    - Rate: 0.95 (Neutral) or 0.779 (Relaxed)
+    - Volume: 100% (Neutral) or 90% (Relaxed)
+  </Tab>
+  
+  <Tab title="Children's Content">
+    **Best for stories, education for kids**
+    
+    **Recommended**:
+    - Voice: High-pitched
+    - Speed: Slow or Normal
+    - Mood: Happy
+    - Language: Child's language
+    
+    **Result**: Engaging, friendly, age-appropriate
+    
+    **Parameters**:
+    - Pitch: 1.625
+    - Rate: 0.86 (Slow) or 1.15 (Normal)
+    - Volume: 100%
+  </Tab>
+  
+  <Tab title="Meditation/Relaxation">
+    **Best for sleep, meditation, calming**
+    
+    **Recommended**:
+    - Voice: Normal
+    - Speed: Very Slow or Slow
+    - Mood: Relaxed or Melancholic
+    - Language: Listener's language
+    
+    **Result**: Calming, soothing, peaceful
+    
+    **Parameters**:
+    - Pitch: 0.66 (Relaxed) or 0.525 (Melancholic)
+    - Rate: 0.369 (Relaxed, Very Slow) to 0.585 (Melancholic, Slow)
+    - Volume: 90% or 88%
+  </Tab>
+</Tabs>
+
+## Advanced Customization Tips
+
+### Fine-tuning Your Audio
+
+<Steps>
+  <Step title="Start with Defaults">
+    Begin with:
+    - Voice: Normal
+    - Speed: Normal
+    - Mood: Neutral
+    
+    Generate audio and listen critically.
+  </Step>
+  
+  <Step title="Adjust One Parameter at a Time">
+    Make incremental changes:
+    1. Try High-pitched voice if Normal is too deep
+    2. Adjust speed if pacing feels off
+    3. Finally, select mood for emotional tone
+    
+    This helps you understand each parameter's impact.
+  </Step>
+  
+  <Step title="Test with Representative Text">
+    Use actual content, not "test test":
+    - Include punctuation (affects pauses)
+    - Use varied sentence lengths
+    - Include numbers if relevant
+    - Test with typical content length
+  </Step>
+  
+  <Step title="Consider Your Audience">
+    Customize for listeners:
+    - **Native speakers**: Normal speed acceptable
+    - **Language learners**: Slow or Very Slow
+    - **Elderly**: Slower speeds, moderate pitch
+    - **Children**: Higher pitch, moderate speed
+    - **Professional**: Normal voice, Neutral or Serious
+  </Step>
+  
+  <Step title="Save Successful Combinations">
+    When you find a good combination:
+    - Generate the audio
+    - Give it a descriptive name
+    - Use history to reference settings later
+    - Export transcript to document settings
+  </Step>
+</Steps>
+
+### Common Mistakes to Avoid
+
+<Warning>
+**Avoid These Combinations**:
+
+1. **Too Extreme**: Very Fast + Energetic + Enthusiastic = Incomprehensible
+2. **Conflicting Moods**: Using "Serious" for happy content
+3. **Wrong Speed for Audience**: Fast speed for language learners
+4. **Ignoring Content Length**: Very Slow for 5000 character text = 15+ minutes
+5. **Not Testing**: Always listen before exporting/using
+</Warning>
+
+### Language-Specific Considerations
+
+<Accordion title="Tonal Languages (Chinese, Vietnamese)">
+  **Special Considerations**:
+  - Pitch changes affect meaning in tonal languages
+  - Stick closer to Neutral mood (1.00 pitch)
+  - Avoid Enthusiastic (1.35) and Melancholic (0.70) extremes
+  - Test carefully with native speakers
+  
+  **Recommended Moods**: Neutral, Tense, Relaxed (moderate pitch changes)
+</Accordion>
+
+<Accordion title="Syllable-timed Languages (Spanish, Italian)">
+  **Special Considerations**:
+  - These languages flow naturally at various speeds
+  - Speed changes generally well-tolerated
+  - Mood variations work well
+  - Natural rhythm preserved at most settings
+  
+  **Recommended**: Any combination works well
+</Accordion>
+
+<Accordion title="Stress-timed Languages (English, German)">
+  **Special Considerations**:
+  - Extreme speeds can disrupt stress patterns
+  - Very Fast (1.60) may reduce clarity significantly
+  - Mood variations generally effective
+  - Consider slower speeds for non-native learners
+  
+  **Recommended**: Normal to Fast speeds for best results
+</Accordion>
+
+## Browser Limitations
+
+### Web Speech API Constraints
+
+The Web Speech API has built-in limits:
+
+```javascript
+// VozCraft applies safety clamping
+const safePitch = Math.max(0.1, Math.min(2, calculatedPitch));
+const safeRate = Math.max(0.1, Math.min(10, calculatedRate));
+const safeVolume = Math.max(0, Math.min(1, calculatedVolume));
+```
+
+**API Limits**:
+- **Pitch**: 0.1 to 2.0
+- **Rate**: 0.1 to 10.0
+- **Volume**: 0.0 to 1.0
+
+VozCraft's combinations stay well within these limits, but extreme values are clamped for safety.
+
+### Platform Differences
+
+<Tabs>
+  <Tab title="Chrome/Edge">
+    **Characteristics**:
+    - Best overall support
+    - Smooth parameter transitions
+    - Good pitch/rate accuracy
+    - Wide range support
+    
+    **Recommended**: Primary browser for VozCraft
+  </Tab>
+  
+  <Tab title="Safari">
+    **Characteristics**:
+    - Excellent voice quality
+    - Good parameter support
+    - Some pitch range limitations
+    - May not support all extreme values
+    
+    **Note**: iOS Safari has best mobile TTS
+  </Tab>
+  
+  <Tab title="Firefox">
+    **Characteristics**:
+    - Basic support
+    - Limited voice selection
+    - Parameter support varies
+    - May use system defaults
+    
+    **Recommendation**: Use Chrome/Edge if possible
+  </Tab>
+</Tabs>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Voice Settings Guide" icon="book" href="/guides/voice-settings">
+    Step-by-step guide for optimal voice configuration
+  </Card>
+  
+  <Card title="Using VozCraft" icon="rocket" href="/guides/using-vozcraft">
+    Complete workflow guide with examples
+  </Card>
+  
+  <Card title="Audio Export" icon="download" href="/features/audio-export">
+    Learn how to export with custom settings
+  </Card>
+</CardGroup>

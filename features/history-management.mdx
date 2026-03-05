@@ -1,0 +1,972 @@
+---
+title: History Management
+description: Learn how to manage your audio generation history, rename audio, and export/import your complete history
+---
+
+# History Management
+
+VozCraft automatically maintains a comprehensive history of all your generated audio, allowing you to replay, rename, export, and manage your text-to-speech creations. This guide covers all history features and best practices for organizing your audio library.
+
+## Overview
+
+Every audio generation is automatically saved to your history with complete metadata:
+
+<CardGroup cols={3}>
+  <Card title="Automatic Saving" icon="floppy-disk">
+    Every generated audio is instantly added to history with all settings preserved
+  </Card>
+  <Card title="30 Item Limit" icon="list">
+    History maintains your 30 most recent audio generations
+  </Card>
+  <Card title="Browser Storage" icon="database">
+    History persists in browser local storage across sessions
+  </Card>
+</CardGroup>
+
+## History Panel
+
+### Location and Display
+
+The history panel is located:
+- **Desktop**: Right side of the screen (fixed width: 340px)
+- **Tablet**: Below the main control panel
+- **Mobile**: Below the main control panel
+
+### Panel Components
+
+<Tabs>
+  <Tab title="Header">
+    **History Header** displays:
+    
+    ```
+    📋 History (15)
+    [Clear all]
+    ```
+    
+    - **Title**: "📋 Historial" (Spanish) or "📋 History" (English)
+    - **Count**: Number of items in parentheses (e.g., "(15)")
+    - **Clear Button**: Red "Limpiar todo" / "Clear all" button
+    
+    The count badge updates automatically as you add or remove items.
+  </Tab>
+  
+  <Tab title="Scroll Area">
+    **Scrollable Content Area**:
+    
+    - **Height**: Flexible, min 280px, max 60vh (60% of viewport height)
+    - **Scroll Behavior**: Smooth scrolling with custom scrollbar
+    - **Empty State**: Shows microphone icon and message when empty
+    - **Item Order**: Newest first (reverse chronological)
+    
+    **Empty State Message**:
+    ```
+    🎤
+    Aún no has generado audios
+    (You have not generated audios yet)
+    ```
+  </Tab>
+  
+  <Tab title="Footer Buttons">
+    **Export/Import Controls**:
+    
+    Two buttons at the bottom:
+    
+    1. **💾 Save (💾 Guardar)**:
+       - Blue gradient button
+       - Exports entire history as JSON
+       - Left button (flex: 1)
+    
+    2. **📂 Load (📂 Cargar)**:
+       - Dark button
+       - Imports history from JSON file
+       - Right button (flex: 1)
+    
+    Both buttons are always visible, even when history is empty.
+  </Tab>
+</Tabs>
+
+## History Items
+
+Each history item is a comprehensive record of a single audio generation:
+
+### Item Structure
+
+```javascript
+{
+  id: "1705349100000",           // Timestamp as string
+  timestamp: 1705349100000,      // Unix timestamp (milliseconds)
+  texto: "Welcome to VozCraft...", // Complete text content
+  nombre: "My Audio Name",       // Custom name (empty string if not set)
+  voz: "Español (México)",         // Language/accent selection
+  genero: "Voz Normal",           // Voice type (Normal/High-pitched)
+  velocidad: "Normal",            // Speed setting
+  animo: "Neutral"                // Mood setting
+}
+```
+
+### Visual Display
+
+Each history item shows:
+
+<Steps>
+  <Step title="Name Row">
+    **Audio Name + Edit Button**
+    
+    - **Left**: Bold name or auto-generated "Audio · [date/time]"
+    - **Right**: ✏️ Edit button (24x24px)
+    
+    ```
+    My Audio Name                                    ✏️
+    ```
+    
+    - Truncates with ellipsis if too long
+    - Edit button changes color on hover (blue)
+  </Step>
+  
+  <Step title="Metadata Row">
+    **Date · Voice · Type · Speed · Mood**
+    
+    Example:
+    ```
+    🗃 1/15/2026, 3:45 PM · Español (México) · Voz Normal · Normal · Neutral
+    ```
+    
+    - Small text (11px)
+    - Secondary color (muted)
+    - Separated by bullets (·)
+    - Wraps on mobile
+    - Adapts to selected interface language
+  </Step>
+  
+  <Step title="Text Preview">
+    **First Line of Text**
+    
+    ```
+    Welcome to VozCraft, the most advanced text-to-speech...
+    ```
+    
+    - Single line with ellipsis
+    - Shows beginning of transcript
+    - Helps identify content quickly
+  </Step>
+  
+  <Step title="Action Buttons">
+    **Button Row**
+    
+    ```
+    [▶ Reproducir] [MP3] [WAV] [📄 TXT] [✕]
+    ```
+    
+    Five buttons:
+    1. **Play/Stop** (blue/purple) - Flex-grow, main action
+    2. **MP3** (green) - Export as MP3
+    3. **WAV** (amber) - Export as WAV
+    4. **TXT** (purple) - Download transcript
+    5. **Delete** (red) - Remove from history
+    
+    Buttons wrap on narrow screens.
+  </Step>
+  
+  <Step title="Audio Player (When Playing)">
+    **Inline Player Component**
+    
+    Appears below buttons when audio is playing:
+    
+    - **Progress Bar**: Seekable with position indicator
+    - **Play/Pause Button**: 32px circular button
+    - **Waveform Visualization**: 32 animated bars
+    - **Time Display**: "0:45 / 2:30" format
+    
+    Blue gradient background indicates active playback.
+  </Step>
+</Steps>
+
+### Visual States
+
+<Tabs>
+  <Tab title="Default State">
+    **Not Playing**:
+    - Light background (white or dark card color)
+    - Standard border
+    - "▶ Reproducir" / "▶ Play" button
+    - No audio player visible
+    
+    **Purpose**: Compact display to show more items in limited space.
+  </Tab>
+  
+  <Tab title="Playing State">
+    **Currently Playing**:
+    - Blue-tinted background (`rgba(37,99,235,0.08)` dark, `#f0f7ff` light)
+    - Blue border (`rgba(37,99,235,0.3)` dark, `#bfdbfe` light)
+    - "⏹ Detener" / "⏹ Stop" button (purple gradient)
+    - Audio player visible with waveform
+    - Progress bar animating
+    
+    **Purpose**: Clear visual indicator of active audio.
+  </Tab>
+  
+  <Tab title="Hover State">
+    **Mouse Over**:
+    - Edit button changes color to blue
+    - Action buttons slightly change shade
+    - Cursor changes to pointer on interactive elements
+    
+    **Purpose**: Provide visual feedback for interactive elements.
+  </Tab>
+</Tabs>
+
+## Renaming Audio
+
+VozCraft allows you to assign custom names to your audio for better organization:
+
+### Default Naming
+
+When audio is first generated, it has no custom name (`nombre: ""`), so it displays:
+
+```
+Audio · 1/15/2026, 3:45 PM
+```
+
+Format: `"Audio · " + localized_date_time`
+
+### Rename Process
+
+<Steps>
+  <Step title="Open Rename Modal">
+    Click the **✏️** (pencil) icon next to the audio name.
+    
+    A modal dialog appears:
+    - Centered overlay with backdrop blur
+    - Title: "✏️ Nombre del audio" / "✏️ Audio name"
+    - Text input with current name pre-filled
+    - Input is auto-focused and text is selected
+  </Step>
+  
+  <Step title="Enter New Name">
+    Type your desired name in the input field:
+    
+    - **Maximum length**: 80 characters
+    - **Allowed characters**: All characters accepted
+    - **Placeholder**: "Escribe un nombre..." / "Enter a name..."
+    
+    **Good naming examples**:
+    - "Product Demo Script v2"
+    - "Spanish Lesson 1 - Greetings"
+    - "Podcast Intro - Season 2"
+    - "Training Module 5"
+    - "Customer Service Script - Returns"
+  </Step>
+  
+  <Step title="Save or Cancel">
+    Three ways to confirm:
+    
+    1. **Click Save Button**: "Guardar" / "Save" (blue gradient)
+    2. **Press ENTER**: Quick-save shortcut
+    3. **Press ESC**: Cancel (no changes)
+    
+    Or click "Cancelar" / "Cancel" button or backdrop to abort.
+  </Step>
+  
+  <Step title="Confirmation">
+    After saving:
+    - Modal closes immediately
+    - Name updates in history item
+    - Toast notification: "✓ Nombre actualizado" / "✓ Name updated"
+    - History is saved to browser storage
+    - New name will be used for file exports
+  </Step>
+</Steps>
+
+### Rename Modal Details
+
+```javascript
+// Modal component structure
+<RenameModal>
+  <Overlay onClick={onCancel} />  // Click outside to close
+  <Dialog>
+    <Title>✏️ {t.renameTitle}</Title>
+    <Input 
+      maxLength={80}
+      value={currentName}
+      autoFocus
+      autoSelect
+      onEnter={confirm}
+      onEscape={cancel}
+    />
+    <ButtonRow>
+      <SaveButton />   // Blue gradient, calls onConfirm
+      <CancelButton /> // Gray, calls onCancel
+    </ButtonRow>
+  </Dialog>
+</RenameModal>
+```
+
+<Tip>
+**Naming Strategy**: Use descriptive names that help you identify content later. Include version numbers, dates, or project names for better organization.
+</Tip>
+
+## Playback from History
+
+### Playing Audio
+
+Click the **"▶ Reproducir" / "▶ Play"** button on any history item:
+
+<Steps>
+  <Step title="Audio Begins Playing">
+    - Button changes to "⏹ Detener" / "⏹ Stop" with purple gradient
+    - Item background becomes blue-tinted
+    - Inline audio player appears below buttons
+    - Web Speech API synthesizes audio with original settings
+  </Step>
+  
+  <Step title="Audio Player Features">
+    **Progress Bar**:
+    - Visual progress indicator (5px height)
+    - Seekable - click anywhere to jump to position
+    - Animated position dot follows progress
+    - Gradient fill (blue to purple)
+    
+    **Waveform Visualization**:
+    - 32 vertical bars
+    - Varying heights (20-90%) for visual interest
+    - Bars animate when playing
+    - Color changes: blue for played, gray for upcoming
+    - Animation: `wave-bar-mini` keyframes, 0.6-1.08s duration
+    
+    **Time Display**:
+    - Format: "0:45 / 2:30" (current / total)
+    - Updates 10 times per second (100ms interval)
+    - Tabular numbers for alignment
+    - Gray text color
+  </Step>
+  
+  <Step title="Playback Controls">
+    **Play/Pause Button** (32px circle):
+    - **Playing**: Shows ⏸ (pause icon), purple background
+    - **Paused**: Shows ▶ (play icon), blue background
+    - Click to toggle playback state
+    
+    **Seek Functionality**:
+    - Click progress bar to jump to position
+    - Audio restarts from clicked position
+    - Useful for long audio content
+  </Step>
+  
+  <Step title="Stopping Playback">
+    Click "⏹ Detener" or play another audio:
+    - Current audio stops immediately
+    - Button reverts to "▶ Reproducir"
+    - Player remains visible until item changes
+    - Background color returns to normal
+  </Step>
+</Steps>
+
+### Duration Calculation
+
+VozCraft estimates duration based on text length and settings:
+
+```javascript
+// Duration estimation algorithm
+const effectiveRate = (baseRate + voiceTypeRateAdd) * moodRateMulti;
+const estimatedDuration = Math.max(1, textLength / (14 * effectiveRate));
+
+// Where:
+// - baseRate: From VELOCIDADES (0.50 to 1.60)
+// - voiceTypeRateAdd: From GENEROS (-0.05 or +0.05)
+// - moodRateMulti: From ANIMOS (0.78 to 1.30)
+// - textLength: Character count
+// - 14: Average characters spoken per second at normal rate
+```
+
+**Example Calculations**:
+
+<Accordion title="Example 1: Normal Settings">
+  **Settings**:
+  - Text: 700 characters
+  - Speed: Normal (1.00)
+  - Voice Type: Normal (-0.05)
+  - Mood: Neutral (1.00x)
+  
+  **Calculation**:
+  ```
+  effectiveRate = (1.00 + (-0.05)) * 1.00 = 0.95
+  duration = 700 / (14 * 0.95) = 700 / 13.3 = 52.6 seconds
+  ```
+  
+  **Result**: ~53 seconds of audio
+</Accordion>
+
+<Accordion title="Example 2: Fast & Energetic">
+  **Settings**:
+  - Text: 1000 characters
+  - Speed: Fast (1.25)
+  - Voice Type: High-pitched (+0.05)
+  - Mood: Energetic (1.30x)
+  
+  **Calculation**:
+  ```
+  effectiveRate = (1.25 + 0.05) * 1.30 = 1.30 * 1.30 = 1.69
+  duration = 1000 / (14 * 1.69) = 1000 / 23.66 = 42.3 seconds
+  ```
+  
+  **Result**: ~42 seconds of audio (fast!)
+</Accordion>
+
+<Accordion title="Example 3: Slow & Melancholic">
+  **Settings**:
+  - Text: 500 characters
+  - Speed: Slow (0.75)
+  - Voice Type: Normal (-0.05)
+  - Mood: Melancholic (0.78x)
+  
+  **Calculation**:
+  ```
+  effectiveRate = (0.75 + (-0.05)) * 0.78 = 0.70 * 0.78 = 0.546
+  duration = 500 / (14 * 0.546) = 500 / 7.64 = 65.4 seconds
+  ```
+  
+  **Result**: ~65 seconds (very slow and contemplative)
+</Accordion>
+
+## Deleting History Items
+
+### Delete Single Item
+
+Remove individual history items:
+
+<Steps>
+  <Step title="Click Delete Button">
+    Click the red **✕** button on the history item you want to remove.
+  </Step>
+  
+  <Step title="Immediate Removal">
+    - Item disappears from history instantly
+    - No confirmation dialog (action is immediate)
+    - Remaining items re-flow to fill space
+    - History count updates (e.g., "(15)" becomes "(14)")
+    - Browser storage updated
+  </Step>
+  
+  <Step title="Confirmation Toast">
+    Toast notification appears:
+    - Spanish: "Eliminado del historial"
+    - English: "Removed from history"
+    - Green background (success)
+    - Auto-dismisses after 3.2 seconds
+  </Step>
+</Steps>
+
+<Warning>
+**No Undo**: Deleting a history item is permanent. The audio settings and text are lost unless you've exported the history JSON or individual files.
+</Warning>
+
+### Clear All History
+
+Remove all history items at once:
+
+<Steps>
+  <Step title="Click Clear All Button">
+    Click the red **"Limpiar todo" / "Clear all"** button in the history header.
+  </Step>
+  
+  <Step title="Immediate Clearing">
+    - All history items removed instantly
+    - No confirmation dialog
+    - Empty state message appears
+    - Count badge disappears
+    - "Clear all" button hides (only visible when history exists)
+  </Step>
+  
+  <Step title="Storage Cleared">
+    - Browser local storage cleared
+    - No way to undo this action
+    - Toast: "Historial limpiado" / "History cleared"
+  </Step>
+</Steps>
+
+<Warning>
+**Data Loss Risk**: Clearing all history is permanent and cannot be undone. Always export your history JSON before clearing if you might need it later.
+</Warning>
+
+## Exporting History (JSON)
+
+### Export Process
+
+Save your entire history as a JSON file:
+
+<Steps>
+  <Step title="Click Save Button">
+    Click the **"💾 Guardar" / "💾 Save"** button at the bottom of the history panel.
+  </Step>
+  
+  <Step title="File Generation">
+    VozCraft generates a JSON file:
+    - Filename: `vozcraft-historial.json`
+    - Format: Pretty-printed JSON (2-space indentation)
+    - Encoding: UTF-8
+    - Contains array of all history items
+  </Step>
+  
+  <Step title="Download">
+    Browser download begins:
+    - File saves to default Downloads folder
+    - No processing delay (instant)
+    - Toast notification: "📁 Historial exportado"
+  </Step>
+</Steps>
+
+### JSON File Structure
+
+```json
+[
+  {
+    "id": "1705349100000",
+    "timestamp": 1705349100000,
+    "texto": "Welcome to VozCraft, the most advanced text-to-speech application.",
+    "nombre": "Demo Audio v1",
+    "voz": "English (US)",
+    "genero": "Voz Normal",
+    "velocidad": "Normal",
+    "animo": "Neutral"
+  },
+  {
+    "id": "1705349050000",
+    "timestamp": 1705349050000,
+    "texto": "Bienvenido a VozCraft, la aplicación de texto a voz más avanzada.",
+    "nombre": "Audio de Prueba",
+    "voz": "Español (México)",
+    "genero": "Voz Aguda",
+    "velocidad": "Rápido",
+    "animo": "Alegre"
+  }
+]
+```
+
+**Array Structure**:
+- Top-level: Array of objects
+- Each object: One history item
+- Order: Newest first (reverse chronological)
+- All fields preserved exactly as stored
+
+### Use Cases for JSON Export
+
+<CardGroup cols={2}>
+  <Card title="Backup" icon="hard-drive">
+    - **Prevent data loss**: Export regularly to preserve your work
+    - **Browser changes**: Protect against browser data clearing
+    - **Migration**: Move history to another device
+    - **Archive**: Long-term storage of audio metadata
+  </Card>
+  
+  <Card title="Sharing" icon="share-nodes">
+    - **Team collaboration**: Share audio library with colleagues
+    - **Project handoff**: Transfer work to another team member
+    - **Templates**: Share commonly-used audio settings
+    - **Documentation**: Include in project documentation
+  </Card>
+  
+  <Card title="Analysis" icon="chart-line">
+    - **Content audit**: Review what content has been generated
+    - **Statistics**: Analyze language/mood/speed usage
+    - **Search**: Find specific content across all generations
+    - **Reporting**: Generate reports on TTS usage
+  </Card>
+  
+  <Card title="Recovery" icon="clock-rotate-left">
+    - **Restore after clearing**: Recover accidentally cleared history
+    - **Device failure**: Restore history after hardware issues
+    - **Browser reset**: Recover after clearing browser data
+    - **Experimentation**: Try different settings, revert to backup
+  </Card>
+</CardGroup>
+
+## Importing History (JSON)
+
+### Import Process
+
+Restore or merge history from a JSON file:
+
+<Steps>
+  <Step title="Click Load Button">
+    Click the **"📂 Cargar" / "📂 Load"** button at the bottom of the history panel.
+  </Step>
+  
+  <Step title="Select File">
+    Browser file picker opens:
+    - File filter: `.json` files only
+    - Navigate to your history file
+    - Select `vozcraft-historial.json` (or renamed file)
+    - Click "Open"
+  </Step>
+  
+  <Step title="Processing">
+    VozCraft reads and validates the file:
+    - Parses JSON content
+    - Validates structure (must be array)
+    - Checks for required fields in each item
+    - Handles errors gracefully
+  </Step>
+  
+  <Step title="Merge with Existing History">
+    Imported items are **merged** with current history:
+    - New items added to existing history
+    - Duplicates possible (based on ID collision)
+    - Combined history limited to 30 most recent items
+    - Items sorted by timestamp (newest first)
+  </Step>
+  
+  <Step title="Success Confirmation">
+    Toast notification shows:
+    - Message: "✓ [X] entradas cargadas" / "✓ [X] entries loaded"
+    - X = number of items in imported file
+    - Green background (success)
+    - History panel updates immediately
+  </Step>
+</Steps>
+
+### Import Behavior
+
+<Tabs>
+  <Tab title="Merge Logic">
+    **How Import Merges with Existing History**:
+    
+    ```javascript
+    // Pseudo-code for import logic
+    function handleLoadHistory(importedArray) {
+      if (!Array.isArray(importedArray)) {
+        showError("Invalid file format");
+        return;
+      }
+      
+      // Add to existing history
+      const newHistory = [...importedArray, ...currentHistory];
+      
+      // Limit to 30 items (most recent)
+      const trimmed = newHistory.slice(0, 30);
+      
+      setHistory(trimmed);
+      saveToStorage(trimmed);
+      showToast(`✓ ${importedArray.length} entries loaded`);
+    }
+    ```
+    
+    **Important Notes**:
+    - Import does NOT replace existing history
+    - Import ADDS to existing history
+    - To replace completely, clear history first, then import
+    - 30-item limit applies after merging
+  </Tab>
+  
+  <Tab title="Error Handling">
+    **What Happens on Error**:
+    
+    1. **Invalid JSON**:
+       - Toast: "Error al leer el archivo" / "Error reading file"
+       - History unchanged
+       - File picker can be reopened
+    
+    2. **Not an Array**:
+       - Same error message
+       - VozCraft expects top-level array
+       - Object or other types rejected
+    
+    3. **Empty File**:
+       - Accepted (0 entries loaded)
+       - Toast: "✓ 0 entradas cargadas"
+       - Not treated as error
+    
+    4. **Malformed Items**:
+       - Items without required fields may cause issues
+       - Recommended: Only import files exported by VozCraft
+       - Manual editing should preserve all fields
+  </Tab>
+  
+  <Tab title="Duplicate Handling">
+    **When Importing Contains Duplicates**:
+    
+    VozCraft does not deduplicate on import:
+    - Items with same ID can exist multiple times
+    - Each is treated as separate history item
+    - Display shows all copies
+    
+    **To Avoid Duplicates**:
+    1. Clear history before importing
+    2. Or manually edit JSON to remove duplicates
+    3. Or accept duplicates and delete manually after import
+    
+    **ID Structure**:
+    - IDs are timestamps: `Date.now().toString()`
+    - Collisions only if generated at exact same millisecond
+    - In practice, very rare
+  </Tab>
+</Tabs>
+
+### Valid JSON Format
+
+For manual JSON creation or editing:
+
+```json
+[
+  {
+    "id": "1705349100000",        // Required: String timestamp
+    "timestamp": 1705349100000,   // Required: Number timestamp
+    "texto": "Your text here",    // Required: String
+    "nombre": "Custom Name",      // Required: String (empty string if no name)
+    "voz": "Español (México)",    // Required: Must match VOCES labels
+    "genero": "Voz Normal",       // Required: "Voz Normal" or "Voz Aguda"
+    "velocidad": "Normal",        // Required: Must match VELOCIDADES labels
+    "animo": "Neutral"            // Required: Must match ANIMOS labels
+  }
+]
+```
+
+**Field Validation**:
+
+| Field | Type | Valid Values | Notes |
+|-------|------|--------------|-------|
+| `id` | string | Any string | Used as React key, typically timestamp |
+| `timestamp` | number | Unix timestamp | Milliseconds since epoch |
+| `texto` | string | Any text | 1-5000 characters recommended |
+| `nombre` | string | Any text | 0-80 characters, empty string if unnamed |
+| `voz` | string | VOCES labels | Must match exactly |
+| `genero` | string | "Voz Normal" or "Voz Aguda" | Case-sensitive |
+| `velocidad` | string | VELOCIDADES labels | Must match exactly |
+| `animo` | string | ANIMOS labels | Must match exactly |
+
+<Warning>
+**Label Matching**: Voice, speed, and mood values must exactly match the labels in VozCraft's source code. Mismatched values will cause the audio to use default settings instead.
+</Warning>
+
+## History Limit and Rotation
+
+### 30-Item Maximum
+
+VozCraft maintains a maximum of 30 history items:
+
+```javascript
+// History limit implementation
+const MAX_HISTORY_ITEMS = 30;
+
+const newHistory = [item, ...history].slice(0, MAX_HISTORY_ITEMS);
+setHistory(newHistory);
+saveHistory(newHistory);
+```
+
+**Behavior**:
+- New items added to beginning of array
+- When adding 31st item, oldest (30th) is removed
+- FIFO queue: First In, First Out
+- Automatic rotation maintains limit
+
+<Info>
+**Why 30 Items?** This limit balances functionality with performance and storage concerns:
+- Prevents excessive browser storage usage
+- Keeps UI responsive with reasonable scroll depth
+- Encourages users to export important histories
+- Typical use case: Keep recent work, export archives
+</Info>
+
+### Managing the Limit
+
+<Steps>
+  <Step title="Monitor Your History">
+    Watch the count in the history header:
+    - Approaches 30: Consider exporting or cleaning
+    - Reaches 30: Oldest items will be auto-removed
+    - Over 30: Not possible (enforced by code)
+  </Step>
+  
+  <Step title="Export Before Limit">
+    Before reaching 30 items:
+    - Export current history to JSON
+    - Clear history if starting fresh project
+    - Import only items you need from archive
+  </Step>
+  
+  <Step title="Curate Your History">
+    Manually manage important items:
+    - Delete test generations
+    - Remove duplicates or mistakes
+    - Rename important items for easy identification
+    - Export individual audio files you want to keep
+  </Step>
+</Steps>
+
+<Tip>
+**Best Practice**: Export your history JSON weekly or after each major project. This creates a permanent archive while keeping your active history clean and focused.
+</Tip>
+
+## Browser Storage Details
+
+### Local Storage Implementation
+
+VozCraft uses the browser's `localStorage` API:
+
+```javascript
+// Storage key
+const STORAGE_KEY = 'vozcraft-history';
+
+// Save operation
+await window.storage.set(STORAGE_KEY, JSON.stringify(historyArray));
+
+// Load operation
+const result = await window.storage.get(STORAGE_KEY);
+if (result?.value) {
+  const history = JSON.parse(result.value);
+  setHistory(history);
+}
+```
+
+### Storage Characteristics
+
+<CardGroup cols={2}>
+  <Card title="Persistence" icon="database">
+    - **Survives**: Browser restarts, computer restarts
+    - **Lost on**: Clearing browser data, incognito mode end
+    - **Per-domain**: Isolated to VozCraft's domain
+    - **Capacity**: Typically 5-10 MB per domain
+  </Card>
+  
+  <Card title="Automatic Operations" icon="rotate">
+    - **Save on**: Every generation, rename, delete, import
+    - **Load on**: Page load, browser refresh
+    - **No user action**: Completely transparent
+    - **Error handling**: Graceful degradation if storage fails
+  </Card>
+</CardGroup>
+
+### Storage Size Estimate
+
+**Typical History Item Size**:
+```
+{
+  id: 16 bytes
+  timestamp: 8 bytes
+  texto: ~500 bytes average (500 character text)
+  nombre: ~50 bytes average (25 character name)
+  voz: ~30 bytes
+  genero: ~15 bytes
+  velocidad: ~15 bytes
+  animo: ~15 bytes
+}
+Total per item: ~650 bytes average
+```
+
+**30 Items**: ~19.5 KB (well within limits)
+
+**5000 Character Texts**: ~165 KB for 30 items with max-length texts
+
+<Info>
+VozCraft's history storage is very efficient. Even with maximum-length texts and 30 items, storage usage is minimal compared to typical localStorage capacity.
+</Info>
+
+### Clearing Browser Storage
+
+**History is lost when**:
+
+<Accordion title="Clearing Browser Data">
+  **Manual Clear** (Chrome/Edge):
+  1. Settings > Privacy and Security
+  2. Clear browsing data
+  3. Select "Cookies and other site data"
+  4. Choose time range
+  5. Click "Clear data"
+  
+  **Result**: VozCraft history permanently deleted
+  
+  **Prevention**: Export history JSON before clearing browser data
+</Accordion>
+
+<Accordion title="Incognito/Private Mode">
+  **Behavior**:
+  - History saves during incognito session
+  - History deleted when incognito window closes
+  - Not shared with normal browsing mode
+  - No persistence between sessions
+  
+  **Use Case**: Temporary generations that should not persist
+</Accordion>
+
+<Accordion title="Different Browsers">
+  **Cross-Browser**:
+  - Each browser has separate localStorage
+  - History in Chrome ≠ History in Firefox
+  - No automatic synchronization
+  
+  **Migration**: Export JSON from Browser A, import in Browser B
+</Accordion>
+
+## Troubleshooting History Issues
+
+<Warning>
+**History Not Saving**: If your history disappears after page refresh, check:
+1. Browser isn't in incognito/private mode
+2. Browser storage isn't full
+3. Site permissions allow storage
+4. No browser extensions blocking storage
+</Warning>
+
+<Accordion title="History disappeared">
+  **Possible Causes**:
+  - Browser data cleared
+  - Using different browser/profile
+  - Incognito mode used
+  - Storage quota exceeded (rare)
+  - Browser extension interference
+  
+  **Solutions**:
+  - Check if you have an exported JSON backup
+  - Verify you're using the same browser and profile
+  - Disable browser extensions and test
+  - Check browser storage settings
+  
+  **Prevention**: Export history JSON regularly
+</Accordion>
+
+<Accordion title="Can't import history file">
+  **Error: "Error al leer el archivo"**
+  
+  **Causes**:
+  - File is not valid JSON
+  - File is corrupted
+  - Top-level is not an array
+  - File encoding issues
+  
+  **Solutions**:
+  - Verify file opens in text editor
+  - Check JSON validity with online validator
+  - Ensure file exported from VozCraft
+  - Try re-exporting from original source
+</Accordion>
+
+<Accordion title="Imported history looks wrong">
+  **Items show default values or errors**
+  
+  **Causes**:
+  - Field names don't match expected format
+  - Language/voice labels don't match VOCES array
+  - Speed/mood labels don't match arrays
+  - Missing required fields
+  
+  **Solutions**:
+  - Only import files exported by VozCraft
+  - If manually editing, match labels exactly
+  - Check source code arrays for valid values
+  - Re-export from working VozCraft instance
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Audio Export" icon="download" href="/features/audio-export">
+    Learn about exporting audio as MP3, WAV, and TXT files
+  </Card>
+  
+  <Card title="Using VozCraft" icon="book" href="/guides/using-vozcraft">
+    Complete guide to VozCraft workflows
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Solutions to common issues and problems
+  </Card>
+</CardGroup>

@@ -1,0 +1,850 @@
+---
+title: 'Deployment Guide'
+description: 'Deploy VozCraft to production on various hosting platforms including GitHub Pages, Vercel, and Netlify'
+icon: 'rocket'
+---
+
+# Deployment Guide
+
+VozCraft is a static web application that can be deployed to any static hosting platform. This guide covers deployment to popular hosting services including GitHub Pages, Vercel, Netlify, and traditional web servers.
+
+## Prerequisites
+
+Before deploying, ensure you have:
+
+<Steps>
+  <Step title="Build the application">
+  ```bash
+  npm run build
+  ```
+  
+  This creates the `dist/` directory with production-ready files.
+  </Step>
+  
+  <Step title="Test the build locally">
+  ```bash
+  npm run preview
+  ```
+  
+  Verify everything works at http://localhost:4173
+  </Step>
+  
+  <Step title="Verify build output">
+  Check that `dist/` contains:
+  - `index.html`
+  - `manifest.json`
+  - `assets/` directory with JS bundles
+  - Images (`logo.png`, `logotipo.png`)
+  </Step>
+</Steps>
+
+<Info>
+**Build size:** The complete VozCraft build is typically 400-800 KB (150-200 KB gzipped), making it fast to deploy and serve.
+</Info>
+
+## Vercel Deployment
+
+Vercel provides zero-configuration deployment with automatic builds and global CDN.
+
+### Method 1: Vercel CLI
+
+<Steps>
+  <Step title="Install Vercel CLI">
+  ```bash
+  npm install -g vercel
+  ```
+  </Step>
+  
+  <Step title="Login to Vercel">
+  ```bash
+  vercel login
+  ```
+  
+  Follow the authentication prompts.
+  </Step>
+  
+  <Step title="Deploy">
+  ```bash
+  vercel
+  ```
+  
+  Vercel will:
+  - Detect the project as a Vite application
+  - Build automatically
+  - Deploy to a preview URL
+  </Step>
+  
+  <Step title="Deploy to production">
+  ```bash
+  vercel --prod
+  ```
+  
+  Deploys to your production domain.
+  </Step>
+</Steps>
+
+### Method 2: Vercel Dashboard
+
+<Steps>
+  <Step title="Connect repository">
+  1. Go to [vercel.com](https://vercel.com)
+  2. Click "Add New" → "Project"
+  3. Import your GitHub/GitLab/Bitbucket repository
+  </Step>
+  
+  <Step title="Configure build settings">
+  Vercel auto-detects Vite projects. Verify settings:
+  
+  - **Framework Preset:** Vite
+  - **Build Command:** `npm run build`
+  - **Output Directory:** `dist`
+  - **Install Command:** `npm install`
+  </Step>
+  
+  <Step title="Deploy">
+  Click "Deploy" to start the build and deployment.
+  </Step>
+</Steps>
+
+<Accordion title="Vercel Configuration File">
+Create `vercel.json` for custom configuration:
+
+```json vercel.json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(?:jpg|jpeg|png|gif|ico|svg)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=86400"
+        }
+      ]
+    }
+  ]
+}
+```
+
+<Tip>
+The `rewrites` rule ensures all routes serve `index.html` for SPA routing (if you add React Router later).
+</Tip>
+</Accordion>
+
+<Info>
+**Vercel features:**
+- ✅ Automatic builds on git push
+- ✅ Preview deployments for PRs
+- ✅ Global CDN (Edge Network)
+- ✅ Automatic HTTPS
+- ✅ Zero configuration
+- ✅ Free tier available
+</Info>
+
+## Netlify Deployment
+
+Netlify offers similar features to Vercel with easy drag-and-drop deployment.
+
+### Method 1: Netlify CLI
+
+<Steps>
+  <Step title="Install Netlify CLI">
+  ```bash
+  npm install -g netlify-cli
+  ```
+  </Step>
+  
+  <Step title="Login to Netlify">
+  ```bash
+  netlify login
+  ```
+  </Step>
+  
+  <Step title="Initialize site">
+  ```bash
+  netlify init
+  ```
+  
+  Follow the prompts to create a new site or link existing one.
+  </Step>
+  
+  <Step title="Deploy">
+  ```bash
+  netlify deploy --prod
+  ```
+  
+  Or for a draft deploy:
+  ```bash
+  netlify deploy
+  ```
+  </Step>
+</Steps>
+
+### Method 2: Netlify Dashboard
+
+<Steps>
+  <Step title="Connect repository">
+  1. Go to [netlify.com](https://netlify.com)
+  2. Click "Add new site" → "Import an existing project"
+  3. Connect your Git provider and select repository
+  </Step>
+  
+  <Step title="Configure build">
+  Set build configuration:
+  
+  - **Base directory:** (leave empty)
+  - **Build command:** `npm run build`
+  - **Publish directory:** `dist`
+  </Step>
+  
+  <Step title="Deploy">
+  Click "Deploy site" to start the build.
+  </Step>
+</Steps>
+
+### Method 3: Drag and Drop
+
+<Steps>
+  <Step title="Build locally">
+  ```bash
+  npm run build
+  ```
+  </Step>
+  
+  <Step title="Upload dist folder">
+  1. Go to Netlify Dashboard
+  2. Drag and drop the `dist/` folder onto the upload area
+  3. Netlify deploys instantly
+  </Step>
+</Steps>
+
+<Accordion title="Netlify Configuration File">
+Create `netlify.toml` for custom configuration:
+
+```toml netlify.toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=0, must-revalidate"
+```
+</Accordion>
+
+<Info>
+**Netlify features:**
+- ✅ Automatic builds on git push
+- ✅ Deploy previews for PRs
+- ✅ Global CDN
+- ✅ Automatic HTTPS
+- ✅ Form handling
+- ✅ Serverless functions
+- ✅ Free tier available
+</Info>
+
+## GitHub Pages Deployment
+
+Deploy VozCraft directly from your GitHub repository.
+
+### Method 1: GitHub Actions (Recommended)
+
+Create `.github/workflows/deploy.yml`:
+
+```yaml .github/workflows/deploy.yml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+# Allow manual runs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+  
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+<Steps>
+  <Step title="Enable GitHub Pages">
+  1. Go to repository Settings → Pages
+  2. Source: "GitHub Actions"
+  </Step>
+  
+  <Step title="Push workflow file">
+  ```bash
+  git add .github/workflows/deploy.yml
+  git commit -m "Add GitHub Pages deployment"
+  git push
+  ```
+  </Step>
+  
+  <Step title="Wait for deployment">
+  GitHub Actions will automatically build and deploy.
+  
+  View progress: Actions tab in your repository
+  </Step>
+  
+  <Step title="Access deployed site">
+  Your site will be available at:
+  ```
+  https://username.github.io/vozcraft/
+  ```
+  </Step>
+</Steps>
+
+<Warning>
+**Base URL configuration:**
+
+If deploying to a repository page (not user/org page), update `vite.config.js`:
+
+```javascript vite.config.js
+export default defineConfig({
+  plugins: [react()],
+  base: '/vozcraft/',  // Replace with your repo name
+})
+```
+
+This ensures assets load correctly from the subdirectory.
+</Warning>
+
+### Method 2: gh-pages Package
+
+<Steps>
+  <Step title="Install gh-pages">
+  ```bash
+  npm install -D gh-pages
+  ```
+  </Step>
+  
+  <Step title="Add deploy script">
+  Update `package.json`:
+  
+  ```json package.json
+  {
+    "scripts": {
+      "build": "vite build",
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d dist"
+    }
+  }
+  ```
+  </Step>
+  
+  <Step title="Deploy">
+  ```bash
+  npm run deploy
+  ```
+  
+  This builds and pushes to the `gh-pages` branch.
+  </Step>
+  
+  <Step title="Configure GitHub Pages">
+  1. Go to Settings → Pages
+  2. Source: "Deploy from a branch"
+  3. Branch: `gh-pages` → `/ (root)`
+  4. Save
+  </Step>
+</Steps>
+
+## Traditional Web Server Deployment
+
+### Nginx
+
+Configuration for serving VozCraft on Nginx:
+
+```nginx /etc/nginx/sites-available/vozcraft
+server {
+    listen 80;
+    listen [::]:80;
+    server_name vozcraft.com www.vozcraft.com;
+    
+    # Redirect to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name vozcraft.com www.vozcraft.com;
+    
+    # SSL configuration
+    ssl_certificate /etc/letsencrypt/live/vozcraft.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/vozcraft.com/privkey.pem;
+    
+    # Document root
+    root /var/www/vozcraft/dist;
+    index index.html;
+    
+    # Gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/xml+rss application/json;
+    
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    
+    # Cache static assets
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # Cache images
+    location ~* \.(jpg|jpeg|png|gif|ico|svg)$ {
+        expires 30d;
+        add_header Cache-Control "public";
+    }
+    
+    # No cache for index.html
+    location = /index.html {
+        add_header Cache-Control "no-cache, must-revalidate";
+    }
+    
+    # SPA routing - serve index.html for all routes
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+<Steps>
+  <Step title="Upload build files">
+  ```bash
+  scp -r dist/* user@server:/var/www/vozcraft/dist/
+  ```
+  
+  Or use rsync:
+  ```bash
+  rsync -avz --delete dist/ user@server:/var/www/vozcraft/dist/
+  ```
+  </Step>
+  
+  <Step title="Configure Nginx">
+  ```bash
+  sudo nano /etc/nginx/sites-available/vozcraft
+  sudo ln -s /etc/nginx/sites-available/vozcraft /etc/nginx/sites-enabled/
+  sudo nginx -t
+  sudo systemctl reload nginx
+  ```
+  </Step>
+  
+  <Step title="Set up SSL (Let's Encrypt)">
+  ```bash
+  sudo apt install certbot python3-certbot-nginx
+  sudo certbot --nginx -d vozcraft.com -d www.vozcraft.com
+  ```
+  </Step>
+</Steps>
+
+### Apache
+
+Configuration for Apache web server:
+
+```apache /etc/apache2/sites-available/vozcraft.conf
+<VirtualHost *:80>
+    ServerName vozcraft.com
+    ServerAlias www.vozcraft.com
+    
+    # Redirect to HTTPS
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName vozcraft.com
+    ServerAlias www.vozcraft.com
+    
+    DocumentRoot /var/www/vozcraft/dist
+    
+    # SSL configuration
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/vozcraft.com/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/vozcraft.com/privkey.pem
+    
+    # Enable compression
+    <IfModule mod_deflate.c>
+        AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+    </IfModule>
+    
+    # Cache static assets
+    <Directory "/var/www/vozcraft/dist/assets">
+        <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresDefault "access plus 1 year"
+        </IfModule>
+    </Directory>
+    
+    # SPA routing
+    <Directory "/var/www/vozcraft/dist">
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+        
+        RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.html [L]
+    </Directory>
+</VirtualHost>
+```
+
+<Steps>
+  <Step title="Enable required modules">
+  ```bash
+  sudo a2enmod rewrite
+  sudo a2enmod ssl
+  sudo a2enmod expires
+  sudo a2enmod deflate
+  sudo a2enmod headers
+  ```
+  </Step>
+  
+  <Step title="Enable site">
+  ```bash
+  sudo a2ensite vozcraft
+  sudo apache2ctl configtest
+  sudo systemctl reload apache2
+  ```
+  </Step>
+</Steps>
+
+## Cloud Storage Deployment
+
+### AWS S3 + CloudFront
+
+<Steps>
+  <Step title="Create S3 bucket">
+  ```bash
+  aws s3 mb s3://vozcraft-app
+  ```
+  </Step>
+  
+  <Step title="Enable static website hosting">
+  ```bash
+  aws s3 website s3://vozcraft-app/ \
+    --index-document index.html \
+    --error-document index.html
+  ```
+  </Step>
+  
+  <Step title="Upload build">
+  ```bash
+  aws s3 sync dist/ s3://vozcraft-app/ --delete
+  ```
+  </Step>
+  
+  <Step title="Set up CloudFront">
+  1. Create CloudFront distribution
+  2. Origin: S3 bucket
+  3. Default root object: `index.html`
+  4. Custom error responses: 404 → /index.html (200)
+  </Step>
+  
+  <Step title="Configure custom domain (optional)">
+  1. Create SSL certificate in ACM
+  2. Add CNAME to CloudFront distribution
+  3. Update Route 53 DNS
+  </Step>
+</Steps>
+
+## Deployment Checklist
+
+<Steps>
+  <Step title="Pre-deployment checks">
+  ☐ Run `npm run build` successfully
+  
+  ☐ Test with `npm run preview`
+  
+  ☐ Verify all features work
+  
+  ☐ Check browser console for errors
+  
+  ☐ Test on mobile devices
+  
+  ☐ Run Lighthouse audit
+  </Step>
+  
+  <Step title="Configuration">
+  ☐ Set correct `base` URL in `vite.config.js`
+  
+  ☐ Update environment variables if needed
+  
+  ☐ Configure caching headers
+  
+  ☐ Set up SSL/HTTPS
+  
+  ☐ Configure SPA routing fallback
+  </Step>
+  
+  <Step title="Post-deployment">
+  ☐ Verify site loads correctly
+  
+  ☐ Test PWA installation
+  
+  ☐ Check all API features (speech synthesis, audio download)
+  
+  ☐ Verify analytics (if configured)
+  
+  ☐ Test from different browsers and devices
+  
+  ☐ Check performance metrics
+  </Step>
+</Steps>
+
+## Performance Optimization
+
+### CDN Configuration
+
+Optimal cache headers for different file types:
+
+```nginx
+# HTML - no cache (always fresh)
+Cache-Control: no-cache, must-revalidate
+
+# JavaScript/CSS with hash - cache forever
+Cache-Control: public, max-age=31536000, immutable
+
+# Images - cache for 30 days
+Cache-Control: public, max-age=2592000
+
+# Manifest - short cache
+Cache-Control: public, max-age=3600
+```
+
+### Compression
+
+Enable gzip and Brotli compression:
+
+```nginx
+# Nginx
+gzip on;
+gzip_vary on;
+gzip_types text/plain text/css text/xml text/javascript application/javascript application/json;
+
+# Brotli (requires module)
+brotli on;
+brotli_types text/plain text/css text/xml text/javascript application/javascript application/json;
+```
+
+### Security Headers
+
+```nginx
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "no-referrer-when-downgrade" always;
+add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+```
+
+## Monitoring
+
+### Error Tracking
+
+Integrate error tracking (optional):
+
+```javascript src/main.jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+
+// Error tracking
+window.addEventListener('error', (event) => {
+  console.error('Global error:', event.error);
+  // Send to error tracking service
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  // Send to error tracking service
+});
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+```
+
+### Analytics
+
+Add analytics tracking:
+
+```html index.html
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_MEASUREMENT_ID');
+</script>
+```
+
+## Rollback Strategy
+
+Always maintain ability to rollback:
+
+### Vercel/Netlify
+
+- Automatic deployment history
+- Instant rollback via dashboard
+- Pin deployments to specific commits
+
+### Manual Deployments
+
+```bash
+# Tag releases
+git tag v1.0.0
+git push origin v1.0.0
+
+# Keep previous builds
+mv dist dist-$(date +%Y%m%d-%H%M%S)
+npm run build
+
+# Rollback if needed
+rm -rf dist
+mv dist-20260305-120000 dist
+```
+
+## Common Deployment Issues
+
+<Accordion title="404 on page refresh">
+**Cause:** Server not configured for SPA routing.
+
+**Solution:** Configure fallback to `index.html`:
+
+```nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
+</Accordion>
+
+<Accordion title="Assets not loading">
+**Cause:** Incorrect base URL.
+
+**Solution:** Update `vite.config.js`:
+
+```javascript
+base: '/correct-path/',  // or '/' for root
+```
+</Accordion>
+
+<Accordion title="CORS errors">
+**Cause:** Missing CORS headers.
+
+**Solution:** Add CORS headers:
+
+```nginx
+add_header Access-Control-Allow-Origin "*";
+```
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="PWA Setup" icon="mobile" href="/technical/pwa-setup">
+    Optimize PWA installation experience
+  </Card>
+  <Card title="Web Speech API" icon="microphone" href="/technical/web-speech-api">
+    Understand the core technology
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+- [Vercel Documentation](https://vercel.com/docs)
+- [Netlify Documentation](https://docs.netlify.com/)
+- [GitHub Pages Documentation](https://docs.github.com/en/pages)
+- [Vite Deployment Guide](https://vitejs.dev/guide/static-deploy.html)

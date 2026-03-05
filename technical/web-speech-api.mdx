@@ -1,0 +1,501 @@
+---
+title: 'Web Speech API Integration'
+description: 'Learn how VozCraft uses the Web Speech API for browser-based text-to-speech synthesis'
+icon: 'microphone'
+---
+
+# Web Speech API Integration
+
+VozCraft leverages the browser's native **Web Speech API** to provide high-quality text-to-speech synthesis without requiring external services or API keys. This page documents how the application uses `SpeechSynthesis` and `SpeechSynthesisUtterance` to generate natural-sounding voice output.
+
+## Overview
+
+The Web Speech API provides two main interfaces for TTS:
+
+- **`SpeechSynthesis`**: Controls speech synthesis and manages the speech queue
+- **`SpeechSynthesisUtterance`**: Represents a speech request with configurable properties
+
+<Info>
+The Web Speech API is supported in all modern browsers including Chrome, Firefox, Safari, and Edge. No external dependencies or API keys are required.
+</Info>
+
+## Core Implementation
+
+### The speak() Function
+
+The heart of VozCraft's TTS functionality is the `speak()` function in `App.jsx`. This function creates and configures speech utterances with customized voice parameters:
+
+```jsx App.jsx (lines 649-685)
+const speak = useCallback((txt, vozLabel, generoLabel, velLabel, animLabel, onEnd) => {
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(txt);
+  const vd   = VOCES.find(v => v.label === vozLabel) || VOCES[0];
+  const gd   = GENEROS.find(g => g.label === generoLabel) || GENEROS[0];
+  const veld = VELOCIDADES.find(v => v.label === velLabel) || VELOCIDADES[2];
+  const ad   = ANIMOS.find(a => a.label === animLabel) || ANIMOS[0];
+
+  u.lang   = vd.lang;
+  u.pitch  = Math.max(0.1, Math.min(2, gd.pitch * ad.pitch));
+  u.rate   = Math.max(0.1, Math.min(10, (veld.rate + gd.rateAdd) * ad.rateMulti));
+  u.volume = Math.max(0, Math.min(1, ad.volume));
+
+  // Voice selection logic based on gender
+  const loadedVoices = window.speechSynthesis.getVoices();
+  const voicesForLang = loadedVoices.filter(v =>
+    v.lang === vd.lang || v.lang.startsWith(vd.lang.split('-')[0])
+  );
+  const wantFemale = generoLabel === 'Voz Aguda';
+  const gendered = voicesForLang.find(v => {
+    const n = v.name.toLowerCase();
+    return wantFemale
+      ? n.includes('female') || n.includes('woman') || n.includes('paulina') || n.includes('mónica')
+      : n.includes('male') || n.includes('man') || n.includes('jorge') || n.includes('carlos');
+  });
+  const fallback = voicesForLang[0];
+  if (gendered) u.voice = gendered;
+  else if (fallback) u.voice = fallback;
+
+  u.onstart = () => setReproduciendo(true);
+  u.onend   = () => { setReproduciendo(false); setPlayingId(null); if (onEnd) onEnd(); };
+  u.onerror = () => { setReproduciendo(false); setPlayingId(null); };
+
+  uttRef.current = u;
+  window.speechSynthesis.speak(u);
+}, []);
+```
+
+### Key Components
+
+#### 1. SpeechSynthesisUtterance Properties
+
+VozCraft configures three main utterance properties:
+
+<Accordion title="lang - Language Code">
+Specifies the BCP 47 language tag for the speech synthesis engine.
+
+```javascript
+u.lang = 'es-MX'; // Spanish (Mexico)
+u.lang = 'en-US'; // English (US)
+u.lang = 'pt-BR'; // Portuguese (Brazil)
+```
+
+VozCraft supports 22 languages and regional variants:
+- Spanish: es-MX, es-ES, es-AR, es-CO, es-CL, es-VE
+- English: en-US, en-GB, en-AU, en-IN
+- Portuguese: pt-BR, pt-PT
+- And 10+ other languages
+</Accordion>
+
+<Accordion title="pitch - Voice Pitch (0.0 - 2.0)">
+Controls the voice pitch. VozCraft combines gender and mood pitch multipliers:
+
+```javascript
+// Gender pitch values
+const GENEROS = [
+  { label: 'Voz Normal', pitch: 0.75, rateAdd: -0.05 },
+  { label: 'Voz Aguda',  pitch: 1.30, rateAdd:  0.05 },
+];
+
+// Mood pitch values
+const ANIMOS = [
+  { label: 'Neutral',    pitch: 1.00 },
+  { label: 'Alegre',     pitch: 1.25 },
+  { label: 'Serio',      pitch: 0.80 },
+  { label: 'Entusiasta', pitch: 1.35 },
+  { label: 'Melancólico',pitch: 0.70 },
+];
+
+// Final pitch calculation
+u.pitch = Math.max(0.1, Math.min(2, gd.pitch * ad.pitch));
+// Example: Normal (0.75) × Alegre (1.25) = 0.9375
+```
+
+<Tip>
+The pitch value is clamped between 0.1 and 2.0 to prevent extreme distortion.
+</Tip>
+</Accordion>
+
+<Accordion title="rate - Speaking Rate (0.1 - 10.0)">
+Controls speech speed. VozCraft applies multiple rate modifiers:
+
+```javascript
+// Speed presets
+const VELOCIDADES = [
+  { label: 'Muy Lento',  rate: 0.50 },
+  { label: 'Lento',      rate: 0.75 },
+  { label: 'Normal',     rate: 1.00 },
+  { label: 'Rápido',     rate: 1.25 },
+  { label: 'Muy Rápido', rate: 1.60 },
+];
+
+// Rate calculation with gender and mood modifiers
+const effectiveRate = (veld.rate + gd.rateAdd) * ad.rateMulti;
+u.rate = Math.max(0.1, Math.min(10, effectiveRate));
+
+// Example: 
+// Normal speed (1.00) + Voz Aguda (+0.05) × Enérgico (1.30) = 1.365
+```
+</Accordion>
+
+<Accordion title="volume - Speech Volume (0.0 - 1.0)">
+Controls playback volume. Certain moods affect volume:
+
+```javascript
+const ANIMOS = [
+  { label: 'Neutral',     volume: 1.00 },
+  { label: 'Serio',       volume: 0.95 },
+  { label: 'Melancólico', volume: 0.88 },
+  { label: 'Relajado',    volume: 0.90 },
+];
+
+u.volume = Math.max(0, Math.min(1, ad.volume));
+```
+</Accordion>
+
+#### 2. Voice Selection Algorithm
+
+VozCraft implements intelligent voice selection based on language and gender preference:
+
+```javascript
+// Get all available system voices
+const loadedVoices = window.speechSynthesis.getVoices();
+
+// Filter by language
+const voicesForLang = loadedVoices.filter(v =>
+  v.lang === vd.lang || v.lang.startsWith(vd.lang.split('-')[0])
+);
+
+// Gender-based selection
+const wantFemale = generoLabel === 'Voz Aguda';
+const gendered = voicesForLang.find(v => {
+  const n = v.name.toLowerCase();
+  return wantFemale
+    ? n.includes('female') || n.includes('woman') || n.includes('girl') ||
+      n.includes('paulina') || n.includes('mónica') || n.includes('lucia') ||
+      n.includes('samantha') || n.includes('karen')
+    : n.includes('male') || n.includes('man') || n.includes('guy') ||
+      n.includes('jorge') || n.includes('carlos') || n.includes('diego') ||
+      n.includes('alex') || n.includes('daniel') || n.includes('thomas');
+});
+
+// Fallback hierarchy
+if (gendered) u.voice = gendered;
+else if (fallback) u.voice = fallback;
+```
+
+<Note>
+The voice selection algorithm searches for gender-specific voice names in both English and Spanish, ensuring proper voice selection across different operating systems.
+</Note>
+
+## Speech Control Functions
+
+### Starting Speech
+
+The `handleGenerar` function initiates speech synthesis:
+
+```jsx App.jsx (lines 692-711)
+const handleGenerar = async () => {
+  if (!texto.trim()) {
+    showToast(language === 'es' ? 'Por favor escribe algún texto' : 'Please enter some text', 'error');
+    return;
+  }
+  if (generando) {
+    stopSpeech();
+    return;
+  }
+
+  setGenerando(true);
+  const item = {
+    id: Date.now().toString(),
+    timestamp: Date.now(),
+    texto: texto.trim(),
+    nombre: '',
+    voz, genero, velocidad, animo,
+  };
+
+  await new Promise(r => setTimeout(r, 400));
+  speak(texto, voz, genero, velocidad, animo, () => setGenerando(false));
+
+  const newHistory = [item, ...history].slice(0, 30);
+  setHistory(newHistory);
+  saveHistory(newHistory);
+  showToast('✓ Audio generado correctamente');
+};
+```
+
+### Stopping Speech
+
+```jsx App.jsx (lines 687-690)
+const stopSpeech = useCallback(() => {
+  window.speechSynthesis.cancel();
+  setReproduciendo(false);
+  setPlayingId(null);
+  setGenerando(false);
+}, []);
+```
+
+<Warning>
+`window.speechSynthesis.cancel()` immediately stops all speech and clears the speech queue. Any pending utterances are discarded.
+</Warning>
+
+### Playing from History
+
+VozCraft allows replaying previously generated audio with the same settings:
+
+```jsx App.jsx (lines 713-719)
+const handlePlayHistory = useCallback((item, customText) => {
+  if (playingId === item.id && !customText) {
+    stopSpeech();
+  } else {
+    stopSpeech();
+    setPlayingId(item.id);
+    speak(customText || item.texto, item.voz, item.genero, item.velocidad, item.animo, () => setPlayingId(null));
+  }
+}, [playingId, stopSpeech, speak]);
+```
+
+## Event Handling
+
+The SpeechSynthesisUtterance interface provides lifecycle events:
+
+```javascript
+u.onstart = () => setReproduciendo(true);
+u.onend   = () => {
+  setReproduciendo(false);
+  setPlayingId(null);
+  if (onEnd) onEnd();
+};
+u.onerror = () => {
+  setReproduciendo(false);
+  setPlayingId(null);
+};
+```
+
+<Tabs>
+  <Tab title="onstart">
+  Fired when speech begins. VozCraft uses this to:
+  - Update UI state (`setReproduciendo(true)`)
+  - Show visual feedback in the audio player
+  - Disable the generate button
+  </Tab>
+  
+  <Tab title="onend">
+  Fired when speech completes naturally. VozCraft:
+  - Resets playback state
+  - Clears the playing item ID
+  - Executes optional callback functions
+  - Resets audio player progress
+  </Tab>
+  
+  <Tab title="onerror">
+  Fired when an error occurs during speech. VozCraft:
+  - Gracefully handles errors by resetting state
+  - Prevents UI from getting stuck in "playing" state
+  - Logs errors for debugging
+  </Tab>
+</Tabs>
+
+## Browser Compatibility
+
+### Checking for Support
+
+Always check for Web Speech API support:
+
+```javascript
+if ('speechSynthesis' in window) {
+  // Speech synthesis is supported
+  const synth = window.speechSynthesis;
+  const voices = synth.getVoices();
+} else {
+  console.error('Web Speech API not supported');
+}
+```
+
+### Voice Loading
+
+Voices may load asynchronously in some browsers:
+
+```javascript
+window.speechSynthesis.addEventListener('voiceschanged', () => {
+  const voices = window.speechSynthesis.getVoices();
+  console.log(`Loaded ${voices.length} voices`);
+});
+```
+
+<Info>
+**Browser Support:**
+- ✅ Chrome 33+ (full support)
+- ✅ Firefox 49+ (full support)
+- ✅ Safari 7+ (full support)
+- ✅ Edge 14+ (full support)
+- ✅ Opera 21+ (full support)
+</Info>
+
+## Voice Configuration Data
+
+VozCraft defines voice parameters using configuration objects:
+
+```javascript App.jsx (lines 4-53)
+// Gender presets
+const GENEROS = [
+  { label: 'Voz Normal', labelEn: 'Normal Voice', pitch: 0.75, rateAdd: -0.05, emoji: '🔉' },
+  { label: 'Voz Aguda',  labelEn: 'High-pitched Voice', pitch: 1.30, rateAdd: 0.05, emoji: '🔊' },
+];
+
+// Language options (22 variants)
+const VOCES = [
+  { label: 'Español (México)', labelEn: 'Spanish (Mexico)', lang: 'es-MX', flag: '🇲🇽', group: 'es' },
+  { label: 'English (US)', labelEn: 'English (US)', lang: 'en-US', flag: '🇺🇸', group: 'en' },
+  // ... 20 more languages
+];
+
+// Mood presets (8 options)
+const ANIMOS = [
+  { label: 'Neutral', pitch: 1.00, rateMulti: 1.00, volume: 1.00, emoji: '😐' },
+  { label: 'Alegre', pitch: 1.25, rateMulti: 1.15, volume: 1.00, emoji: '😄' },
+  { label: 'Serio', pitch: 0.80, rateMulti: 0.88, volume: 0.95, emoji: '😠' },
+  { label: 'Entusiasta', pitch: 1.35, rateMulti: 1.25, volume: 1.00, emoji: '🤩' },
+  // ... 4 more moods
+];
+
+// Speed presets
+const VELOCIDADES = [
+  { label: 'Muy Lento', labelEn: 'Very Slow', rate: 0.50 },
+  { label: 'Lento', labelEn: 'Slow', rate: 0.75 },
+  { label: 'Normal', labelEn: 'Normal', rate: 1.00 },
+  { label: 'Rápido', labelEn: 'Fast', rate: 1.25 },
+  { label: 'Muy Rápido', labelEn: 'Very Fast', rate: 1.60 },
+];
+```
+
+## Advanced Features
+
+### Duration Estimation
+
+VozCraft estimates audio duration for the progress bar:
+
+```javascript App.jsx (lines 278-284)
+const getEstimatedDuration = useCallback(() => {
+  const velData = VELOCIDADES.find(v => v.label === item.velocidad) || VELOCIDADES[2];
+  const animData = ANIMOS.find(a => a.label === item.animo) || ANIMOS[0];
+  const gd = GENEROS.find(g => g.label === item.genero) || GENEROS[0];
+  const effectiveRate = (velData.rate + gd.rateAdd) * animData.rateMulti;
+  return Math.max(1, item.texto.length / (14 * effectiveRate));
+}, [item]);
+```
+
+<Tip>
+The formula `texto.length / (14 * effectiveRate)` assumes approximately 14 characters per second at normal speed, adjusted by the effective rate.
+</Tip>
+
+### Progress Tracking
+
+The audio player tracks progress using interval-based estimation:
+
+```javascript App.jsx (lines 286-300)
+useEffect(() => {
+  if (isPlaying) {
+    startTimeRef.current = Date.now() - (currentTime * 1000);
+    intervalRef.current = setInterval(() => {
+      const elapsed = (Date.now() - startTimeRef.current) / 1000;
+      const dur = getEstimatedDuration();
+      setCurrentTime(Math.min(elapsed, dur));
+      setProgress(Math.min(100, (elapsed / dur) * 100));
+      if (elapsed >= dur) clearInterval(intervalRef.current);
+    }, 100);
+  } else {
+    clearInterval(intervalRef.current);
+  }
+  return () => clearInterval(intervalRef.current);
+}, [isPlaying, getEstimatedDuration]);
+```
+
+## Best Practices
+
+<Steps>
+  <Step title="Always cancel before starting">
+  Call `window.speechSynthesis.cancel()` before creating new utterances to prevent queue buildup:
+  
+  ```javascript
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  ```
+  </Step>
+  
+  <Step title="Clamp parameter values">
+  Always validate and clamp pitch, rate, and volume to valid ranges:
+  
+  ```javascript
+  u.pitch = Math.max(0.1, Math.min(2, calculatedPitch));
+  u.rate = Math.max(0.1, Math.min(10, calculatedRate));
+  u.volume = Math.max(0, Math.min(1, calculatedVolume));
+  ```
+  </Step>
+  
+  <Step title="Handle voice loading">
+  Wait for voices to load before attempting synthesis:
+  
+  ```javascript
+  const loadVoices = () => {
+    return new Promise((resolve) => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length) {
+        resolve(voices);
+      } else {
+        window.speechSynthesis.addEventListener('voiceschanged', () => {
+          resolve(window.speechSynthesis.getVoices());
+        });
+      }
+    });
+  };
+  ```
+  </Step>
+  
+  <Step title="Implement error handling">
+  Always provide onerror handlers to gracefully handle synthesis failures:
+  
+  ```javascript
+  utterance.onerror = (event) => {
+    console.error('Speech synthesis error:', event.error);
+    // Reset UI state
+    setIsPlaying(false);
+  };
+  ```
+  </Step>
+</Steps>
+
+## Limitations
+
+<Warning>
+**Known limitations of the Web Speech API:**
+
+1. **Voice availability varies by OS**: Windows, macOS, iOS, and Android have different voice libraries
+2. **No fine-grained pause control**: Cannot pause/resume mid-utterance reliably
+3. **No precise progress events**: Must estimate duration and progress
+4. **Queue interruption**: New utterances cancel previous ones when using `cancel()`
+5. **Character limits**: Some browsers impose limits on utterance length (typically 4000-5000 chars)
+</Warning>
+
+## Performance Considerations
+
+- **Memory management**: Store only one utterance reference at a time
+- **Queue management**: Cancel previous utterances before starting new ones
+- **Long text handling**: VozCraft limits input to 5000 characters
+- **Event cleanup**: Always clear intervals and listeners in useEffect cleanup
+
+## Related Resources
+
+- [MDN Web Speech API Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
+- [SpeechSynthesis Interface Reference](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis)
+- [SpeechSynthesisUtterance Interface Reference](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Audio Processing" icon="waveform" href="/technical/audio-processing">
+    Learn how VozCraft generates downloadable audio files
+  </Card>
+  <Card title="PWA Setup" icon="mobile" href="/technical/pwa-setup">
+    Explore the Progressive Web App configuration
+  </Card>
+</CardGroup>

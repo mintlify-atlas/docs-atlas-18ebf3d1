@@ -1,0 +1,200 @@
+---
+title: Welcome to VozCraft
+description: A powerful, free browser-based text-to-speech application with AI-powered voice synthesis
+---
+
+# Welcome to VozCraft
+
+VozCraft is a free, browser-based text-to-speech (TTS) application that transforms written text into natural-sounding speech using advanced AI synthesis. Built with React and Web Speech API, VozCraft offers an intuitive interface for generating high-quality audio content in multiple languages and voices.
+
+## What is VozCraft?
+
+VozCraft is a modern TTS solution that runs entirely in your web browser—no installation required. Whether you're creating audio content, learning a new language, or need accessibility features, VozCraft provides professional-grade voice synthesis with extensive customization options.
+
+<CardGroup cols={2}>
+  <Card title="22+ Languages" icon="globe">
+    Support for Spanish (6 dialects), English (4 dialects), Portuguese, French, German, Italian, Japanese, Chinese, Russian, Arabic, Hindi, and Turkish
+  </Card>
+  <Card title="Instant Generation" icon="bolt">
+    Generate audio instantly in your browser with no server processing required—everything runs locally
+  </Card>
+  <Card title="Full Customization" icon="sliders">
+    Control pitch, speed, mood, and voice type with 8 mood presets and 5 speed settings
+  </Card>
+  <Card title="Export Options" icon="download">
+    Download your audio in MP3 or WAV format, plus save transcriptions as TXT files
+  </Card>
+</CardGroup>
+
+## Key Features
+
+### 🌍 Multi-Language Support
+
+VozCraft supports over 22 languages and regional accents, including:
+
+- **Spanish**: Mexico, Spain, Argentina, Colombia, Chile, Venezuela
+- **English**: US, UK, Australia, India
+- **Portuguese**: Brazil, Portugal
+- **French**: France, Canada
+- **Plus**: German, Italian, Japanese, Chinese, Russian, Arabic, Hindi, Turkish
+
+### 🎭 Voice Type Selection
+
+Choose between two distinct voice types:
+
+- **Normal Voice**: Standard pitch and tone (pitch: 0.75)
+- **High-pitched Voice**: Elevated pitch for a lighter, more energetic sound (pitch: 1.30)
+
+### 💫 Mood Customization
+
+Shape the emotional tone of your audio with 8 mood presets:
+
+- **Neutral**: Balanced, professional expression
+- **Happy**: High and lively tone for cheerful content
+- **Serious**: Deep, steady and firm for formal material
+- **Enthusiastic**: Very energetic and expressive
+- **Melancholic**: Soft, slow and nostalgic
+- **Energetic**: Fast, dynamic and powerful
+- **Relaxed**: Calm and slow-paced
+- **Tense**: Urgent and tense for dramatic content
+
+### ⚡ Speed Control
+
+Adjust playback speed with 5 precise settings:
+
+- **Very Slow**: 0.50x speed
+- **Slow**: 0.75x speed
+- **Normal**: 1.00x speed (default)
+- **Fast**: 1.25x speed
+- **Very Fast**: 1.60x speed
+
+### 📋 History Management
+
+VozCraft maintains a complete history of your generated audio:
+
+- **Automatic Saving**: All generated audio is automatically saved to history
+- **Rename Function**: Assign custom names to your audio files
+- **Replay Anytime**: Play back any previous audio with the original settings
+- **Export/Import**: Save your entire history as JSON and restore it later
+- **Up to 30 Items**: History maintains your 30 most recent audio generations
+
+### 💾 Export Functionality
+
+Download your audio in multiple formats:
+
+- **MP3 Format**: Compressed audio for easy sharing and storage
+- **WAV Format**: Uncompressed, high-quality audio
+- **TXT Transcripts**: Download the original text with metadata
+- **JSON History**: Export your entire generation history
+
+### 🎨 Dark Mode & Bilingual Interface
+
+- Toggle between light and dark themes for comfortable use
+- Switch between Spanish and English interfaces instantly
+- Responsive design works on desktop, tablet, and mobile devices
+
+## Why Choose VozCraft?
+
+<Note>
+**Privacy First**: VozCraft runs entirely in your browser using the Web Speech API. Your text never leaves your device, ensuring complete privacy and security.
+</Note>
+
+### Benefits
+
+**For Content Creators**
+- Generate voiceovers for videos, podcasts, and presentations
+- Create multilingual content without hiring voice actors
+- Experiment with different emotional tones and pacing
+
+**For Language Learners**
+- Hear accurate pronunciation in 22+ languages
+- Practice listening comprehension with adjustable speeds
+- Compare different regional accents and dialects
+
+**For Accessibility**
+- Convert written content to audio for visually impaired users
+- Customize voice settings for optimal comprehension
+- Generate audio versions of documents and web content
+
+**For Professionals**
+- Create audio versions of reports and presentations
+- Generate IVR and phone system messages
+- Produce training materials and e-learning content
+
+## How It Works
+
+VozCraft leverages two powerful technologies:
+
+1. **Web Speech API**: Browser-native speech synthesis for instant audio generation
+2. **Web Audio API**: Advanced audio processing for offline WAV/MP3 export with customized voice characteristics
+
+The application combines these technologies to deliver:
+- Real-time audio playback with visual waveform display
+- Precise control over pitch, rate, and volume
+- High-quality audio export with proper voice filtering and modulation
+- Estimated duration calculation based on text length and settings
+
+## Technical Specifications
+
+<Accordion title="Audio Technical Details">
+  - **Sample Rate**: 22,050 Hz
+  - **Bit Depth**: 16-bit
+  - **Channels**: Mono (1 channel)
+  - **Formats**: WAV (uncompressed), MP3 (compressed)
+  - **Maximum Text Length**: 5,000 characters
+  - **Audio Synthesis**: Sawtooth oscillator with bandpass filtering
+  - **Formant Frequencies**: 800 Hz and 2,200 Hz (pitch-adjusted)
+</Accordion>
+
+## Browser Compatibility
+
+VozCraft works best in modern browsers:
+
+<Tabs>
+  <Tab title="Fully Supported">
+    - Google Chrome (version 80+)
+    - Microsoft Edge (version 80+)
+    - Safari (version 14+)
+    - Opera (version 67+)
+  </Tab>
+  <Tab title="Partial Support">
+    - Firefox (limited voice selection)
+    - Older Safari versions (iOS 13+)
+  </Tab>
+  <Tab title="Not Supported">
+    - Internet Explorer (all versions)
+    - Browsers with JavaScript disabled
+  </Tab>
+</Tabs>
+
+<Warning>
+**Note**: Voice availability varies by operating system and browser. Some languages may have limited voice options depending on your system's TTS capabilities.
+</Warning>
+
+## Getting Started
+
+Ready to create your first audio? Check out our [Quickstart Guide](/quickstart) to learn the basics in under 5 minutes.
+
+<CardGroup cols={3}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get started in 5 minutes
+  </Card>
+  <Card title="Voice Options" icon="microphone" href="/features/voice-options">
+    Explore all languages and voices
+  </Card>
+  <Card title="Customization" icon="palette" href="/features/customization">
+    Learn about all settings
+  </Card>
+</CardGroup>
+
+## Open Source & Free
+
+VozCraft is completely free to use with no registration, subscriptions, or hidden fees. The application is developed by Mateo Julio Gomero Rios (MateoRiosdev) and released in 2026.
+
+<Info>
+**No Limits**: There are no usage limits, generation caps, or premium tiers. All features are available to everyone, always.
+</Info>
+
+---
+
+**Ready to transform text into speech?** Continue to the [Quickstart Guide](/quickstart) to create your first audio in minutes.

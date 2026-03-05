@@ -1,80 +1,480 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart Guide
+description: Get started with VozCraft in 5 minutes—learn how to generate your first text-to-speech audio
 ---
 
-## Get started in three steps
+# Quickstart Guide
 
-Get your documentation site running locally and make your first customization.
-
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+This guide will walk you through creating your first text-to-speech audio with VozCraft. In just a few steps, you'll be generating professional-quality audio in any of our 22+ supported languages.
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+**Estimated Time**: 5 minutes to generate your first audio
 </Note>
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- A modern web browser (Chrome, Edge, Safari, or Opera recommended)
+- An active internet connection (only for initial page load)
+- JavaScript enabled in your browser
+- Basic speakers or headphones to hear the generated audio
+
+<Info>
+VozCraft runs entirely in your browser—no account creation or software installation required!
+</Info>
+
+## Step 1: Access VozCraft
+
+Navigate to the VozCraft application in your web browser. The application loads instantly and presents you with the main interface:
+
+<Steps>
+  <Step title="Open the Application">
+    The VozCraft interface displays with a clean, intuitive layout featuring:
+    - Navigation bar with theme toggle and language selector
+    - Main control panel on the left
+    - History panel on the right (desktop) or below (mobile)
+  </Step>
+  
+  <Step title="Choose Your Theme">
+    Click the **"🌙 Oscuro" / "☀ Claro"** button in the top-right to toggle between dark and light modes. The interface adapts instantly to your preference.
+    
+    - **Dark Mode**: Optimal for low-light environments
+    - **Light Mode**: Better for bright conditions
+  </Step>
+  
+  <Step title="Select Your Language">
+    Click the **"🇪🇸 ES" / "🇺🇸 EN"** button to switch the interface language between Spanish and English. All labels, buttons, and messages update immediately.
+  </Step>
+</Steps>
+
+## Step 2: Configure Voice Settings
+
+The control panel offers four key settings that shape your audio output. Let's configure each one:
+
+### 🌍 Voice / Accent / Region
+
+Select your desired language and regional accent from the dropdown menu:
+
+<Tabs>
+  <Tab title="Spanish">
+    Choose from 6 Spanish variants:
+    - **Español (México)** 🇲🇽 - Mexican Spanish
+    - **Español (España)** 🇪🇸 - Castilian Spanish
+    - **Español (Argentina)** 🇦🇷 - Argentine Spanish
+    - **Español (Colombia)** 🇨🇴 - Colombian Spanish
+    - **Español (Chile)** 🇨🇱 - Chilean Spanish
+    - **Español (Venezuela)** 🇻🇪 - Venezuelan Spanish
+  </Tab>
+  
+  <Tab title="English">
+    Choose from 4 English variants:
+    - **English (US)** 🇺🇸 - American English
+    - **English (UK)** 🇬🇧 - British English
+    - **English (AU)** 🇦🇺 - Australian English
+    - **English (IN)** 🇮🇳 - Indian English
+  </Tab>
+  
+  <Tab title="Other Languages">
+    Select from 14 additional languages:
+    - **Português (Brasil)** 🇧🇷
+    - **Português (Portugal)** 🇵🇹
+    - **Français** 🇫🇷
+    - **Français (Canada)** 🇨🇦
+    - **Deutsch** 🇩🇪
+    - **Italiano** 🇮🇹
+    - **日本語** 🇯🇵
+    - **中文 (普通话)** 🇨🇳
+    - **Русский** 🇷🇺
+    - **العربية** 🇸🇦
+    - **हिन्दी** 🇮🇳
+    - **Türkçe** 🇹🇷
+  </Tab>
+</Tabs>
+
+<Tip>
+**First-time users**: Start with your native language to familiarize yourself with the interface, then experiment with other languages.
+</Tip>
+
+### 🎭 Voice Type
+
+Choose between two voice characteristics:
+
+- **🔉 Normal Voice**: Standard pitch (0.75) - Balanced, natural-sounding voice suitable for most content
+- **🔊 High-pitched Voice**: Elevated pitch (1.30) - Lighter, more energetic tone ideal for upbeat content
+
+Click either button to toggle between the two options. The selected option displays with a blue gradient background.
+
+### ⚡ Speed
+
+Control the playback speed with five options:
+
+| Speed | Rate | Best For |
+|-------|------|----------|
+| **Muy Lento / Very Slow** | 0.50x | Learning, careful listening |
+| **Lento / Slow** | 0.75x | Comprehension, note-taking |
+| **Normal** | 1.00x | Standard content, default setting |
+| **Rápido / Fast** | 1.25x | Quick reviews, experienced listeners |
+| **Muy Rápido / Very Fast** | 1.60x | Rapid consumption, time-saving |
+
+<Note>
+The default **Normal** speed (1.00x) provides the most natural-sounding results for first-time users.
+</Note>
+
+### 💫 Mood
+
+Shape the emotional character of your audio with eight mood presets:
+
+<CardGroup cols={2}>
+  <Card title="😐 Neutral" icon="face-neutral">
+    **Balanced expression**
+    - Pitch: 1.00
+    - Rate: 1.00x
+    - Volume: 100%
+    - Best for: Professional content, news, documentation
+  </Card>
+  
+  <Card title="😄 Happy / Alegre" icon="face-smile">
+    **High and lively tone**
+    - Pitch: 1.25
+    - Rate: 1.15x
+    - Volume: 100%
+    - Best for: Marketing, children's content, celebrations
+  </Card>
+  
+  <Card title="😠 Serious / Serio" icon="face-frown">
+    **Deep, steady and firm**
+    - Pitch: 0.80
+    - Rate: 0.88x
+    - Volume: 95%
+    - Best for: Formal announcements, serious topics
+  </Card>
+  
+  <Card title="🤩 Enthusiastic / Entusiasta" icon="face-grin-stars">
+    **Very energetic and expressive**
+    - Pitch: 1.35
+    - Rate: 1.25x
+    - Volume: 100%
+    - Best for: Motivational content, sports, excitement
+  </Card>
+  
+  <Card title="😔 Melancholic / Melancólico" icon="face-sad-tear">
+    **Soft, slow and nostalgic**
+    - Pitch: 0.70
+    - Rate: 0.78x
+    - Volume: 88%
+    - Best for: Poetry, reflective content, memorials
+  </Card>
+  
+  <Card title="⚡ Energetic / Enérgico" icon="bolt">
+    **Fast, dynamic and powerful**
+    - Pitch: 1.15
+    - Rate: 1.30x
+    - Volume: 100%
+    - Best for: Action content, workouts, urgent messages
+  </Card>
+  
+  <Card title="😌 Relaxed / Relajado" icon="spa">
+    **Calm and slow-paced**
+    - Pitch: 0.88
+    - Rate: 0.82x
+    - Volume: 90%
+    - Best for: Meditation, bedtime stories, ASMR
+  </Card>
+  
+  <Card title="😤 Tense / Tenso" icon="face-angry">
+    **Urgent and tense**
+    - Pitch: 1.10
+    - Rate: 1.18x
+    - Volume: 95%
+    - Best for: Thrillers, dramatic narration, alerts
+  </Card>
+</CardGroup>
+
+#### Mood Visualization
+
+After selecting a mood, VozCraft displays a visual indicator showing the mood's impact on three parameters:
+
+- **Pitch/Tono**: How high or low the voice sounds
+- **Rate/Velocidad**: How fast the voice speaks
+- **Volume/Volumen**: The audio output level
+
+Each parameter shows a progress bar indicating its relative intensity from 0-100%.
+
+## Step 3: Enter Your Text
+
+In the large text area, type or paste the content you want to convert to speech:
+
+<Steps>
+  <Step title="Input Your Content">
+    Click inside the text area and enter your text. You can:
+    - Type directly into the field
+    - Paste content from your clipboard (Ctrl+V / Cmd+V)
+    - Edit and refine your text before generation
+  </Step>
+  
+  <Step title="Monitor Character Count">
+    The bottom-right corner displays your character count: **X/5000**
+    
+    - Maximum: 5,000 characters per generation
+    - Counter turns red when exceeding 4,500 characters
+    - Split longer content into multiple generations if needed
+  </Step>
+</Steps>
+
+<Warning>
+**Character Limit**: VozCraft supports up to 5,000 characters per audio generation. For longer documents, split your content into logical sections.
+</Warning>
+
+### Example Text (Spanish)
+
+```
+Bienvenido a VozCraft, la aplicación de texto a voz más avanzada. 
+Con VozCraft puedes generar audio profesional en más de veinte idiomas 
+con control total sobre velocidad, tono y estado de ánimo.
+```
+
+### Example Text (English)
+
+```
+Welcome to VozCraft, the most advanced text-to-speech application. 
+With VozCraft you can generate professional audio in over twenty languages 
+with complete control over speed, pitch, and mood.
+```
+
+## Step 4: Generate Audio
+
+Once your settings are configured and text is entered:
+
+<Steps>
+  <Step title="Click Generate Audio">
+    Press the large **"🎧 Generar Audio" / "🎧 Generate Audio"** button at the bottom of the control panel.
+    
+    The button:
+    - Has a red gradient background
+    - Animates on hover (lifts slightly)
+    - Changes to purple with "⏳ Generando..." / "⏳ Generating..." during processing
+  </Step>
+  
+  <Step title="Wait for Generation">
+    VozCraft processes your request instantly:
+    - A brief 400ms delay ensures smooth transitions
+    - The Web Speech API begins synthesizing audio
+    - The button changes to "⏹ Detener Audio" / "⏹ Stop Audio" during playback
+  </Step>
+  
+  <Step title="Listen to Your Audio">
+    The audio begins playing automatically through your default audio output.
+    
+    During playback:
+    - The generate button becomes a stop button
+    - A success toast notification appears: "✓ Audio generado correctamente"
+    - The audio is automatically added to your history
+  </Step>
+</Steps>
+
+<Info>
+**Instant Playback**: VozCraft uses the browser's built-in speech synthesis for real-time playback—no file generation or server processing required during this step.
+</Info>
+
+## Step 5: Review Your History
+
+Every generated audio is automatically saved to your history panel:
+
+### History Features
+
+Each history item displays:
+
+- **Custom Name or Timestamp**: "Audio · 1/15/2026, 3:45 PM" (default)
+- **Edit Icon (✏️)**: Click to rename the audio
+- **Metadata**: Date, voice, voice type, speed, mood
+- **Text Preview**: First line of the generated text
+- **Action Buttons**:
+  - **▶ Reproducir / Play**: Replay the audio with original settings
+  - **MP3**: Download as MP3 file
+  - **WAV**: Download as WAV file
+  - **📄 TXT**: Download transcript with metadata
+  - **✕ Delete**: Remove from history
+
+### Rename Your Audio
+
+<Steps>
+  <Step title="Click the Edit Icon">
+    Click the pencil icon (✏️) next to the audio name in the history item.
+  </Step>
+  
+  <Step title="Enter a Custom Name">
+    A modal appears with a text input. Type your desired name (up to 80 characters).
+    
+    Example names:
+    - "Product Demo Script"
+    - "Spanish Lesson 1"
+    - "Podcast Intro - Episode 5"
+  </Step>
+  
+  <Step title="Save or Cancel">
+    - Click **"Guardar" / "Save"** to confirm
+    - Click **"Cancelar" / "Cancel"** or press ESC to abort
+    - Press ENTER in the input field to quick-save
+  </Step>
+</Steps>
+
+### Play from History
+
+Click the **"▶ Reproducir" / "▶ Play"** button on any history item to replay it:
+
+- An inline audio player appears below the item
+- Visual waveform displays with 32 animated bars
+- Progress bar shows current position
+- Time display shows current time / total duration
+- Click the progress bar to seek to a specific position
+- Click the **⏸ Pause** button to pause, or **▶ Play** to resume
+
+<Tip>
+**Pro Tip**: The audio player calculates duration based on text length and settings, providing accurate time estimates even before export.
+</Tip>
+
+## Step 6: Export Your Audio
+
+VozCraft offers multiple export formats for your generated audio:
+
+### Download MP3
+
+Click the **"MP3"** button (green) to download compressed audio:
+
+- Generates a WAV file and presents it as MP3 (browser compatibility)
+- Smaller file size for easy sharing
+- Sample rate: 22,050 Hz
+- Bit depth: 16-bit
+- Filename: `vozcraft-[timestamp].mp3`
+
+### Download WAV
+
+Click the **"WAV"** button (amber) to download uncompressed audio:
+
+- Full-quality audio with no compression
+- Larger file size, suitable for editing
+- Sample rate: 22,050 Hz
+- Bit depth: 16-bit
+- Mono (1 channel)
+- Filename: `vozcraft-[timestamp].wav`
+
+### Download Transcript
+
+Click the **"📄 TXT"** button (purple) to download a formatted transcript:
+
+```
+VozCraft — Transcripción de Audio
+══════════════════════════════════════════════════
+Nombre:     My Audio Name
+Fecha:      15 de enero de 2026
+Hora:       3:45:00 p. m.
+Idioma:     Español (México)
+Género:     Voz Normal
+Velocidad:  Normal
+Ánimo:      Alegre
+══════════════════════════════════════════════════
+TRANSCRIPCIÓN:
+
+[Your full text content here]
+
+══════════════════════════════════════════════════
+© VozCraft · mateoRiosdev · 2026
+```
+
+<Note>
+**Export Process**: When you download MP3/WAV files, VozCraft uses the Web Audio API to synthesize a complete audio file with all your custom settings applied, including pitch modifications, formant filtering, and syllable-based amplitude envelopes.
+</Note>
+
+## Step 7: Manage Your History
+
+The history panel includes tools for managing your generated audio:
+
+### Save History
+
+Click **"💾 Guardar" / "💾 Save"** to export your entire history:
+
+- Downloads a JSON file: `vozcraft-historial.json`
+- Contains all audio metadata and settings
+- Preserves custom names and timestamps
+- Can be imported later to restore your history
+
+### Load History
+
+Click **"📂 Cargar" / "📂 Load"** to import a previously saved history:
+
+- Opens a file picker dialog
+- Select a `.json` history file
+- All entries are loaded and merged with current history
+- Success toast shows number of entries loaded
+
+### Clear History
+
+Click **"Limpiar todo" / "Clear all"** to remove all history items:
+
+- Removes all entries from the history panel
+- Clears browser storage
+- Cannot be undone (save history first if needed)
+- Shows confirmation toast
+
+<Warning>
+**Data Persistence**: History is stored in your browser's local storage. Clearing browser data or using incognito mode will prevent history from persisting between sessions.
+</Warning>
+
+## Common Quickstart Issues
+
+<Accordion title="No sound is playing">
+  **Solutions**:
+  - Check your system volume and ensure it's not muted
+  - Verify your browser has permission to play audio
+  - Try a different browser (Chrome/Edge recommended)
+  - Check if other websites can play audio
+  - Restart your browser
+</Accordion>
+
+<Accordion title="Voice sounds robotic or unnatural">
+  **Solutions**:
+  - Try the **Neutral** mood for most natural results
+  - Use **Normal** speed (1.00x) instead of faster speeds
+  - Select **Normal Voice** type instead of High-pitched
+  - Some languages have better voice quality than others—try English (US) or Spanish (México) for best results
+</Accordion>
+
+<Accordion title="Wrong language or accent is used">
+  **Solutions**:
+  - Your system may not have the selected voice installed
+  - Try a different regional variant (e.g., try English UK if US doesn't work)
+  - Check your operating system's TTS voice settings
+  - Some browsers have better voice support than others
+</Accordion>
+
+<Accordion title="Cannot download MP3/WAV files">
+  **Solutions**:
+  - Ensure pop-ups and downloads are allowed for the site
+  - Check your browser's download settings
+  - Verify you have sufficient disk space
+  - Try a different browser
+  - Check browser console for errors (F12)
+</Accordion>
+
+## Next Steps
+
+Congratulations! You've successfully created your first text-to-speech audio with VozCraft. Here's what to explore next:
+
+<CardGroup cols={3}>
+  <Card title="Voice Options" icon="globe" href="/features/voice-options">
+    Explore all 22+ languages and discover regional accent differences
+  </Card>
+  
+  <Card title="Customization" icon="sliders" href="/features/customization">
+    Master all customization options for perfect audio
+  </Card>
+  
+  <Card title="Using VozCraft" icon="book" href="/guides/using-vozcraft">
+    Learn advanced workflows and best practices
+  </Card>
+</CardGroup>
+
+<Tip>
+**Pro Workflow**: Try creating a "template" by generating audio with your preferred settings, then use those same settings for future content by selecting that history item and modifying only the text.
+</Tip>

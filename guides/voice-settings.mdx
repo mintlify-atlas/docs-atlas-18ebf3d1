@@ -1,0 +1,965 @@
+---
+title: Voice Settings Guide
+description: Step-by-step guide for configuring voice settings to achieve optimal text-to-speech results
+---
+
+# Voice Settings Guide
+
+This comprehensive guide provides detailed instructions for configuring VozCraft's voice settings to achieve optimal results for any use case. Whether you're creating content for business, education, or entertainment, this guide will help you select the perfect voice configuration.
+
+## Understanding Voice Settings
+
+VozCraft's audio quality is determined by four interconnected settings:
+
+<CardGroup cols={2}>
+  <Card title="Language/Accent" icon="globe">
+    **Primary Factor**
+    
+    Determines:
+    - Base pronunciation rules
+    - Available system voices
+    - Regional accent characteristics
+    - Language-specific prosody
+  </Card>
+  
+  <Card title="Voice Type" icon="user">
+    **Pitch & Gender**
+    
+    Controls:
+    - Base pitch (0.75 or 1.30)
+    - Voice gender preference
+    - Rate adjustment (±0.05)
+    - Overall voice character
+  </Card>
+  
+  <Card title="Speed" icon="gauge">
+    **Temporal Control**
+    
+    Affects:
+    - Speaking rate (0.50x to 1.60x)
+    - Content duration
+    - Clarity vs. efficiency
+    - Listener comprehension
+  </Card>
+  
+  <Card title="Mood" icon="face-smile">
+    **Emotional Tone**
+    
+    Modifies:
+    - Pitch variation (0.70 to 1.35)
+    - Rate multiplier (0.78x to 1.30x)
+    - Volume (88% to 100%)
+    - Emotional character
+  </Card>
+</CardGroup>
+
+## Step-by-Step Configuration
+
+### Step 1: Choose Your Language
+
+Language selection is the most important decision and should be made first.
+
+<Steps>
+  <Step title="Identify Your Audience">
+    **Questions to ask**:
+    - What language do they speak?
+    - Are they native speakers?
+    - Which regional accent will they prefer?
+    - Are there multiple target regions?
+    
+    **Examples**:
+    - US company: English (US)
+    - Latin American content: Español (México)
+    - European French audience: Français (France)
+    - International English: English (US) for broadest understanding
+  </Step>
+  
+  <Step title="Test Regional Variants">
+    If your language has multiple regional options, test them:
+    
+    **Example: Spanish**
+    1. Generate with Español (México)
+    2. Generate with Español (España)
+    3. Listen for:
+       - Pronunciation differences
+       - Accent preferences
+       - Listener feedback
+    
+    **Common Differences**:
+    - Spain: "th" sound for C/Z ("gracias" = "grathias")
+    - Mexico: No "th" sound ("gracias" = "grasias")
+    - Argentina: "sh" sound for LL/Y ("calle" = "cashe")
+  </Step>
+  
+  <Step title="Check Voice Availability">
+    Some languages have better voice support on certain platforms:
+    
+    **Best Support** (most platforms):
+    - English (US, UK)
+    - Spanish (Mexico, Spain)
+    - French
+    - German
+    - Portuguese (Brazil)
+    
+    **Good Support** (most modern systems):
+    - Italian, Japanese, Chinese
+    - English (AU, IN)
+    - Spanish (other variants)
+    
+    **Variable Support** (system-dependent):
+    - Arabic, Hindi, Turkish, Russian
+    
+    **Action**: If voice quality is poor, try a related language or different browser.
+  </Step>
+  
+  <Step title="Make Your Selection">
+    Click the **🌍 Voice / Accent / Region** dropdown and select your chosen language.
+    
+    The dropdown shows:
+    - Flag emoji
+    - Language name (in interface language)
+    - Organized by language family
+  </Step>
+</Steps>
+
+<Info>
+**Pro Tip**: For international audiences with varying English proficiency, English (US) with Slow speed provides the best comprehension.
+</Info>
+
+### Step 2: Select Voice Type
+
+Voice Type controls pitch and attempts to match appropriate system voices.
+
+<Tabs>
+  <Tab title="Normal Voice 🔉">
+    **Technical Specs**:
+    - Pitch: 0.75 (25% lower)
+    - Rate adjustment: -0.05
+    - Prefers: Male voices
+    - Base frequency: ~90 Hz
+    
+    **Best For**:
+    
+    <CardGroup cols={2}>
+      <Card title="Professional Content" icon="briefcase">
+        - Business presentations
+        - Corporate communications
+        - Financial reports
+        - Legal content
+      </Card>
+      
+      <Card title="Educational Material" icon="book">
+        - Lectures and courses
+        - Technical documentation
+        - Academic content
+        - Training materials
+      </Card>
+      
+      <Card title="Long-Form Content" icon="book-open">
+        - Audiobooks
+        - Articles and blogs
+        - Documentation
+        - Extended narration
+      </Card>
+      
+      <Card title="Authoritative Tone" icon="gavel">
+        - News and journalism
+        - Official announcements
+        - Policy documents
+        - Serious topics
+      </Card>
+    </CardGroup>
+    
+    **When to Use**:
+    - Default choice for most content
+    - When authority and professionalism are priorities
+    - For extended listening sessions (less fatiguing)
+    - When targeting professional audiences
+    
+    **Avoid When**:
+    - Creating children's content (may sound too serious)
+    - Marketing to young demographics (may lack energy)
+    - When light, friendly tone is needed
+  </Tab>
+  
+  <Tab title="High-pitched Voice 🔊">
+    **Technical Specs**:
+    - Pitch: 1.30 (30% higher)
+    - Rate adjustment: +0.05
+    - Prefers: Female voices
+    - Base frequency: ~156 Hz
+    
+    **Best For**:
+    
+    <CardGroup cols={2}>
+      <Card title="Marketing Content" icon="megaphone">
+        - Advertisements
+        - Promotional videos
+        - Product launches
+        - Sales materials
+      </Card>
+      
+      <Card title="Children's Content" icon="child">
+        - Stories for kids
+        - Educational games
+        - Children's books
+        - Youth programs
+      </Card>
+      
+      <Card title="Upbeat Content" icon="face-smile-beam">
+        - Celebrations
+        - Positive announcements
+        - Motivational content
+        - Entertainment
+      </Card>
+      
+      <Card title="Character Voices" icon="masks-theater">
+        - Animated characters
+        - Role-play scenarios
+        - Interactive content
+        - Story characters
+      </Card>
+    </CardGroup>
+    
+    **When to Use**:
+    - When energetic, friendly tone is desired
+    - For younger target audiences
+    - In marketing and promotional contexts
+    - When creating distinct character voices
+    
+    **Avoid When**:
+    - Professional/formal content (may sound unprofessional)
+    - Serious or somber topics (tone mismatch)
+    - Technical documentation (may reduce credibility)
+    - When targeting older demographics (may sound juvenile)
+  </Tab>
+</Tabs>
+
+**Decision Matrix**:
+
+| Content Type | Recommended Voice Type | Why |
+|--------------|------------------------|-----|
+| Business Presentation | Normal | Professional, authoritative |
+| Product Ad | High-pitched | Energetic, engaging |
+| Audiobook | Normal | Comfortable for long listening |
+| Children's Story | High-pitched | Age-appropriate, friendly |
+| News Article | Normal | Credible, serious |
+| Training Video | Normal | Clear, professional |
+| Motivational Speech | High-pitched | Energetic, inspiring |
+| Technical Docs | Normal | Authoritative, clear |
+
+<Note>
+**Gender Matching**: VozCraft attempts to select system voices matching the voice type, but availability depends on your operating system. Not all systems provide both male and female voices for every language.
+</Note>
+
+### Step 3: Set the Speed
+
+Speed should be chosen based on audience and content complexity.
+
+<Tabs>
+  <Tab title="Very Slow (0.50x)">
+    **When to Use**:
+    
+    <CardGroup cols={2}>
+      <Card title="Language Learning" icon="language">
+        - Pronunciation practice
+        - Beginner lessons
+        - Accent training
+        - Dictation exercises
+      </Card>
+      
+      <Card title="Accessibility" icon="universal-access">
+        - Cognitive processing needs
+        - Elderly audiences
+        - Complex technical content
+        - Medical instructions
+      </Card>
+      
+      <Card title="Transcription" icon="closed-captioning">
+        - Manual transcription work
+        - Note-taking
+        - Detailed analysis
+        - Legal proceedings
+      </Card>
+      
+      <Card title="Meditation" icon="spa">
+        - Guided meditation
+        - Relaxation exercises
+        - Sleep content
+        - Breathing exercises
+      </Card>
+    </CardGroup>
+    
+    **Duration Impact**: 2x longer than normal
+    - 1000 characters: ~140 seconds vs. 70 at normal
+    
+    **Caution**: May sound unnatural for native speakers familiar with the content.
+  </Tab>
+  
+  <Tab title="Slow (0.75x)">
+    **When to Use**:
+    
+    <CardGroup cols={2}>
+      <Card title="Education" icon="graduation-cap">
+        - Instructional content
+        - Complex explanations
+        - Step-by-step guides
+        - Learning materials
+      </Card>
+      
+      <Card title="Non-Native Speakers" icon="globe">
+        - ESL/EFL content
+        - International audiences
+        - Accent adaptation
+        - Comprehension priority
+      </Card>
+      
+      <Card title="Important Information" icon="circle-info">
+        - Safety instructions
+        - Legal disclaimers
+        - Medical information
+        - Critical procedures
+      </Card>
+      
+      <Card title="Elderly Audiences" icon="user-group">
+        - Senior-focused content
+        - Healthcare information
+        - Government services
+        - Community announcements
+      </Card>
+    </CardGroup>
+    
+    **Duration Impact**: 1.33x longer than normal
+    - 1000 characters: ~93 seconds vs. 70 at normal
+    
+    **Sweet Spot**: Best balance between clarity and natural pacing.
+  </Tab>
+  
+  <Tab title="Normal (1.00x)">
+    **When to Use**:
+    
+    **Default Choice For**:
+    - Most general content
+    - Audiobooks and articles
+    - Podcasts and news
+    - Professional content
+    - Standard presentations
+    
+    **Why It Works**:
+    - Natural conversational pace
+    - Comfortable for extended listening
+    - Balances clarity and efficiency
+    - Universal comprehension
+    - Most natural-sounding
+    
+    **Duration**: Baseline
+    - 1000 characters: ~70 seconds
+    - Formula: `chars / 14` seconds
+    
+    **Recommendation**: Start here, adjust only if needed.
+  </Tab>
+  
+  <Tab title="Fast (1.25x)">
+    **When to Use**:
+    
+    <CardGroup cols={2}>
+      <Card title="Quick Consumption" icon="forward-fast">
+        - News updates
+        - Brief summaries
+        - Quick reviews
+        - Daily briefings
+      </Card>
+      
+      <Card title="Experienced Listeners" icon="user-check">
+        - Familiar content
+        - Regular users
+        - Content reviews
+        - Recap sessions
+      </Card>
+      
+      <Card title="Time-Sensitive" icon="clock">
+        - Urgent updates
+        - Breaking news
+        - Time-limited content
+        - Flash briefings
+      </Card>
+      
+      <Card title="Energetic Delivery" icon="bolt">
+        - Dynamic presentations
+        - Motivational content
+        - Sports commentary
+        - Exciting announcements
+      </Card>
+    </CardGroup>
+    
+    **Duration Impact**: 20% shorter than normal
+    - 1000 characters: ~56 seconds vs. 70 at normal
+    
+    **Trade-off**: Slight clarity reduction for time efficiency.
+  </Tab>
+  
+  <Tab title="Very Fast (1.60x)">
+    **When to Use**:
+    
+    <CardGroup cols={2}>
+      <Card title="Expert Users" icon="star">
+        - Experienced TTS users
+        - Familiar material review
+        - Speed readers
+        - Productivity-focused
+      </Card>
+      
+      <Card title="Skimming Content" icon="book-bookmark">
+        - Quick content review
+        - Finding specific info
+        - Rapid scanning
+        - Time-critical scenarios
+      </Card>
+    </CardGroup>
+    
+    **Duration Impact**: 37.5% shorter than normal
+    - 1000 characters: ~44 seconds vs. 70 at normal
+    
+    **Warning**: May be difficult to understand:
+    - Requires focused attention
+    - Not suitable for complex content
+    - May miss important details
+    - Language-dependent clarity
+    
+    **Recommendation**: Test before using in production. Not suitable for most audiences.
+  </Tab>
+</Tabs>
+
+**Speed Selection Flowchart**:
+
+```
+Is content for language learners? 
+  → Yes: Very Slow (0.50x)
+  → No: Continue
+
+Is audience non-native speakers?
+  → Yes: Slow (0.75x)
+  → No: Continue
+
+Is content complex or technical?
+  → Yes: Slow (0.75x)
+  → No: Continue
+
+Is time efficiency critical?
+  → Yes: Fast (1.25x) or Very Fast (1.60x)
+  → No: Normal (1.00x)
+```
+
+### Step 4: Select the Mood
+
+Mood shapes the emotional character of your audio through pitch, rate, and volume adjustments.
+
+<Tabs>
+  <Tab title="Neutral 😐">
+    **Parameters**: Pitch 1.00 | Rate 1.00x | Volume 100%
+    
+    **Use Cases**:
+    - Professional presentations
+    - News and journalism  
+    - Technical documentation
+    - Business communications
+    - Academic content
+    - Reference material
+    
+    **Why Choose Neutral**:
+    - Most natural-sounding
+    - No emotional bias
+    - Professional tone
+    - Widely acceptable
+    - Default recommendation
+    
+    **Combined Examples**:
+    - Normal + Normal + Neutral = Professional standard
+    - High-pitched + Normal + Neutral = Friendly but professional
+    
+    **When to Avoid**: Rarely — Neutral works for almost everything
+  </Tab>
+  
+  <Tab title="Happy 😄">
+    **Parameters**: Pitch 1.25 | Rate 1.15x | Volume 100%
+    
+    **Use Cases**:
+    - Marketing and advertising
+    - Celebrations and events
+    - Positive announcements
+    - Welcome messages
+    - Social media content
+    - Light entertainment
+    
+    **Effect**: Uplifts tone, adds cheerfulness
+    
+    **Combined Examples**:
+    - High-pitched + Fast + Happy = Very energetic marketing
+    - Normal + Normal + Happy = Friendly professional
+    
+    **When to Avoid**:
+    - Serious topics
+    - Formal business content
+    - Sad or somber subjects
+    - Technical instructions
+  </Tab>
+  
+  <Tab title="Serious 😠">
+    **Parameters**: Pitch 0.80 | Rate 0.88x | Volume 95%
+    
+    **Use Cases**:
+    - Formal announcements
+    - Legal content
+    - Safety instructions
+    - Official statements
+    - Important information
+    - Solemn occasions
+    
+    **Effect**: Lowers pitch, slows pace, adds gravity
+    
+    **Combined Examples**:
+    - Normal + Slow + Serious = Very authoritative
+    - Normal + Normal + Serious = Professional gravity
+    
+    **When to Avoid**:
+    - Marketing and promotional content
+    - Children's content
+    - Entertainment
+    - Casual communications
+  </Tab>
+  
+  <Tab title="Enthusiastic 🤩">
+    **Parameters**: Pitch 1.35 | Rate 1.25x | Volume 100%
+    
+    **Use Cases**:
+    - Motivational speeches
+    - Product launches
+    - Sports commentary
+    - Exciting announcements
+    - High-energy content
+    - Celebrations
+    
+    **Effect**: Maximum pitch elevation, fastest mood
+    
+    **Combined Examples**:
+    - High-pitched + Fast + Enthusiastic = Extreme energy (pitch 1.755!)
+    - Normal + Normal + Enthusiastic = Energetic but controlled
+    
+    **When to Avoid**:
+    - Professional/formal content
+    - Long-form content (fatiguing)
+    - Technical material
+    - Serious subjects
+    
+    **Caution**: Can sound unnatural if overused
+  </Tab>
+  
+  <Tab title="Melancholic 😔">
+    **Parameters**: Pitch 0.70 | Rate 0.78x | Volume 88%
+    
+    **Use Cases**:
+    - Poetry and literature
+    - Memorial content
+    - Reflective pieces
+    - Sad topics
+    - Nostalgic narration
+    - Somber announcements
+    
+    **Effect**: Lowest pitch, slowest, quietest
+    
+    **Combined Examples**:
+    - Normal + Slow + Melancholic = Very contemplative (pitch 0.525)
+    - Normal + Normal + Melancholic = Gentle, thoughtful
+    
+    **When to Avoid**:
+    - Upbeat content
+    - Marketing materials
+    - Children's content
+    - Motivational material
+    
+    **Note**: Very distinctive tone — test carefully
+  </Tab>
+  
+  <Tab title="Energetic ⚡">
+    **Parameters**: Pitch 1.15 | Rate 1.30x | Volume 100%
+    
+    **Use Cases**:
+    - Workout instructions
+    - Action content
+    - Fast-paced narration
+    - Urgent messages
+    - High-intensity content
+    - Quick announcements
+    
+    **Effect**: Fastest rate multiplier (1.30x)
+    
+    **Combined Examples**:
+    - High-pitched + Very Fast + Energetic = Maximum speed (rate 2.145!)
+    - Normal + Fast + Energetic = Dynamic delivery
+    
+    **When to Avoid**:
+    - Calm, relaxed content
+    - Complex information (too fast)
+    - Long-form content (exhausting)
+    - Elderly audiences
+  </Tab>
+  
+  <Tab title="Relaxed 😌">
+    **Parameters**: Pitch 0.88 | Rate 0.82x | Volume 90%
+    
+    **Use Cases**:
+    - Meditation guides
+    - Sleep stories
+    - ASMR content
+    - Relaxation exercises
+    - Calm instructions
+    - Bedtime content
+    
+    **Effect**: Slightly lowered pitch, slower, quieter
+    
+    **Combined Examples**:
+    - Normal + Slow + Relaxed = Very calming
+    - Normal + Normal + Relaxed = Gentle, soothing
+    
+    **When to Avoid**:
+    - Energetic content
+    - Marketing materials
+    - Urgent information
+    - Professional presentations
+  </Tab>
+  
+  <Tab title="Tense 😤">
+    **Parameters**: Pitch 1.10 | Rate 1.18x | Volume 95%
+    
+    **Use Cases**:
+    - Thriller narration
+    - Dramatic content
+    - Suspenseful moments
+    - Alert messages
+    - Urgent announcements
+    - Action sequences
+    
+    **Effect**: Moderate pitch increase, faster pace
+    
+    **Combined Examples**:
+    - Normal + Fast + Tense = Urgent delivery
+    - High-pitched + Normal + Tense = Heightened tension
+    
+    **When to Avoid**:
+    - Calm, relaxed content
+    - Professional communications
+    - Educational material
+    - Children's content
+  </Tab>
+</Tabs>
+
+**Mood Selection Matrix**:
+
+| Content Emotion | Primary Mood | Alternative | Avoid |
+|----------------|--------------|-------------|-------|
+| Professional | Neutral | Serious | Enthusiastic, Happy |
+| Upbeat/Positive | Happy | Enthusiastic | Melancholic, Serious |
+| Formal/Important | Serious | Neutral | Happy, Enthusiastic |
+| Exciting/Dynamic | Enthusiastic | Energetic | Melancholic, Relaxed |
+| Sad/Somber | Melancholic | Serious | Happy, Enthusiastic |
+| Fast-paced/Action | Energetic | Enthusiastic | Melancholic, Relaxed |
+| Calm/Soothing | Relaxed | Neutral | Energetic, Enthusiastic |
+| Urgent/Dramatic | Tense | Energetic | Relaxed, Melancholic |
+
+## Configuration Examples by Use Case
+
+### Business Presentation
+
+**Goal**: Professional, authoritative, clear
+
+**Configuration**:
+- **Language**: English (US) or your business language
+- **Voice Type**: Normal 🔉
+- **Speed**: Normal
+- **Mood**: Neutral 😐
+
+**Why This Works**:
+- Normal voice provides authority (pitch 0.75)
+- Normal speed ensures comprehension
+- Neutral mood maintains professionalism
+- Universally acceptable for business contexts
+
+**Final Parameters**:
+- Pitch: 0.75 * 1.00 = 0.75 (authoritative)
+- Rate: (1.00 + -0.05) * 1.00 = 0.95 (clear)
+- Volume: 100%
+
+---
+
+### Children's Story
+
+**Goal**: Engaging, friendly, age-appropriate
+
+**Configuration**:
+- **Language**: Child's native language
+- **Voice Type**: High-pitched 🔊
+- **Speed**: Slow or Normal
+- **Mood**: Happy 😄
+
+**Why This Works**:
+- High-pitched voice sounds youthful (pitch 1.30)
+- Slow speed helps comprehension
+- Happy mood adds cheerfulness
+- Combination is engaging for kids
+
+**Final Parameters**:
+- Pitch: 1.30 * 1.25 = 1.625 (bright, friendly)
+- Rate: (0.75 + 0.05) * 1.15 = 0.92 (comfortable)
+- Volume: 100%
+
+---
+
+### Language Learning
+
+**Goal**: Maximum clarity for non-native speakers
+
+**Configuration**:
+- **Language**: Target language
+- **Voice Type**: Normal 🔉
+- **Speed**: Very Slow or Slow
+- **Mood**: Neutral 😐
+
+**Why This Works**:
+- Normal voice provides clear pronunciation
+- Very Slow speed allows sound processing
+- Neutral mood avoids distracting emotions
+- Focus is entirely on language learning
+
+**Final Parameters**:
+- Pitch: 0.75 * 1.00 = 0.75 (clear)
+- Rate: (0.50 + -0.05) * 1.00 = 0.45 (very clear)
+- Volume: 100%
+
+---
+
+### Marketing Ad
+
+**Goal**: Energetic, attention-grabbing, positive
+
+**Configuration**:
+- **Language**: Target market language
+- **Voice Type**: High-pitched 🔊
+- **Speed**: Fast
+- **Mood**: Enthusiastic 🤩 or Happy 😄
+
+**Why This Works**:
+- High-pitched voice sounds energetic
+- Fast speed conveys excitement
+- Enthusiastic mood maximizes energy
+- Combination captures attention
+
+**Final Parameters** (Enthusiastic):
+- Pitch: 1.30 * 1.35 = 1.755 (very high energy)
+- Rate: (1.25 + 0.05) * 1.25 = 1.625 (dynamic)
+- Volume: 100%
+
+**Caution**: Test with focus group — may be too intense for some
+
+---
+
+### Meditation Guide
+
+**Goal**: Calming, soothing, peaceful
+
+**Configuration**:
+- **Language**: Listener's language
+- **Voice Type**: Normal 🔉
+- **Speed**: Very Slow or Slow
+- **Mood**: Relaxed 😌 or Melancholic 😔
+
+**Why This Works**:
+- Normal voice provides gentle tone
+- Very Slow creates calm pacing
+- Relaxed mood reduces intensity
+- Combination promotes relaxation
+
+**Final Parameters** (Relaxed):
+- Pitch: 0.75 * 0.88 = 0.66 (gentle, low)
+- Rate: (0.50 + -0.05) * 0.82 = 0.369 (very slow, calming)
+- Volume: 90% (softer)
+
+---
+
+### Technical Documentation
+
+**Goal**: Clear, professional, authoritative
+
+**Configuration**:
+- **Language**: Documentation language
+- **Voice Type**: Normal 🔉
+- **Speed**: Slow or Normal
+- **Mood**: Neutral 😐
+
+**Why This Works**:
+- Normal voice sounds professional
+- Slow speed aids comprehension of complex terms
+- Neutral mood maintains focus on content
+- Optimal for technical material
+
+**Final Parameters**:
+- Pitch: 0.75 * 1.00 = 0.75 (professional)
+- Rate: (0.75 + -0.05) * 1.00 = 0.70 (clear, measured)
+- Volume: 100%
+
+## Testing and Refinement
+
+### A/B Testing Your Settings
+
+<Steps>
+  <Step title="Create Test Sample">
+    Write 100-200 characters representing typical content:
+    ```
+    Welcome to our comprehensive guide. In this section, we'll explore
+    the key features and benefits. Let's begin with the fundamentals.
+    ```
+  </Step>
+  
+  <Step title="Generate Variation A">
+    Your hypothesis for best settings:
+    - Configure VozCraft
+    - Generate audio
+    - Name: "Test_A"
+  </Step>
+  
+  <Step title="Generate Variation B">
+    Alternative configuration (change ONE parameter):
+    - Adjust one setting
+    - Generate audio  
+    - Name: "Test_B"
+  </Step>
+  
+  <Step title="Blind Listening Test">
+    Play both without knowing which is which:
+    - Have colleague play them for you
+    - Or use history (don't look at settings)
+    - Listen multiple times
+  </Step>
+  
+  <Step title="Evaluate Objectively">
+    Rate each on:
+    - Clarity (1-10)
+    - Naturalness (1-10)
+    - Tone appropriateness (1-10)
+    - Professional quality (1-10)
+    - Overall preference
+  </Step>
+  
+  <Step title="Select Winner & Document">
+    Choose best configuration:
+    - Record exact settings
+    - Save as reference
+    - Use for all future content
+  </Step>
+</Steps>
+
+### Gathering Feedback
+
+<CardGroup cols={2}>
+  <Card title="Internal Team Review" icon="users">
+    **Process**:
+    1. Share audio with 3-5 team members
+    2. Provide feedback form:
+       - Clarity rating
+       - Professional rating
+       - Suggested improvements
+    3. Compile feedback
+    4. Make adjustments
+    5. Re-test if needed
+  </Card>
+  
+  <Card title="Target Audience Testing" icon="bullseye">
+    **Process**:
+    1. Select 5-10 audience representatives
+    2. Share audio without context
+    3. Ask:
+       - Is it easy to understand?
+       - Does pace feel comfortable?
+       - Does tone match expectations?
+       - Would you listen to more?
+    4. Iterate based on feedback
+  </Card>
+</CardGroup>
+
+## Common Configuration Mistakes
+
+<Warning>
+**Mistake 1: Too Many Extreme Settings**
+
+**Problem**: Very Fast + High-pitched + Enthusiastic = Incomprehensible
+
+**Result**: Pitch 1.755, Rate 1.625 — too extreme for most listeners
+
+**Solution**: Use at most ONE extreme setting, keep others moderate
+</Warning>
+
+<Warning>
+**Mistake 2: Mismatched Mood and Content**
+
+**Problem**: Using Happy mood for serious medical information
+
+**Result**: Inappropriate tone undermines message credibility
+
+**Solution**: Match mood to content emotional context
+</Warning>
+
+<Warning>
+**Mistake 3: Wrong Speed for Audience**
+
+**Problem**: Fast speed for elderly audience or language learners
+
+**Result**: Poor comprehension, frustrated listeners
+
+**Solution**: Always consider audience capabilities, err on slower side
+</Warning>
+
+<Warning>
+**Mistake 4: Not Testing Before Production**
+
+**Problem**: Generating all content before listening to sample
+
+**Result**: Discover issues after time investment
+
+**Solution**: Always generate and review test audio first
+</Warning>
+
+## Quick Reference Guide
+
+### Setting Selection Cheat Sheet
+
+```
+CONTENT TYPE           | VOICE  | SPEED | MOOD
+-----------------------|--------|-------|-------------
+Business               | Normal | Normal| Neutral
+Marketing              | High   | Fast  | Happy/Enthus
+Education              | Normal | Slow  | Neutral
+Children               | High   | Normal| Happy
+Audiobook              | Either | Normal| Neutral
+News                   | Normal | Normal| Neutral
+Technical              | Normal | Slow  | Neutral
+Motivational           | High   | Fast  | Enthusiastic
+Meditation             | Normal | V.Slow| Relaxed
+Language Learning      | Normal | V.Slow| Neutral
+Thriller/Drama         | Either | Normal| Tense
+Comedy/Entertainment   | High   | Fast  | Happy
+```
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Using VozCraft" icon="rocket" href="/guides/using-vozcraft">
+    Complete workflow guide with examples
+  </Card>
+  
+  <Card title="Customization" icon="sliders" href="/features/customization">
+    Deep dive into all customization parameters
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Fix common voice quality issues
+  </Card>
+</CardGroup>
