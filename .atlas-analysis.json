@@ -1,0 +1,60 @@
+{
+  "projectType": "saas",
+  "projectName": "VozCraft",
+  "projectDescription": "Free browser-based text-to-speech application with multi-language support, voice customization, and audio recording capabilities.",
+  "theme": "almond",
+  "primaryColor": "#944651",
+  "lightColor": "#1b3c6b",
+  "darkColor": "#e4dee3",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Features",
+            "pages": ["features/voice-options", "features/audio-export", "features/history-management", "features/customization"]
+          },
+          {
+            "group": "Guides",
+            "pages": ["guides/using-vozcraft", "guides/voice-settings", "guides/exporting-audio", "guides/troubleshooting"]
+          }
+        ]
+      },
+      {
+        "tab": "Technical",
+        "groups": [
+          {
+            "group": "Architecture",
+            "pages": ["technical/web-speech-api", "technical/audio-processing", "technical/pwa-setup"]
+          },
+          {
+            "group": "Development",
+            "pages": ["technical/installation", "technical/building", "technical/deployment"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Free browser-based text-to-speech conversion",
+    "Support for 20+ languages and accents",
+    "Voice customization (pitch, speed, mood)",
+    "Audio recording and export (MP3/WAV)",
+    "History management with import/export",
+    "Dark mode and bilingual interface",
+    "Progressive Web App capabilities",
+    "No API keys or backend required"
+  ],
+  "publicApiSurface": [
+    "Web Speech API (SpeechSynthesis)",
+    "Audio export (MP3/WAV formats)",
+    "History storage and management",
+    "Voice configuration options",
+    "PWA manifest configuration"
+  ]
+}
